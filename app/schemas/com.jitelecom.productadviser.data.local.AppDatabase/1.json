@@ -1,0 +1,859 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "6e6da44db3b826457910364c65c2319a",
+    "entities": [
+      {
+        "tableName": "products",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sku` TEXT NOT NULL, `brand` TEXT NOT NULL, `model` TEXT NOT NULL, `modelFamily` TEXT, `variant` TEXT, `category` TEXT NOT NULL, `subcategory` TEXT, `releaseYear` INTEGER, `productImage` TEXT, `price` REAL NOT NULL, `promotionalPrice` REAL, `availabilityStatus` TEXT NOT NULL, `processorId` INTEGER, `gpuId` INTEGER, `ramGB` INTEGER, `ramType` TEXT, `ramUpgradeable` INTEGER, `maximumRamGB` INTEGER, `storageGB` INTEGER, `storageType` TEXT, `additionalStorageSupport` TEXT, `displaySize` REAL, `displayResolution` TEXT, `displayRefreshRate` INTEGER, `operatingSystem` TEXT, `architecture` TEXT, `batteryCapacityWh` REAL, `weightKg` REAL, `supportedFeatures` TEXT NOT NULL, `notes` TEXT, `sourceName` TEXT, `sourceUrl` TEXT, `verifiedDate` TEXT, `lastUpdated` TEXT, `verifiedBy` TEXT, `verificationStatus` TEXT NOT NULL, `archived` INTEGER NOT NULL, FOREIGN KEY(`processorId`) REFERENCES `processors`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`gpuId`) REFERENCES `gpus`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sku",
+            "columnName": "sku",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "brand",
+            "columnName": "brand",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "modelFamily",
+            "columnName": "modelFamily",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "variant",
+            "columnName": "variant",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subcategory",
+            "columnName": "subcategory",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "releaseYear",
+            "columnName": "releaseYear",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "productImage",
+            "columnName": "productImage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "promotionalPrice",
+            "columnName": "promotionalPrice",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "availabilityStatus",
+            "columnName": "availabilityStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "processorId",
+            "columnName": "processorId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "gpuId",
+            "columnName": "gpuId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "ramGB",
+            "columnName": "ramGB",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "ramType",
+            "columnName": "ramType",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ramUpgradeable",
+            "columnName": "ramUpgradeable",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "maximumRamGB",
+            "columnName": "maximumRamGB",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "storageGB",
+            "columnName": "storageGB",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "storageType",
+            "columnName": "storageType",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "additionalStorageSupport",
+            "columnName": "additionalStorageSupport",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "displaySize",
+            "columnName": "displaySize",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "displayResolution",
+            "columnName": "displayResolution",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "displayRefreshRate",
+            "columnName": "displayRefreshRate",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "operatingSystem",
+            "columnName": "operatingSystem",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "architecture",
+            "columnName": "architecture",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "batteryCapacityWh",
+            "columnName": "batteryCapacityWh",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "weightKg",
+            "columnName": "weightKg",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "supportedFeatures",
+            "columnName": "supportedFeatures",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sourceName",
+            "columnName": "sourceName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sourceUrl",
+            "columnName": "sourceUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "verifiedDate",
+            "columnName": "verifiedDate",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastUpdated",
+            "columnName": "lastUpdated",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "verifiedBy",
+            "columnName": "verifiedBy",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "verificationStatus",
+            "columnName": "verificationStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "archived",
+            "columnName": "archived",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_products_sku",
+            "unique": true,
+            "columnNames": [
+              "sku"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_products_sku` ON `${TABLE_NAME}` (`sku`)"
+          },
+          {
+            "name": "index_products_processorId",
+            "unique": false,
+            "columnNames": [
+              "processorId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_products_processorId` ON `${TABLE_NAME}` (`processorId`)"
+          },
+          {
+            "name": "index_products_gpuId",
+            "unique": false,
+            "columnNames": [
+              "gpuId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_products_gpuId` ON `${TABLE_NAME}` (`gpuId`)"
+          },
+          {
+            "name": "index_products_brand",
+            "unique": false,
+            "columnNames": [
+              "brand"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_products_brand` ON `${TABLE_NAME}` (`brand`)"
+          },
+          {
+            "name": "index_products_model",
+            "unique": false,
+            "columnNames": [
+              "model"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_products_model` ON `${TABLE_NAME}` (`model`)"
+          },
+          {
+            "name": "index_products_category",
+            "unique": false,
+            "columnNames": [
+              "category"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_products_category` ON `${TABLE_NAME}` (`category`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "processors",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "processorId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "gpus",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "gpuId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "processors",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `manufacturer` TEXT NOT NULL, `family` TEXT NOT NULL, `model` TEXT NOT NULL, `generation` TEXT, `architecture` TEXT, `coreCount` INTEGER, `threadCount` INTEGER, `baseClockGhz` REAL, `boostClockGhz` REAL, `integratedGpu` TEXT, `performanceTier` INTEGER, `workloadTier` INTEGER, `notes` TEXT, `sourceUrl` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manufacturer",
+            "columnName": "manufacturer",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "family",
+            "columnName": "family",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "generation",
+            "columnName": "generation",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "architecture",
+            "columnName": "architecture",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "coreCount",
+            "columnName": "coreCount",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "threadCount",
+            "columnName": "threadCount",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "baseClockGhz",
+            "columnName": "baseClockGhz",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "boostClockGhz",
+            "columnName": "boostClockGhz",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "integratedGpu",
+            "columnName": "integratedGpu",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "performanceTier",
+            "columnName": "performanceTier",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "workloadTier",
+            "columnName": "workloadTier",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sourceUrl",
+            "columnName": "sourceUrl",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_processors_manufacturer_model",
+            "unique": true,
+            "columnNames": [
+              "manufacturer",
+              "model"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_processors_manufacturer_model` ON `${TABLE_NAME}` (`manufacturer`, `model`)"
+          }
+        ]
+      },
+      {
+        "tableName": "gpus",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `manufacturer` TEXT NOT NULL, `model` TEXT NOT NULL, `type` TEXT NOT NULL, `vramGB` REAL, `architecture` TEXT, `performanceTier` INTEGER, `graphicsTier` INTEGER, `notes` TEXT, `sourceUrl` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manufacturer",
+            "columnName": "manufacturer",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vramGB",
+            "columnName": "vramGB",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "architecture",
+            "columnName": "architecture",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "performanceTier",
+            "columnName": "performanceTier",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "graphicsTier",
+            "columnName": "graphicsTier",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sourceUrl",
+            "columnName": "sourceUrl",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_gpus_manufacturer_model",
+            "unique": true,
+            "columnNames": [
+              "manufacturer",
+              "model"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_gpus_manufacturer_model` ON `${TABLE_NAME}` (`manufacturer`, `model`)"
+          }
+        ]
+      },
+      {
+        "tableName": "software",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `developer` TEXT, `version` TEXT NOT NULL, `category` TEXT NOT NULL, `platform` TEXT NOT NULL, `description` TEXT, `officialWebsite` TEXT, `requirementsSourceUrl` TEXT, `lastVerified` TEXT, `iconPath` TEXT, `verificationStatus` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "developer",
+            "columnName": "developer",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "platform",
+            "columnName": "platform",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "officialWebsite",
+            "columnName": "officialWebsite",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "requirementsSourceUrl",
+            "columnName": "requirementsSourceUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastVerified",
+            "columnName": "lastVerified",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "iconPath",
+            "columnName": "iconPath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "verificationStatus",
+            "columnName": "verificationStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_software_name_version_platform",
+            "unique": true,
+            "columnNames": [
+              "name",
+              "version",
+              "platform"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_software_name_version_platform` ON `${TABLE_NAME}` (`name`, `version`, `platform`)"
+          }
+        ]
+      },
+      {
+        "tableName": "requirements",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `softwareId` INTEGER NOT NULL, `requirementType` TEXT NOT NULL, `minimumRamGB` INTEGER, `minimumStorageGB` INTEGER, `minimumCpuTier` INTEGER, `minimumGpuTier` INTEGER, `minimumVramGB` REAL, `requiredArchitecture` TEXT, `supportedOperatingSystems` TEXT NOT NULL, `requiredFeatures` TEXT NOT NULL, `acceptedProcessorIds` TEXT NOT NULL, `acceptedGpuIds` TEXT NOT NULL, `notes` TEXT, `verificationStatus` TEXT NOT NULL, FOREIGN KEY(`softwareId`) REFERENCES `software`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "softwareId",
+            "columnName": "softwareId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "requirementType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minimumRamGB",
+            "columnName": "minimumRamGB",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "minimumStorageGB",
+            "columnName": "minimumStorageGB",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "minimumCpuTier",
+            "columnName": "minimumCpuTier",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "minimumGpuTier",
+            "columnName": "minimumGpuTier",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "minimumVramGB",
+            "columnName": "minimumVramGB",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "requiredArchitecture",
+            "columnName": "requiredArchitecture",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "supportedOperatingSystems",
+            "columnName": "supportedOperatingSystems",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "requiredFeatures",
+            "columnName": "requiredFeatures",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "acceptedProcessorIds",
+            "columnName": "acceptedProcessorIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "acceptedGpuIds",
+            "columnName": "acceptedGpuIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "verificationStatus",
+            "columnName": "verificationStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_requirements_softwareId",
+            "unique": false,
+            "columnNames": [
+              "softwareId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_requirements_softwareId` ON `${TABLE_NAME}` (`softwareId`)"
+          },
+          {
+            "name": "index_requirements_softwareId_requirementType",
+            "unique": true,
+            "columnNames": [
+              "softwareId",
+              "requirementType"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_requirements_softwareId_requirementType` ON `${TABLE_NAME}` (`softwareId`, `requirementType`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "software",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "softwareId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "workload_profiles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `softwareId` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `minimumCpuTier` INTEGER, `minimumGpuTier` INTEGER, `minimumRamGB` INTEGER, FOREIGN KEY(`softwareId`) REFERENCES `software`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "softwareId",
+            "columnName": "softwareId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minimumCpuTier",
+            "columnName": "minimumCpuTier",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "minimumGpuTier",
+            "columnName": "minimumGpuTier",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "minimumRamGB",
+            "columnName": "minimumRamGB",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_workload_profiles_softwareId",
+            "unique": false,
+            "columnNames": [
+              "softwareId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workload_profiles_softwareId` ON `${TABLE_NAME}` (`softwareId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "software",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "softwareId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "local_analytics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `event` TEXT NOT NULL, `key` TEXT NOT NULL, `count` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "event",
+            "columnName": "event",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "count",
+            "columnName": "count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_local_analytics_event_key",
+            "unique": true,
+            "columnNames": [
+              "event",
+              "key"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_local_analytics_event_key` ON `${TABLE_NAME}` (`event`, `key`)"
+          }
+        ]
+      },
+      {
+        "tableName": "database_metadata",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`key` TEXT NOT NULL, `value` TEXT NOT NULL, PRIMARY KEY(`key`))",
+        "fields": [
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "value",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "key"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6e6da44db3b826457910364c65c2319a')"
+    ]
+  }
+}
