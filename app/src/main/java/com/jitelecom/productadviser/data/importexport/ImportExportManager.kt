@@ -45,6 +45,8 @@ class ImportExportManager @Inject constructor(
         val backupDir = File(context.filesDir, "database_backups").apply { mkdirs() }
         val file = File(backupDir, "before_import_${System.currentTimeMillis()}.json")
         file.writeBytes(exportJson())
+        backupDir.listFiles { candidate -> candidate.isFile && candidate.name.startsWith("before_import_") }
+            ?.sortedByDescending(File::lastModified)?.drop(5)?.forEach(File::delete)
         return file
     }
 

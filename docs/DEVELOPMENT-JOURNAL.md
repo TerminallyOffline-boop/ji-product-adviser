@@ -61,6 +61,17 @@ This separates “the hardware is too weak” from “this application is not of
 - Optimized the experience for landscape tablets used at a counter.
 - Preserved adaptive layouts for narrower phone screens.
 
+### Phase 6 — Store polish and reliability
+
+- Added searchable selectors and catalog filters suitable for the full product lineup.
+- Preserved screen state when staff switch between primary navigation destinations.
+- Separated unavailable software platforms from below-minimum hardware results.
+- Corrected recommendation settings and made every displayed priority affect scoring.
+- Added favorites, recent products, comparison search, differences-only comparison, and customer-session reset actions.
+- Hardened admin workflows with first-run PIN setup, attempt throttling, safer data editors, archive confirmation, and undo.
+- Reduced local privacy exposure by recording only submitted searches and excluding DataStore preferences from Android backup.
+- Expanded regression coverage and automated GitHub verification before release.
+
 ## Key design decisions
 
 ### Deterministic rules instead of generated answers
@@ -81,7 +92,7 @@ Catalog import and export work without a backend. Imports are validated before r
 
 ## Quality checks
 
-For release `1.0.4`, the project passed:
+For releases beginning with `1.0.4`, the project quality gate includes:
 
 - Local unit tests for compatibility and recommendation rules
 - Android lint checks

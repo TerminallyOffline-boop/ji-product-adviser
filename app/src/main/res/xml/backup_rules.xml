@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <exclude domain="sharedpref" path="admin_preferences.xml" />
+    <exclude domain="file" path="datastore/app_preferences.preferences_pb" />
 </full-backup-content>

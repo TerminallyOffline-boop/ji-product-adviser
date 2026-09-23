@@ -17,7 +17,9 @@ data class AppSettings(
     val darkMode: Boolean = false,
     val remoteDatabaseUrl: String = "",
     val allowAboveBudgetPercent: Int = 10,
-    val adminPinConfigured: Boolean = false
+    val adminPinConfigured: Boolean = false,
+    val favoriteProductIds: List<Long> = emptyList(),
+    val recentProductIds: List<Long> = emptyList()
 )
 
 @Singleton
@@ -27,21 +29,43 @@ class AppPreferences @Inject constructor(@ApplicationContext private val context
         val remoteUrl = stringPreferencesKey("remote_database_url")
         val aboveBudget = intPreferencesKey("above_budget_percent")
         val pinHash = stringPreferencesKey("admin_pin_hash")
+        val favorites = stringPreferencesKey("favorite_product_ids")
+        val recents = stringPreferencesKey("recent_product_ids")
     }
     val settings: Flow<AppSettings> = context.dataStore.data.map { prefs ->
-        AppSettings(prefs[Keys.dark] ?: false, prefs[Keys.remoteUrl] ?: "", prefs[Keys.aboveBudget] ?: 10, prefs[Keys.pinHash] != null)
+        AppSettings(
+            prefs[Keys.dark] ?: false,
+            prefs[Keys.remoteUrl] ?: "",
+            prefs[Keys.aboveBudget] ?: 10,
+            prefs[Keys.pinHash] != null,
+            decodeIds(prefs[Keys.favorites]),
+            decodeIds(prefs[Keys.recents])
+        )
     }
     suspend fun setDarkMode(value: Boolean) = context.dataStore.edit { it[Keys.dark] = value }
-    suspend fun setRemoteUrl(value: String) = context.dataStore.edit { it[Keys.remoteUrl] = value.trim() }
+    suspend fun setRemoteUrl(value: String) {
+        val normalized=value.trim()
+        require(normalized.isBlank() || normalized.startsWith("https://", ignoreCase=true)) { "The remote manifest must use HTTPS." }
+        context.dataStore.edit { it[Keys.remoteUrl] = normalized }
+    }
     suspend fun setAboveBudgetPercent(value: Int) = context.dataStore.edit { it[Keys.aboveBudget] = value.coerceIn(0, 25) }
+    suspend fun toggleFavorite(productId: Long) = context.dataStore.edit { prefs ->
+        val current = decodeIds(prefs[Keys.favorites])
+        val updated = if (productId in current) current - productId else (current + productId).takeLast(5)
+        prefs[Keys.favorites] = updated.joinToString(",")
+    }
+    suspend fun recordViewed(productId: Long) = context.dataStore.edit { prefs ->
+        prefs[Keys.recents] = (listOf(productId) + decodeIds(prefs[Keys.recents]).filterNot { it == productId }).take(5).joinToString(",")
+    }
+    suspend fun clearProductHistory() = context.dataStore.edit { prefs -> prefs.remove(Keys.favorites);prefs.remove(Keys.recents) }
     suspend fun setAdminPin(pin: String) { require(pin.length >= 4); context.dataStore.edit { it[Keys.pinHash] = hash(pin) } }
     suspend fun verifyAdminPin(pin: String): Boolean {
         val saved = context.dataStore.data.first()[Keys.pinHash]
-        return saved?.let { it == hash(pin) } ?: (pin == DEFAULT_DEMO_PIN)
+        return saved?.let { it == hash(pin) } ?: false
     }
     private fun hash(value: String) = MessageDigest.getInstance("SHA-256").digest((SALT + value).toByteArray()).joinToString("") { "%02x".format(it) }
+    private fun decodeIds(value: String?): List<Long> = value.orEmpty().split(',').mapNotNull(String::toLongOrNull)
     companion object {
-        const val DEFAULT_DEMO_PIN = "2468"
         private const val SALT = "ji-product-adviser-local-v1:"
     }
 }

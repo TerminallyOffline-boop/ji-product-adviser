@@ -26,6 +26,7 @@ interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.ABORT) suspend fun insertAll(values: List<ProductEntity>): List<Long>
     @Update suspend fun update(value: ProductEntity)
     @Query("UPDATE products SET archived = 1 WHERE id = :id") suspend fun archive(id: Long)
+    @Query("UPDATE products SET archived = :archived WHERE id = :id") suspend fun setArchived(id: Long, archived: Boolean)
     @Query("DELETE FROM products") suspend fun deleteAll()
 }
 

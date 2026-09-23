@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.navigation.compose.*
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.jitelecom.productadviser.ui.*
 import com.jitelecom.productadviser.ui.screens.*
 import com.jitelecom.productadviser.ui.theme.JITheme
@@ -51,8 +52,9 @@ fun AdviserApp(appViewModel: AppViewModel = hiltViewModel()) {
         val navigate: (String) -> Unit = { target ->
             if (baseRoute != target) {
                 nav.navigate(target) {
-                    popUpTo("home") { inclusive = false }
+                    popUpTo(nav.graph.findStartDestination().id) { saveState = true }
                     launchSingleTop = true
+                    restoreState = true
                 }
             }
         }
@@ -91,7 +93,8 @@ private fun AppNavHost(nav: androidx.navigation.NavHostController, online: Boole
             HomeScreen(
                 online = online,
                 onNavigate = { target -> nav.navigate(target) { launchSingleTop = true } },
-                onSearch = { query -> nav.navigate("products?query=${Uri.encode(query)}") }
+                onSearch = { query -> nav.navigate("products?query=${Uri.encode(query)}") },
+                onProduct = { id -> nav.navigate("product/$id") }
             )
         }
         composable(
@@ -113,7 +116,7 @@ private fun AppNavHost(nav: androidx.navigation.NavHostController, online: Boole
     }
 }
 
-private fun destinationSelected(current: String, destination: String): Boolean = when (destination) {
+internal fun destinationSelected(current: String, destination: String): Boolean = when (destination) {
     "products" -> current == "products" || current == "product/{id}"
     "more" -> current in setOf("more", "compare", "software", "database", "settings", "admin")
     else -> current == destination

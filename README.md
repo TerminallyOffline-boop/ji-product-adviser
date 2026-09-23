@@ -2,7 +2,7 @@
 
 JI Product Adviser is a tablet-first Android staff tool for browsing the JI Telecom product lineup, checking whether a device can run selected software, and finding suitable products using clear, deterministic rules. It is designed to work offline and remains usable on phones.
 
-**Current documented release:** `1.0.4` (`versionCode 5`)
+**Current documented release:** `1.1.0` (`versionCode 6`)
 
 > The bundled product catalog comes from **Product-Line-up-x-July-2026.xlsx**. Prices and availability are a dated snapshot. Printers are intentionally excluded.
 
@@ -14,6 +14,8 @@ JI Product Adviser is a tablet-first Android staff tool for browsing the JI Tele
 - Check software compatibility with platform-aware Windows, macOS, Android, and iOS rules
 - Distinguish minimum, recommended, unsupported-platform, and not-verified results
 - Find best matches using budget, performance, capacity, preference, and software-fit scoring
+- Search, filter, sort, favorite, revisit, and compare products without losing navigation state
+- Explain when an app is unavailable for a platform separately from insufficient hardware
 - Use a responsive interface optimized for landscape tablets and adaptable to phones
 - Import, export, back up, and safely update the local catalog
 
@@ -101,7 +103,7 @@ The displayed integer is labeled an **internal recommendation score**, not a pro
 
 ## Verification status
 
-The current implementation has automated tests for the pure compatibility and recommendation rules. The `1.0.4` debug build was also checked with unit tests, Android lint, APK assembly, and Android signature verification. See [release notes](docs/RELEASES.md) for the recorded artifact checksum.
+The current implementation has automated tests for the compatibility, platform, recommendation, catalog, and release-safety rules. The `1.1.0` build is checked with unit tests, Android lint, APK assembly, and Android signature verification. See [release notes](docs/RELEASES.md) for the recorded artifact checksum.
 
 ## Import, export and updates
 

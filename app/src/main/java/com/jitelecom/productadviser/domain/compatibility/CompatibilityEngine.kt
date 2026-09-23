@@ -121,6 +121,7 @@ class CompatibilityExplanationBuilder @Inject constructor() {
             CompatibilityStatus.MEETS_RECOMMENDED -> "Meets the stored recommended requirements. Expected to be suitable for the documented workload, subject to actual configuration and workload."
             CompatibilityStatus.MEETS_MINIMUM -> "Meets the stored minimum requirements${limited.take(3).takeIf { it.isNotEmpty() }?.joinToString(prefix = "; limitations may involve ") ?: ""}. It may experience limited performance on demanding workloads."
             CompatibilityStatus.BELOW_MINIMUM -> "One or more required components fall below the stored minimum requirements. This configuration is not recommended for this workload."
+            CompatibilityStatus.NOT_AVAILABLE -> "This application is not offered for the device's operating-system platform. This is a platform availability limitation, not a hardware-performance failure."
             CompatibilityStatus.NOT_VERIFIED -> {
                 val os = components.firstOrNull { it.component == "Operating system" }
                 if (os?.status == ComponentStatus.MEETS_MINIMUM || os?.status == ComponentStatus.MEETS_RECOMMENDED) {
@@ -139,6 +140,25 @@ class CompatibilityEngine @Inject constructor(
     private val explanationBuilder: CompatibilityExplanationBuilder
 ) {
     fun evaluate(product: ProductSpec, software: SoftwareSpec, requirements: List<RequirementSet>): CompatibilityResult {
+        val operatingSystem = product.operatingSystemForCompatibility()
+        if (!software.supportsOperatingSystem(operatingSystem)) {
+            val actualPlatform = platformLabel(operatingSystem)
+            return CompatibilityResult(
+                productId = product.id,
+                softwareId = software.id,
+                status = CompatibilityStatus.NOT_AVAILABLE,
+                components = listOf(
+                    ComponentCompatibilityResult(
+                        component = "Operating system",
+                        actual = operatingSystem ?: "Unknown",
+                        minimum = software.platform,
+                        status = ComponentStatus.NOT_AVAILABLE,
+                        explanation = "${software.name} is not available for $actualPlatform. Stored app platforms: ${software.platform}."
+                    )
+                ),
+                explanation = "${software.name} is not available for $actualPlatform. Choose an app built for this platform or a different device."
+            )
+        }
         val minimum = requirements.firstOrNull { it.type == RequirementType.MINIMUM }
         if (minimum == null) return unverified(product.id, software.id, "Minimum requirements are not stored.")
         val recommended = requirements.firstOrNull { it.type == RequirementType.RECOMMENDED }
@@ -189,7 +209,7 @@ private fun valueStatus(actual: Double?, min: Double?, rec: Double?): ComponentS
 }
 
 private fun worst(a: ComponentStatus, b: ComponentStatus): ComponentStatus {
-    val order = listOf(ComponentStatus.BELOW_MINIMUM, ComponentStatus.UNKNOWN, ComponentStatus.MEETS_MINIMUM, ComponentStatus.MEETS_RECOMMENDED, ComponentStatus.NOT_APPLICABLE)
+    val order = listOf(ComponentStatus.NOT_AVAILABLE, ComponentStatus.BELOW_MINIMUM, ComponentStatus.UNKNOWN, ComponentStatus.MEETS_MINIMUM, ComponentStatus.MEETS_RECOMMENDED, ComponentStatus.NOT_APPLICABLE)
     return if (order.indexOf(a) < order.indexOf(b)) a else b
 }
 
@@ -209,6 +229,7 @@ private fun explanationFor(status: ComponentStatus, noun: String) = when (status
     ComponentStatus.MEETS_RECOMMENDED -> "The stored $noun specification meets the recommended requirement."
     ComponentStatus.MEETS_MINIMUM -> "The stored $noun specification meets the minimum requirement but is below, or cannot establish, the recommended level."
     ComponentStatus.BELOW_MINIMUM -> "The stored $noun specification is below the minimum requirement."
+    ComponentStatus.NOT_AVAILABLE -> "This application is not available for the stored platform."
     ComponentStatus.UNKNOWN -> "Stored data is insufficient to evaluate $noun."
     ComponentStatus.NOT_APPLICABLE -> "No stored requirement for $noun."
 }

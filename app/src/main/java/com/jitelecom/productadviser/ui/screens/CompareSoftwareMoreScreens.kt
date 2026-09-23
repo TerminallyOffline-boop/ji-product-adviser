@@ -4,6 +4,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -22,35 +23,43 @@ import com.jitelecom.productadviser.ui.SoftwareViewModel
 @Composable
 fun CompareScreen(onProduct:(Long)->Unit,viewModel:CompareViewModel=hiltViewModel()){
     val products by viewModel.products.collectAsState();val selected by viewModel.selected.collectAsState();val chosen=products.filter{it.id in selected}
-    val software by viewModel.software.collectAsState();val softwareId by viewModel.selectedSoftware.collectAsState();val compatibility by viewModel.compatibility.collectAsState()
+    val software by viewModel.software.collectAsState();val softwareId by viewModel.selectedSoftware.collectAsState();val compatibility by viewModel.compatibility.collectAsState();val message by viewModel.message.collectAsState();var query by remember{mutableStateOf("")};var category by remember{mutableStateOf<ProductCategory?>(null)};var differencesOnly by remember{mutableStateOf(true)}
+    val categories=remember(products){products.map{it.category}.distinct().sortedBy{it.name}}
+    val filtered=remember(products,query,category){products.filter{(category==null||it.category==category)&&(query.isBlank()||it.displayName.contains(query,true)||it.sku.contains(query,true)||it.processor?.displayName?.contains(query,true)==true)}}
     Column(Modifier.fillMaxSize().padding(20.dp)){
         ScreenHeader("Compare Products","Select 2–4; differences are shown without a universal winner")
-        Spacer(Modifier.height(10.dp))
-        if(chosen.size<2) Text("Select ${2-chosen.size} more product${if(chosen.size==1)"" else "s"}.",style=MaterialTheme.typography.labelMedium) else Text("${chosen.size} products selected",style=MaterialTheme.typography.labelMedium)
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(8.dp));Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text(if(chosen.size<2)"Select ${2-chosen.size} more product${if(chosen.size==1)"" else "s"}." else "${chosen.size} products selected",Modifier.weight(1f),style=MaterialTheme.typography.labelMedium);if(chosen.isNotEmpty())TextButton(onClick=viewModel::clear){Text("Clear")}}
+        message?.let{Text(it,color=MaterialTheme.colorScheme.error,style=MaterialTheme.typography.bodySmall)}
         LazyColumn(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(8.dp)){
-            item{products.chunked(2).forEach{row->Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){row.forEach{p->FilterChip(selected=p.id in selected,onClick={viewModel.toggle(p.id)},label={Text(p.model)},modifier=Modifier.weight(1f))};if(row.size==1)Spacer(Modifier.weight(1f))}}}
-            if(chosen.size>=2)item{Selector("Compatibility for (optional)",software,software.firstOrNull{it.id==softwareId},{it.displayName}){viewModel.selectedSoftware.value=it.id}}
-            if(chosen.size>=2)item{ComparisonTable(chosen,compatibility,onProduct)}
+            item{OutlinedTextField(query,{query=it},label={Text("Search products")},leadingIcon={Icon(Icons.Default.Search,null)},trailingIcon={if(query.isNotBlank())IconButton(onClick={query=""}){Icon(Icons.Default.Clear,"Clear")}},singleLine=true,modifier=Modifier.fillMaxWidth())}
+            item{LazyRow(horizontalArrangement=Arrangement.spacedBy(7.dp)){item{FilterChip(selected=category==null,onClick={category=null},label={Text("All")})};items(categories){type->FilterChip(selected=category==type,onClick={category=type},label={Text(type.name.lowercase().replace('_',' ').replaceFirstChar(Char::uppercase))})}}}
+            items(filtered,key={it.id}){product->OutlinedCard(onClick={viewModel.toggle(product.id)}){Row(Modifier.fillMaxWidth().padding(12.dp),verticalAlignment=Alignment.CenterVertically){Checkbox(checked=product.id in selected,onCheckedChange={viewModel.toggle(product.id)});Column(Modifier.weight(1f)){Text(product.displayName,fontWeight=FontWeight.SemiBold);Text("${peso(product.effectivePrice)} • ${product.processor?.model?:"CPU unknown"}",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}}}}
+            if(chosen.size>=2)item{SearchableSelector("Compatibility for (optional)",software,software.firstOrNull{it.id==softwareId},{it.displayName}){viewModel.selectedSoftware.value=it.id}}
+            if(chosen.size>=2)item{Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text("Show differences only",Modifier.weight(1f));Switch(differencesOnly,{differencesOnly=it})}}
+            if(chosen.size>=2)item{ComparisonTable(chosen,compatibility,differencesOnly,onProduct)}
         }
     }
 }
 
 @Composable
-private fun ComparisonTable(products:List<ProductSpec>,compatibility:Map<Long,CompatibilityResult>,onProduct:(Long)->Unit){
+private fun ComparisonTable(products:List<ProductSpec>,compatibility:Map<Long,CompatibilityResult>,differencesOnly:Boolean,onProduct:(Long)->Unit){
+    val rows=listOf(
+        "Price" to products.map{peso(it.effectivePrice)},
+        "CPU" to products.map{it.processor?.displayName ?: "Unknown"},
+        "CPU tier" to products.map{it.processor?.performanceTier?.toString() ?: "Unknown"},
+        "GPU" to products.map{it.gpu?.displayName ?: "Unknown"},
+        "GPU tier" to products.map{it.gpu?.performanceTier?.toString() ?: "Unknown"},
+        "RAM" to products.map{it.ramGB?.let{"$it GB"} ?: "Unknown"},
+        "Storage" to products.map{it.storageGB?.let{"$it GB"} ?: "Unknown"},
+        "Display" to products.map{it.displaySize?.let{"$it in"} ?: "Unknown"},
+        "Weight" to products.map{it.weightKg?.let{"$it kg"} ?: "Unknown"},
+        "Battery" to products.map{it.batteryCapacityWh?.let{"$it Wh"} ?: "Unknown"}
+    ) + if(compatibility.isNotEmpty()) listOf("Software" to products.map{compatibility[it.id]?.status?.name?.replace('_',' ') ?: "Not checked"}) else emptyList()
+    val visibleRows=if(differencesOnly)rows.filter{(_,values)->values.distinct().size>1}else rows
     Column(Modifier.horizontalScroll(rememberScrollState())){
         CompareRow("",products.map{it.displayName},header=true)
-        CompareRow("Price",products.map{peso(it.effectivePrice)})
-        CompareRow("CPU",products.map{it.processor?.displayName ?: "Unknown"})
-        CompareRow("CPU tier",products.map{it.processor?.performanceTier?.toString() ?: "Unknown"})
-        CompareRow("GPU",products.map{it.gpu?.displayName ?: "Unknown"})
-        CompareRow("GPU tier",products.map{it.gpu?.performanceTier?.toString() ?: "Unknown"})
-        CompareRow("RAM",products.map{it.ramGB?.let{"$it GB"} ?: "Unknown"})
-        CompareRow("Storage",products.map{it.storageGB?.let{"$it GB"} ?: "Unknown"})
-        CompareRow("Display",products.map{it.displaySize?.let{"$it in"} ?: "Unknown"})
-        CompareRow("Weight",products.map{it.weightKg?.let{"$it kg"} ?: "Unknown"})
-        CompareRow("Battery",products.map{it.batteryCapacityWh?.let{"$it Wh"} ?: "Unknown"})
-        if(compatibility.isNotEmpty()) CompareRow("Software",products.map{compatibility[it.id]?.status?.name?.replace('_',' ') ?: "Not checked"})
+        visibleRows.forEach{(label,values)->CompareRow(label,values)}
+        if(visibleRows.isEmpty())Text("The selected products have no different stored values in these fields.",Modifier.padding(16.dp),style=MaterialTheme.typography.bodySmall)
         Spacer(Modifier.height(10.dp))
         Row { Spacer(Modifier.width(115.dp)); products.forEach { OutlinedButton(onClick={onProduct(it.id)},modifier=Modifier.width(190.dp).padding(horizontal=4.dp)){Text("View details")} } }
     }

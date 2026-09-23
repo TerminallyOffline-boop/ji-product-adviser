@@ -34,6 +34,7 @@ class SoftwareCompatibilityScorer @Inject constructor() {
                 CompatibilityStatus.MEETS_RECOMMENDED -> 1.0
                 CompatibilityStatus.MEETS_MINIMUM -> 0.65
                 CompatibilityStatus.NOT_VERIFIED -> 0.20
+                CompatibilityStatus.NOT_AVAILABLE -> 0.0
                 CompatibilityStatus.BELOW_MINIMUM -> 0.0
             }
         }.average()
@@ -43,10 +44,20 @@ class SoftwareCompatibilityScorer @Inject constructor() {
 @Singleton
 class PreferenceScorer @Inject constructor() {
     fun score(product: ProductSpec, request: CustomerRequest): Double {
-        var points = 0.5
-        if (request.preferredBrand != null && product.brand.equals(request.preferredBrand, true)) points += 0.35
-        if (request.priorities.any { it.equals("Portability", true) } && (product.weightKg ?: 99.0) <= 1.7) points += 0.15
-        if (request.priorities.any { it.equals("Battery", true) } && (product.batteryCapacityWh ?: 0.0) >= 50) points += 0.15
+        var points = 0.35
+        if (request.preferredBrand != null && product.brand.equals(request.preferredBrand, true)) points += 0.20
+        if (request.priorities.any { it.equals("Portability", true) } && (product.weightKg ?: 99.0) <= 1.7) points += 0.18
+        if (request.priorities.any { it.equals("Battery", true) } && (product.batteryCapacityWh ?: 0.0) >= 50) points += 0.18
+        if (request.priorities.any { it.equals("RAM / storage", true) } && (product.ramGB ?: 0) >= 16 && (product.storageGB ?: 0) >= 512) points += 0.18
+        if (request.priorities.any { it.equals("Performance", true) } && (product.processor?.performanceTier ?: 0) >= 5 && (product.gpu?.performanceTier ?: 0) >= 4) points += 0.18
+        val demandingProfile = request.profile?.lowercase()?.let { profile ->
+            listOf("architecture", "engineering", "programmer", "graphic", "video", "gamer", "content").any(profile::contains)
+        } == true
+        if (demandingProfile && (product.processor?.performanceTier ?: 0) >= 5 && (product.ramGB ?: 0) >= 16) points += 0.18
+        val everydayProfile = request.profile?.lowercase()?.let { profile ->
+            listOf("student", "teacher", "office", "business").any(profile::contains)
+        } == true
+        if (everydayProfile && (product.ramGB ?: 0) >= 8 && (product.storageGB ?: 0) >= 256) points += 0.12
         return points.coerceIn(0.0, 1.0)
     }
 }
@@ -80,6 +91,7 @@ class RecommendationExplanationBuilder @Inject constructor() {
         val limitations = buildList {
             if (results.any { it.status == CompatibilityStatus.MEETS_MINIMUM }) add("Some selected software only meets minimum requirements")
             if (results.any { it.status == CompatibilityStatus.BELOW_MINIMUM }) add("Below minimum for at least one selected application")
+            if (results.any { it.status == CompatibilityStatus.NOT_AVAILABLE }) add("At least one selected application is unavailable on this platform")
             if (results.any { it.status == CompatibilityStatus.NOT_VERIFIED }) add("Some compatibility data is not verified")
             if (product.verificationStatus != VerificationStatus.VERIFIED) add("Product specifications are not verified")
         }
@@ -106,10 +118,11 @@ class RecommendationEngine @Inject constructor(
         .filter { !it.archived && it.category == request.category && it.availabilityStatus != AvailabilityStatus.UNAVAILABLE }
         .filter { it.effectivePrice <= budget.maxAllowed(request) }
         .filter { request.preferredBrand.isNullOrBlank() || it.brand.equals(request.preferredBrand, true) }
-        .map { product ->
+        .mapNotNull { product ->
             val compatibility = request.softwareIds.mapNotNull { id ->
                 software[id]?.let { id to compatibilityEngine.evaluate(product, it, requirements[id].orEmpty()) }
             }.toMap()
+            if (compatibility.values.any { it.status == CompatibilityStatus.NOT_AVAILABLE || it.status == CompatibilityStatus.BELOW_MINIMUM }) return@mapNotNull null
             val score = scorer.score(product, request, compatibility.values, weights)
             val (strengths, limitations, explanation) = explanationBuilder.build(product, score, compatibility.values)
             RecommendationResult(product, score, compatibility, strengths, limitations, explanation)

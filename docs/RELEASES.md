@@ -4,13 +4,17 @@
 
 | Field | Value |
 |---|---|
-| App version | `1.0.4` |
-| Android version code | `5` |
-| Artifact | `JI-Product-Adviser-1.0.4-debug.apk` |
-| SHA-256 | `43ABE013C23EC798399114AB3BAC32A2DCF52D33601E2726C1F9304351419117` |
-| Signing | Android debug certificate |
+| App version | `1.1.0` |
+| Android version code | `6` |
+| Artifact | `JI-Product-Adviser-1.1.0-test.apk` |
+| Size | `4,953,628 bytes` |
+| SHA-256 | `D8B82D1D20ACB75FF0370FFD2B16F5673355A8A41258111F11A2FB891263FC6B` |
+| Signing | Android debug certificate; optimized/minified test build |
+| Upgrade compatibility | Certificate matches the `1.0.4` test APK |
 
-The APK is intentionally not committed to the source repository. Generated binaries are better attached to a GitHub Release or shared through an approved Drive folder. This keeps the repository small and avoids confusing source history with distributable builds.
+The APK is intentionally not committed to the source repository. Generated binaries are attached to GitHub Releases instead. This keeps source history small and separates reviewable code from distributable builds.
+
+The `1.1.0` artifact is optimized and much smaller than the earlier debug package, but it still uses a debug certificate. It is suitable for testing and internal distribution, not Play Store production publishing.
 
 ## Installing the test APK
 
@@ -25,6 +29,12 @@ An APK is the Android install file; there is no Windows `.exe` for this project.
 
 Before distribution, compare the file's SHA-256 checksum with the value recorded above. If it differs, do not install the file until its origin is confirmed.
 
+## Previous test build
+
+| App version | Artifact | SHA-256 |
+|---|---|---|
+| `1.0.4` | `JI-Product-Adviser-1.0.4-debug.apk` | `43ABE013C23EC798399114AB3BAC32A2DCF52D33601E2726C1F9304351419117` |
+
 ## Creating a production release
 
 1. Create or select a JI Telecom-owned Android signing keystore.
@@ -37,4 +47,4 @@ Before distribution, compare the file's SHA-256 checksum with the value recorded
 
 ## Release history
 
-See [`CHANGELOG.md`](../CHANGELOG.md) for the user-visible history from `1.0.1` through `1.0.4`.
+See [`CHANGELOG.md`](../CHANGELOG.md) for the user-visible history from `1.0.1` through `1.1.0`.

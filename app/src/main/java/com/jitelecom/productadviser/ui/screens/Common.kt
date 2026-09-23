@@ -3,6 +3,8 @@ package com.jitelecom.productadviser.ui.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -53,6 +55,7 @@ fun StatusBadge(status: CompatibilityStatus) {
         CompatibilityStatus.MEETS_RECOMMENDED -> "MEETS RECOMMENDED" to Color(0xFF167A47)
         CompatibilityStatus.MEETS_MINIMUM -> "MEETS MINIMUM" to Color(0xFFB36800)
         CompatibilityStatus.BELOW_MINIMUM -> "BELOW MINIMUM" to Color(0xFFB3261E)
+        CompatibilityStatus.NOT_AVAILABLE -> "NOT AVAILABLE" to Color(0xFF7A3E9D)
         CompatibilityStatus.NOT_VERIFIED -> "NOT VERIFIED" to Color(0xFF616675)
     }
     Surface(color=color.copy(alpha=.14f), contentColor=color, shape=RoundedCornerShape(50)) { Text(label, Modifier.padding(horizontal=12.dp,vertical=7.dp), style=MaterialTheme.typography.labelMedium, fontWeight=FontWeight.Bold) }
@@ -81,6 +84,41 @@ fun <T> Selector(label: String, items: List<T>, selected: T?, itemText: (T) -> S
         OutlinedTextField(value=selected?.let(itemText).orEmpty(), onValueChange={}, readOnly=true, label={Text(label)}, trailingIcon={ExposedDropdownMenuDefaults.TrailingIcon(expanded)}, modifier=Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth())
         ExposedDropdownMenu(expanded=expanded, onDismissRequest={expanded=false}) { items.forEach { item -> DropdownMenuItem(text={Text(itemText(item))}, onClick={onSelected(item);expanded=false}) } }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <T> OptionalSelector(label: String, items: List<T>, selected: T?, itemText: (T) -> String, modifier: Modifier = Modifier, noneText: String = "All", onSelected: (T?) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(expanded=expanded,onExpandedChange={expanded=it},modifier=modifier) {
+        OutlinedTextField(value=selected?.let(itemText) ?: noneText,onValueChange={},readOnly=true,label={Text(label)},trailingIcon={ExposedDropdownMenuDefaults.TrailingIcon(expanded)},modifier=Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth())
+        ExposedDropdownMenu(expanded=expanded,onDismissRequest={expanded=false}) {
+            DropdownMenuItem(text={Text(noneText)},onClick={onSelected(null);expanded=false})
+            items.forEach { item -> DropdownMenuItem(text={Text(itemText(item))},onClick={onSelected(item);expanded=false}) }
+        }
+    }
+}
+
+@Composable
+fun <T> SearchableSelector(label: String, items: List<T>, selected: T?, itemText: (T) -> String, modifier: Modifier = Modifier, onSelected: (T) -> Unit) {
+    var open by remember { mutableStateOf(false) }
+    var query by remember { mutableStateOf("") }
+    OutlinedCard(onClick={open=true},modifier=modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().padding(horizontal=16.dp,vertical=13.dp),verticalAlignment=Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)){Text(label,style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant);Text(selected?.let(itemText) ?: "Tap to choose",maxLines=1,overflow=TextOverflow.Ellipsis)}
+            Icon(Icons.Default.ArrowDropDown,null)
+        }
+    }
+    if(open) AlertDialog(
+        onDismissRequest={open=false;query=""},
+        title={Text(label)},
+        text={Column(verticalArrangement=Arrangement.spacedBy(10.dp)) {
+            OutlinedTextField(query,{query=it},singleLine=true,label={Text("Search")},leadingIcon={Icon(Icons.Default.Search,null)},modifier=Modifier.fillMaxWidth())
+            val filtered=remember(items,query){items.filter{itemText(it).contains(query,true)}}
+            if(filtered.isEmpty()) EmptyState(Icons.Default.SearchOff,"No matches","Try a shorter search.") else LazyColumn(Modifier.heightIn(max=430.dp),verticalArrangement=Arrangement.spacedBy(4.dp)){items(filtered){item->TextButton(onClick={onSelected(item);open=false;query=""},modifier=Modifier.fillMaxWidth()){Text(itemText(item),Modifier.fillMaxWidth())}}}
+        }},
+        confirmButton={},dismissButton={TextButton(onClick={open=false;query=""}){Text("Cancel")}}
+    )
 }
 
 @Composable

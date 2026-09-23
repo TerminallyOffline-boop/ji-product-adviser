@@ -16,6 +16,7 @@ import com.jitelecom.productadviser.domain.repository.*
 import com.jitelecom.productadviser.util.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,13 +28,18 @@ class AppViewModel @Inject constructor(preferences: AppPreferences, connectivity
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    products: ProductRepository, catalog: CatalogRepository, metadata: MetadataDao, analytics: AnalyticsDao
+    products: ProductRepository, catalog: CatalogRepository, metadata: MetadataDao, analytics: AnalyticsDao,
+    preferences: AppPreferences
 ) : ViewModel() {
     val products = products.observeProducts().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val software = catalog.observeSoftware().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val databaseVersion = metadata.observe("databaseVersion").stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
     val popular = analytics.observePopular(5).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
 }
+
+enum class ProductSort(val label: String) { NAME("Name"), PRICE_LOW("Lowest price"), PRICE_HIGH("Highest price"), PERFORMANCE("Performance") }
+private data class ProductFacets(val category: ProductCategory?, val brand: String?, val availableOnly: Boolean, val sort: ProductSort)
 
 @HiltViewModel
 @OptIn(kotlinx.coroutines.FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -45,16 +51,46 @@ class ProductsViewModel @Inject constructor(
     val query = MutableStateFlow(savedStateHandle.get<String>("query").orEmpty())
     val minimumPrice = MutableStateFlow("")
     val maximumPrice = MutableStateFlow("")
-    val products = combine(query.debounce(180), minimumPrice, maximumPrice) { text, min, max -> Triple(text, min.toDoubleOrNull(), max.toDoubleOrNull()) }
-        .flatMapLatest { (text, min, max) -> repository.observeProducts(text).map { rows -> rows.filter { (min == null || it.effectivePrice >= min) && (max == null || it.effectivePrice <= max) } } }
+    val category = MutableStateFlow<ProductCategory?>(null)
+    val brand = MutableStateFlow<String?>(null)
+    val availableOnly = MutableStateFlow(false)
+    val sort = MutableStateFlow(ProductSort.NAME)
+    private val catalogProducts = repository.observeProducts().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    val brands = catalogProducts.map { rows -> rows.map { it.brand }.distinct().sorted() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
-    fun setQuery(value: String) { query.value = value; if (value.length >= 3) viewModelScope.launch { analytics.increment("product_search", value.trim().lowercase()) } }
+    val categories = catalogProducts.map { rows -> rows.map { it.category }.distinct().sortedBy { it.name } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    private val priceRange = combine(minimumPrice, maximumPrice) { min, max -> min.toDoubleOrNull() to max.toDoubleOrNull() }
+    private val facets = combine(category, brand, availableOnly, sort, ::ProductFacets)
+    val products = combine(query.debounce(180), priceRange, facets) { text, prices, options -> Triple(text, prices, options) }
+        .flatMapLatest { (text, prices, options) -> repository.observeProducts(text).map { rows ->
+            rows.asSequence()
+                .filter { prices.first == null || it.effectivePrice >= prices.first!! }
+                .filter { prices.second == null || it.effectivePrice <= prices.second!! }
+                .filter { options.category == null || it.category == options.category }
+                .filter { options.brand == null || it.brand == options.brand }
+                .filter { !options.availableOnly || it.availabilityStatus in setOf(AvailabilityStatus.AVAILABLE, AvailabilityStatus.LIMITED, AvailabilityStatus.DISPLAY_UNIT) }
+                .let { sequence -> when (options.sort) {
+                    ProductSort.NAME -> sequence.sortedWith(compareBy<ProductSpec> { it.brand }.thenBy { it.model })
+                    ProductSort.PRICE_LOW -> sequence.sortedBy(ProductSpec::effectivePrice)
+                    ProductSort.PRICE_HIGH -> sequence.sortedByDescending(ProductSpec::effectivePrice)
+                    ProductSort.PERFORMANCE -> sequence.sortedWith(compareByDescending<ProductSpec> { it.processor?.performanceTier ?: 0 }.thenByDescending { it.gpu?.performanceTier ?: 0 }.thenBy { it.effectivePrice })
+                }}.toList()
+        }}
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    fun setQuery(value: String) { query.value = value }
+    fun submitSearch() { query.value.trim().takeIf { it.length >= 3 }?.let { value -> viewModelScope.launch { analytics.increment("product_search", value.lowercase()) } } }
+    fun resetFilters() { minimumPrice.value=""; maximumPrice.value=""; category.value=null; brand.value=null; availableOnly.value=false; sort.value=ProductSort.NAME }
 }
 
 @HiltViewModel
-class ProductDetailViewModel @Inject constructor(savedState: SavedStateHandle, repository: ProductRepository) : ViewModel() {
+class ProductDetailViewModel @Inject constructor(savedState: SavedStateHandle, repository: ProductRepository, private val preferences: AppPreferences) : ViewModel() {
     private val id = checkNotNull(savedState.get<String>("id")).toLong()
-    val product = flow { emit(repository.getProduct(id)) }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+    private val _product = MutableStateFlow<ProductSpec?>(null); val product = _product.asStateFlow()
+    private val _loading = MutableStateFlow(true); val loading = _loading.asStateFlow()
+    val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
+    init { viewModelScope.launch { _product.value=repository.getProduct(id); preferences.recordViewed(id); _loading.value=false } }
+    fun toggleFavorite() = viewModelScope.launch { preferences.toggleFavorite(id) }
 }
 
 @HiltViewModel
@@ -68,11 +104,16 @@ class CompatibilityViewModel @Inject constructor(
     val software = catalog.observeSoftware().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val selectedProduct = MutableStateFlow<Long?>(null)
     val selectedSoftware = MutableStateFlow<Long?>(null)
+    val showUnavailableApps = MutableStateFlow(false)
     private val _result = MutableStateFlow<CompatibilityResult?>(null); val result = _result.asStateFlow()
-    val compatibleSoftware = combine(software, this.products, selectedProduct) { apps, allProducts, productId ->
+    val compatibleSoftware = combine(software, this.products, selectedProduct, showUnavailableApps) { apps, allProducts, productId, showUnavailable ->
         val product = allProducts.firstOrNull { it.id == productId }
-        if (product == null) apps else apps.filter { it.supportsOperatingSystem(product.operatingSystemForCompatibility()) }
+        if (product == null || showUnavailable) apps else apps.filter { it.supportsOperatingSystem(product.operatingSystemForCompatibility()) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val availableSoftwareCount = combine(software, this.products, selectedProduct) { apps, allProducts, productId ->
+        val product = allProducts.firstOrNull { it.id == productId }
+        if (product == null) apps.size else apps.count { it.supportsOperatingSystem(product.operatingSystemForCompatibility()) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
     private val repository = catalog
 
     fun selectProduct(id: Long) {
@@ -89,6 +130,15 @@ class CompatibilityViewModel @Inject constructor(
         selectedSoftware.value = id
         _result.value = null
     }
+    fun setShowUnavailable(value: Boolean) {
+        showUnavailableApps.value = value
+        if (!value) {
+            val product = products.value.firstOrNull { it.id == selectedProduct.value }
+            val app = software.value.firstOrNull { it.id == selectedSoftware.value }
+            if (product != null && app != null && !app.supportsOperatingSystem(product.operatingSystemForCompatibility())) selectedSoftware.value = null
+        }
+        _result.value = null
+    }
 
     fun evaluate() = viewModelScope.launch {
         val product = products.value.firstOrNull { it.id == selectedProduct.value } ?: return@launch
@@ -103,7 +153,8 @@ class RecommendationViewModel @Inject constructor(
     private val productRepository: ProductRepository,
     catalog: CatalogRepository,
     private val engine: RecommendationEngine,
-    private val analytics: AnalyticsDao
+    private val analytics: AnalyticsDao,
+    preferences: AppPreferences
 ) : ViewModel() {
     val products = productRepository.observeProducts().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val software = catalog.observeSoftware().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -117,9 +168,16 @@ class RecommendationViewModel @Inject constructor(
     val priorities = MutableStateFlow<Set<String>>(setOf("Performance"))
     val brand = MutableStateFlow("")
     val aboveBudget = MutableStateFlow(false)
+    val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.Eagerly, AppSettings())
     private val _results = MutableStateFlow<List<RecommendationResult>>(emptyList()); val results = _results.asStateFlow()
     private val _message = MutableStateFlow<String?>(null); val message = _message.asStateFlow()
     private val repository = catalog
+    init {
+        merge(
+            budget.drop(1).map { Unit }, profile.drop(1).map { Unit }, category.drop(1).map { Unit },
+            selectedSoftware.drop(1).map { Unit }, priorities.drop(1).map { Unit }, brand.drop(1).map { Unit }, aboveBudget.drop(1).map { Unit }
+        ).onEach { _results.value=emptyList(); _message.value=null }.launchIn(viewModelScope)
+    }
     fun toggleSoftware(id: Long) { selectedSoftware.update { if (id in it) it - id else it + id } }
     fun setCategory(value: ProductCategory) {
         category.value = value
@@ -142,7 +200,10 @@ class RecommendationViewModel @Inject constructor(
         val selectedApps = selectedSoftware.value intersect software.value.filter { it.appliesTo(category.value) }.map { it.id }.toSet()
         val requirements = selectedApps.associateWith { repository.getRequirements(it) }
         val availableSoftware = repository.getSoftware().associateBy { it.id }
-        val request = CustomerRequest(profile.value, category.value, amount, selectedApps, priorities.value, brand.value.trim().takeIf(String::isNotBlank), aboveBudget.value)
+        val request = CustomerRequest(
+            profile.value, category.value, amount, selectedApps, priorities.value,
+            brand.value.trim().takeIf(String::isNotBlank), aboveBudget.value, settings.value.allowAboveBudgetPercent
+        )
         _results.value = engine.recommend(request, availableProducts, availableSoftware, requirements)
         _message.value = if (_results.value.isEmpty()) {
             "No ${category.value.name.lowercase()} matches were found within this budget and brand filter."
@@ -162,6 +223,10 @@ class RecommendationViewModel @Inject constructor(
             val allowed = software.value.filter { it.appliesTo(category.value) }.map { it.id }.toSet()
             selectedSoftware.value = parsed.softwareIds intersect allowed
         }
+    }
+    fun reset() {
+        budget.value="35000"; profile.value="Architecture Student"; category.value=ProductCategory.LAPTOP
+        selectedSoftware.value=emptySet(); priorities.value=setOf("Performance"); brand.value=""; aboveBudget.value=false
     }
 
     private fun SoftwareSpec.appliesTo(category: ProductCategory): Boolean {
@@ -185,12 +250,26 @@ class CompareViewModel @Inject constructor(
     val software = catalog.observeSoftware().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val selected = MutableStateFlow<List<Long>>(emptyList())
     val selectedSoftware = MutableStateFlow<Long?>(null)
+    private val _message = MutableStateFlow<String?>(null); val message = _message.asStateFlow()
     val compatibility = combine(this.products, selected, selectedSoftware) { all, ids, softwareId -> Triple(all.filter { it.id in ids }, softwareId, software.value.firstOrNull { it.id == softwareId }) }
         .flatMapLatest { (chosen, softwareId, app) -> flow {
             if (softwareId == null || app == null) emit(emptyMap())
             else { val requirements=catalog.getRequirements(softwareId); emit(chosen.associate { it.id to engine.evaluate(it, app, requirements) }) }
         }}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
-    fun toggle(id: Long) { selected.update { current -> if (id in current) current - id else if (current.size < 4) current + id else current } }
+    fun toggle(id: Long) {
+        val candidate = products.value.firstOrNull { it.id == id } ?: return
+        selected.update { current ->
+            when {
+                id in current -> { _message.value=null; current-id }
+                current.size >= 4 -> { _message.value="Compare supports up to four products."; current }
+                current.mapNotNull { chosenId -> products.value.firstOrNull { it.id==chosenId } }.any { it.category != candidate.category } -> {
+                    _message.value="Choose products from the same category for a useful comparison."; current
+                }
+                else -> { _message.value=null; current+id }
+            }
+        }
+    }
+    fun clear() { selected.value=emptyList(); selectedSoftware.value=null; _message.value=null }
 }
 
 @HiltViewModel
@@ -198,7 +277,13 @@ class SoftwareViewModel @Inject constructor(catalog: CatalogRepository) : ViewMo
     val software = catalog.observeSoftware().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 }
 
-data class AdminUiState(val unlocked: Boolean = false, val message: String? = null, val preview: ImportPreview? = null)
+data class AdminUiState(
+    val unlocked: Boolean = false,
+    val message: String? = null,
+    val preview: ImportPreview? = null,
+    val isBusy: Boolean = false,
+    val undoArchiveId: Long? = null
+)
 
 @HiltViewModel
 class AdminViewModel @Inject constructor(
@@ -209,6 +294,7 @@ class AdminViewModel @Inject constructor(
     private val hardwareDao: HardwareDao,
     private val softwareDao: SoftwareDao,
     private val requirementDao: RequirementDao,
+    private val analytics: AnalyticsDao,
     private val workManager: WorkManager
 ) : ViewModel() {
     private val _state = MutableStateFlow(AdminUiState()); val state = _state.asStateFlow()
@@ -216,22 +302,49 @@ class AdminViewModel @Inject constructor(
     val processors = hardwareDao.observeProcessors().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val gpus = hardwareDao.observeGpus().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val software = softwareDao.observeAll().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
     private var pending: Pair<ByteArray, String>? = null
     private var pendingIsCsv = false
-    fun unlock(pin: String) = viewModelScope.launch { val valid=preferences.verifyAdminPin(pin); _state.update { it.copy(unlocked = valid, message = if (valid) null else "Incorrect PIN") } }
+    private var failedPinAttempts=0
+    private var pinLockedUntil=0L
+    fun unlock(pin: String) = viewModelScope.launch {
+        val now=System.currentTimeMillis()
+        if(now<pinLockedUntil){message("Too many attempts. Try again in ${((pinLockedUntil-now)/1000).coerceAtLeast(1)} seconds.");return@launch}
+        val valid=preferences.verifyAdminPin(pin)
+        if(valid){failedPinAttempts=0;_state.update{it.copy(unlocked=true,message=null)}}else{
+            failedPinAttempts++
+            if(failedPinAttempts>=5){pinLockedUntil=now+30_000;failedPinAttempts=0;message("Too many attempts. Admin is locked for 30 seconds.")}else message("Incorrect PIN. ${5-failedPinAttempts} attempts remaining.")
+        }
+    }
+    fun configurePin(pin: String) = viewModelScope.launch { runCatching { preferences.setAdminPin(pin) }.onSuccess { _state.update { it.copy(unlocked=true,message="Admin PIN configured.") } }.onFailure { message(it.message ?: "PIN must contain at least four digits.") } }
     fun lock() { _state.value = AdminUiState() }
     fun setPin(pin: String) = viewModelScope.launch { runCatching { preferences.setAdminPin(pin) }.onSuccess { message("PIN updated.") }.onFailure { message(it.message ?: "Invalid PIN") } }
-    fun previewImport(bytes: ByteArray, name: String) {
+    fun previewImport(bytes: ByteArray, name: String) = viewModelScope.launch(Dispatchers.Default) {
+        _state.update { it.copy(isBusy=true,message="Validating import…") }
         pending = bytes to name
         pendingIsCsv = name.endsWith(".csv", true)
         val preview = if (pendingIsCsv) importExport.previewProductCsv(bytes.toString(Charsets.UTF_8), processors.value.map { it.id }.toSet(), gpus.value.map { it.id }.toSet()).second else importExport.preview(bytes, name).second
-        _state.update { it.copy(preview = preview, message = null) }
+        _state.update { it.copy(preview=preview,message=if(preview.canImport)"Import is ready for review." else "Import has validation errors.",isBusy=false) }
     }
-    fun commitImport() = viewModelScope.launch { val (bytes, name)=pending ?: return@launch; val result=if(pendingIsCsv) importExport.importProductCsv(bytes) else importExport.importPackage(bytes,name); _state.update { it.copy(message=result.message,preview=result.preview) } }
+    fun commitImport() = viewModelScope.launch { val (bytes, name)=pending ?: return@launch; _state.update { it.copy(isBusy=true,message="Importing database…") }; val result=if(pendingIsCsv) importExport.importProductCsv(bytes) else importExport.importPackage(bytes,name); _state.update { it.copy(message=result.message,preview=result.preview,isBusy=false) } }
     suspend fun exportBytes() = importExport.exportJson()
-    fun checkUpdate() { workManager.enqueue(OneTimeWorkRequestBuilder<RemoteUpdateWorker>().setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()).build()); message("Update check queued.") }
+    fun checkUpdate() {
+        val request = OneTimeWorkRequestBuilder<RemoteUpdateWorker>().setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()).build()
+        workManager.enqueueUniqueWork("remote_database_update", ExistingWorkPolicy.REPLACE, request)
+        message("Checking for a database update…")
+        viewModelScope.launch {
+            val info = workManager.getWorkInfoByIdFlow(request.id).filterNotNull().filter { it.state.isFinished }.first()
+            message(info.outputData.getString("message") ?: when(info.state){
+                WorkInfo.State.SUCCEEDED -> "Database update check completed."
+                WorkInfo.State.CANCELLED -> "Database update check was cancelled."
+                else -> "Database update failed. Check the manifest URL and connection."
+            })
+        }
+    }
     fun saveProduct(product: ProductSpec) = viewModelScope.launch { runCatching { products.saveProduct(product) }.onSuccess { message("Product saved.") }.onFailure { message(it.message ?: "Could not save product.") } }
-    fun archiveProduct(id: Long) = viewModelScope.launch { products.archiveProduct(id); message("Product archived.") }
+    fun archiveProduct(id: Long) = viewModelScope.launch { products.archiveProduct(id); _state.update { it.copy(message="Product archived. You can undo this action.",undoArchiveId=id) } }
+    fun restoreArchived() = viewModelScope.launch { val id=_state.value.undoArchiveId ?: return@launch; productDao.setArchived(id,false); _state.update { it.copy(message="Product restored.",undoArchiveId=null) } }
+    fun clearLocalHistory() = viewModelScope.launch { analytics.deleteAll();preferences.clearProductHistory();message("Local searches, favorites, recent products and usage counters were cleared.") }
     fun saveProcessor(value: ProcessorEntity) = viewModelScope.launch { if(value.id==0L) hardwareDao.insertProcessor(value) else hardwareDao.updateProcessor(value); message("Processor saved.") }
     fun saveGpu(value: GpuEntity) = viewModelScope.launch { if(value.id==0L) hardwareDao.insertGpu(value) else hardwareDao.updateGpu(value); message("GPU saved.") }
     fun saveSoftware(value: SoftwareEntity) = viewModelScope.launch { if(value.id==0L) softwareDao.insert(value) else softwareDao.update(value); message("Software saved.") }
@@ -242,7 +355,8 @@ class AdminViewModel @Inject constructor(
 @HiltViewModel
 class SettingsViewModel @Inject constructor(private val preferences: AppPreferences) : ViewModel() {
     val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
+    private val _message=MutableStateFlow<String?>(null);val message=_message.asStateFlow()
     fun dark(value: Boolean) = viewModelScope.launch { preferences.setDarkMode(value) }
-    fun remoteUrl(value: String) = viewModelScope.launch { preferences.setRemoteUrl(value) }
+    fun remoteUrl(value: String) = viewModelScope.launch { runCatching{preferences.setRemoteUrl(value)}.onSuccess{_message.value="Remote manifest saved."}.onFailure{_message.value=it.message?:"Invalid manifest URL."} }
     fun aboveBudget(value: Int) = viewModelScope.launch { preferences.setAboveBudgetPercent(value) }
 }

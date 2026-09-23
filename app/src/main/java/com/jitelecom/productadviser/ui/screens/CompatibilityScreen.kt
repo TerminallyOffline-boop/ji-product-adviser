@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Rule
+import androidx.compose.material.icons.automirrored.filled.FactCheck
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -31,6 +33,8 @@ fun CompatibilityScreen(initialProductId: Long? = null, viewModel: Compatibility
     val productId by viewModel.selectedProduct.collectAsState()
     val softwareId by viewModel.selectedSoftware.collectAsState()
     val result by viewModel.result.collectAsState()
+    val showUnavailable by viewModel.showUnavailableApps.collectAsState()
+    val availableCount by viewModel.availableSoftwareCount.collectAsState()
     val selectedProduct = products.firstOrNull { it.id == productId }
     val selectedApp = software.firstOrNull { it.id == softwareId }
 
@@ -64,10 +68,11 @@ fun CompatibilityScreen(initialProductId: Long? = null, viewModel: Compatibility
                         item {
                             SetupPanel(
                                 products, compatibleSoftware, selectedProduct, selectedApp,
-                                viewModel::selectProduct, viewModel::selectSoftware, viewModel::evaluate
+                                viewModel::selectProduct, viewModel::selectSoftware, viewModel::evaluate,
+                                showUnavailable, viewModel::setShowUnavailable, availableCount, software.size
                             )
                         }
-                        item { PlatformNotice(selectedProduct, compatibleSoftware.size) }
+                        item { PlatformNotice(selectedProduct, availableCount, software.size, showUnavailable) }
                         item { Spacer(Modifier.height(8.dp)) }
                     }
                     ResultsColumn(result, selectedProduct, selectedApp, true, Modifier.weight(1f).fillMaxHeight())
@@ -81,10 +86,11 @@ fun CompatibilityScreen(initialProductId: Long? = null, viewModel: Compatibility
                     item {
                         SetupPanel(
                             products, compatibleSoftware, selectedProduct, selectedApp,
-                            viewModel::selectProduct, viewModel::selectSoftware, viewModel::evaluate
+                            viewModel::selectProduct, viewModel::selectSoftware, viewModel::evaluate,
+                            showUnavailable, viewModel::setShowUnavailable, availableCount, software.size
                         )
                     }
-                    item { PlatformNotice(selectedProduct, compatibleSoftware.size) }
+                    item { PlatformNotice(selectedProduct, availableCount, software.size, showUnavailable) }
                     if (result == null) {
                         item { EmptyResultsCard() }
                     } else {
@@ -112,7 +118,7 @@ private fun CompatibilityHero(operatingSystem: String?, wide: Boolean) {
                 modifier = Modifier.size(if (wide) 58.dp else 48.dp),
                 shape = RoundedCornerShape(18.dp),
                 color = Color.White.copy(alpha = .14f)
-            ) { Box(contentAlignment = Alignment.Center) { Icon(Icons.Default.FactCheck, null, tint = Color.White, modifier = Modifier.size(30.dp)) } }
+            ) { Box(contentAlignment = Alignment.Center) { Icon(Icons.AutoMirrored.Filled.FactCheck, null, tint = Color.White, modifier = Modifier.size(30.dp)) } }
             Spacer(Modifier.width(16.dp))
             Column(Modifier.weight(1f)) {
                 Text("Can It Run?", color = Color.White, style = if (wide) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
@@ -139,23 +145,28 @@ private fun SetupPanel(
     selectedApp: SoftwareSpec?,
     onProduct: (Long) -> Unit,
     onSoftware: (Long) -> Unit,
-    onEvaluate: () -> Unit
+    onEvaluate: () -> Unit,
+    showUnavailable: Boolean,
+    onShowUnavailable: (Boolean) -> Unit,
+    availableCount: Int,
+    totalSoftware: Int
 ) {
     ElevatedCard(shape = RoundedCornerShape(22.dp)) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text("Set up your check", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             StepLabel(1, "Choose a device")
-            Selector("Device", products, selectedProduct, { it.displayName }, onSelected = { onProduct(it.id) })
+            SearchableSelector("Device", products, selectedProduct, { "${it.displayName} • ${peso(it.effectivePrice)}" }, onSelected = { onProduct(it.id) })
             selectedProduct?.let { DeviceSnapshot(it) }
 
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = .65f))
             StepLabel(2, "Choose an app")
+            if (selectedProduct != null) Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Show unavailable apps",fontWeight=FontWeight.SemiBold,style=MaterialTheme.typography.bodyMedium);Text("$availableCount of $totalSoftware apps match this platform",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)};Switch(showUnavailable,onShowUnavailable)}
             if (selectedProduct == null) {
                 Text("Select a device first so the app list can match its operating system.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else if (compatibleSoftware.isEmpty()) {
                 NoticeCard("No platform-matched apps are stored for this device yet.", warning = true)
             } else {
-                Selector("App or game", compatibleSoftware, selectedApp, { it.displayName }, onSelected = { onSoftware(it.id) })
+                SearchableSelector("App or game", compatibleSoftware, selectedApp, { app -> if(app.supportsOperatingSystem(selectedProduct.operatingSystemForCompatibility())) app.displayName else "${app.displayName} • Not available" }, onSelected = { onSoftware(it.id) })
                 selectedApp?.let { SoftwareSnapshot(it) }
             }
 
@@ -216,10 +227,11 @@ private fun SoftwareSnapshot(app: SoftwareSpec) {
 }
 
 @Composable
-private fun PlatformNotice(product: ProductSpec?, appCount: Int) {
+private fun PlatformNotice(product: ProductSpec?, availableCount: Int, totalCount: Int, showUnavailable: Boolean) {
     val text = when {
         product == null -> "The catalog separates desktop and mobile apps. Pick a device to filter the list."
-        else -> "Showing $appCount app${if (appCount == 1) "" else "s"} available for ${platformLabel(product.operatingSystemForCompatibility())}. Windows-only software is hidden on Mac, Android, iPhone and iPad."
+        showUnavailable -> "Showing all $totalCount apps. The $availableCount apps made for ${platformLabel(product.operatingSystemForCompatibility())} can be checked normally; unavailable apps receive a separate Not Available result."
+        else -> "Showing $availableCount app${if (availableCount == 1) "" else "s"} available for ${platformLabel(product.operatingSystemForCompatibility())}. Enable Show unavailable apps to explain why another app cannot run on this platform."
     }
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .55f)),
@@ -356,13 +368,15 @@ private fun statusIcon(status: CompatibilityStatus): ImageVector = when (status)
     CompatibilityStatus.MEETS_RECOMMENDED -> Icons.Default.CheckCircle
     CompatibilityStatus.MEETS_MINIMUM -> Icons.Default.Verified
     CompatibilityStatus.BELOW_MINIMUM -> Icons.Default.Error
-    CompatibilityStatus.NOT_VERIFIED -> Icons.Default.Help
+    CompatibilityStatus.NOT_AVAILABLE -> Icons.Default.Block
+    CompatibilityStatus.NOT_VERIFIED -> Icons.AutoMirrored.Filled.Help
 }
 
 private fun componentStatusLabel(status: ComponentStatus): String = when (status) {
     ComponentStatus.MEETS_RECOMMENDED -> "MEETS RECOMMENDED"
     ComponentStatus.MEETS_MINIMUM -> "MEETS MINIMUM"
     ComponentStatus.BELOW_MINIMUM -> "BELOW MINIMUM"
+    ComponentStatus.NOT_AVAILABLE -> "NOT AVAILABLE"
     ComponentStatus.UNKNOWN -> "NEEDS INFORMATION"
     ComponentStatus.NOT_APPLICABLE -> "NOT REQUIRED"
 }
@@ -371,6 +385,7 @@ private fun componentStatusColor(status: ComponentStatus) = when (status) {
     ComponentStatus.MEETS_RECOMMENDED -> Color(0xFF11845B)
     ComponentStatus.MEETS_MINIMUM -> Color(0xFFB26800)
     ComponentStatus.BELOW_MINIMUM -> Color(0xFFBA2D2D)
+    ComponentStatus.NOT_AVAILABLE -> Color(0xFF7A3E9D)
     else -> Color(0xFF5E6472)
 }
 
@@ -378,5 +393,6 @@ private fun statusColor(status: CompatibilityStatus) = when (status) {
     CompatibilityStatus.MEETS_RECOMMENDED -> Color(0xFF11845B)
     CompatibilityStatus.MEETS_MINIMUM -> Color(0xFFB26800)
     CompatibilityStatus.BELOW_MINIMUM -> Color(0xFFBA2D2D)
+    CompatibilityStatus.NOT_AVAILABLE -> Color(0xFF7A3E9D)
     CompatibilityStatus.NOT_VERIFIED -> Color(0xFF5E6472)
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
-    <cloud-backup><exclude domain="sharedpref" path="admin_preferences.xml" /></cloud-backup>
-    <device-transfer><exclude domain="sharedpref" path="admin_preferences.xml" /></device-transfer>
+    <cloud-backup><exclude domain="file" path="datastore/app_preferences.preferences_pb" /></cloud-backup>
+    <device-transfer><exclude domain="file" path="datastore/app_preferences.preferences_pb" /></device-transfer>
 </data-extraction-rules>

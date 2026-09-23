@@ -19,7 +19,7 @@ class CompatibilityEngineTest {
     @Test fun ramBelowMinimum(){assertThat(engine.evaluate(product(ram=4),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.BELOW_MINIMUM)}
     @Test fun cpuBelowMinimum(){assertThat(engine.evaluate(product(cpuValue=cpu.copy(performanceTier=2)),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.BELOW_MINIMUM)}
     @Test fun gpuBelowMinimum(){assertThat(engine.evaluate(product(gpuValue=gpu.copy(performanceTier=2)),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.BELOW_MINIMUM)}
-    @Test fun unsupportedOperatingSystem(){assertThat(engine.evaluate(product(os="Linux"),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.BELOW_MINIMUM)}
+    @Test fun unsupportedOperatingSystem(){assertThat(engine.evaluate(product(os="Linux"),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_AVAILABLE)}
     @Test fun unknownCpu(){assertThat(engine.evaluate(product(cpuValue=null),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
     @Test fun unknownGpu(){assertThat(engine.evaluate(product(gpuValue=null),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
     @Test fun missingRequirementData(){assertThat(engine.evaluate(product(),software,emptyList()).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
@@ -36,8 +36,9 @@ class CompatibilityEngineTest {
 
     @Test fun windowsOnlyAppIsUnavailableOnMac(){
         val result=engine.evaluate(product(os="macOS"),software.copy(platform="Windows"),listOf(min(),rec()))
-        assertThat(result.status).isEqualTo(CompatibilityStatus.BELOW_MINIMUM)
+        assertThat(result.status).isEqualTo(CompatibilityStatus.NOT_AVAILABLE)
         assertThat(result.components.first{it.component=="Operating system"}.explanation).contains("not available for macOS")
+        assertThat(result.components.first{it.component=="Operating system"}.status).isEqualTo(ComponentStatus.NOT_AVAILABLE)
     }
 
     @Test fun androidIsInferredForNonApplePhone(){
