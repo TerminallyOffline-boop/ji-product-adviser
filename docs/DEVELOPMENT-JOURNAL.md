@@ -72,15 +72,25 @@ This separates “the hardware is too weak” from “this application is not of
 - Reduced local privacy exposure by recording only submitted searches and excluding DataStore preferences from Android backup.
 - Expanded regression coverage and automated GitHub verification before release.
 
+### Phase 7 — Compatibility confidence and admin resilience
+
+- Separated the calculated compatibility verdict from the reliability of its source data.
+- Preserved `NOT_VERIFIED` for missing decisive facts while allowing complete unverified records to show their calculated minimum/recommended result with a confidence warning.
+- Applied confidence penalties during recommendation scoring so uncertain records do not outrank equivalent verified records.
+- Distinguished iPhone and iPad platforms, stopped assuming unknown laptops run Windows, and normalized common CPU architecture aliases.
+- Added editable and removable hardware/software records and protected Admin from duplicate-entry and file-operation crashes.
+- Restricted remote catalog delivery to bounded HTTPS downloads.
+- Added explicit catalog corrections only where the source names the capacity, leaving genuinely unknown specifications unset.
+
 ## Key design decisions
 
 ### Deterministic rules instead of generated answers
 
 The app does not ask an AI service to invent specifications or decide compatibility. Stored evidence and explicit rules produce the result. A future natural-language parser may populate a customer request, but it must not override the local engines.
 
-### Conservative unknown handling
+### Conservative unknown handling with separate confidence
 
-Missing or unverified information produces `NOT_VERIFIED`; it never becomes a pass. This is important when advising a customer about a purchase.
+Missing decisive information produces `NOT_VERIFIED`; it never becomes a pass. Source verification is a separate dimension: a complete unverified record retains its calculated result but carries a prominent confidence warning and a recommendation-score penalty. Confirmed minimum failures still override confidence and produce `BELOW_MINIMUM`.
 
 ### Transparent recommendation scoring
 

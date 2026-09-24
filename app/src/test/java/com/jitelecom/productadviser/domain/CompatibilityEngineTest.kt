@@ -24,7 +24,23 @@ class CompatibilityEngineTest {
     @Test fun unknownGpu(){assertThat(engine.evaluate(product(gpuValue=null),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
     @Test fun missingRequirementData(){assertThat(engine.evaluate(product(),software,emptyList()).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
     @Test fun missingProductData(){assertThat(engine.evaluate(product(ram=null),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
-    @Test fun notVerified(){assertThat(engine.evaluate(product(verified=VerificationStatus.UNVERIFIED),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
+    @Test fun unverifiedSourceKeepsTheCompatibilityVerdictSeparate(){
+        val result=engine.evaluate(product(verified=VerificationStatus.UNVERIFIED),software,listOf(min(),rec()))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_RECOMMENDED)
+        assertThat(result.dataStatus).isEqualTo(VerificationStatus.UNVERIFIED)
+    }
+
+    @Test fun fullyVerifiedResultReportsVerifiedData(){
+        val result=engine.evaluate(product(),software,listOf(min(),rec()))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_RECOMMENDED)
+        assertThat(result.dataStatus).isEqualTo(VerificationStatus.VERIFIED)
+    }
+
+    @Test fun missingComponentStillCannotClaimCompatibility(){
+        val result=engine.evaluate(product(ram=null),software,listOf(min(),rec()))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)
+        assertThat(result.dataStatus).isEqualTo(VerificationStatus.NEEDS_REVIEW)
+    }
 
     @Test fun macOsMatchesCrossPlatformDesktopApp(){
         val macMinimum=min().copy(requiredArchitecture=null,supportedOperatingSystems=setOf("Windows 11","macOS"))
@@ -57,5 +73,51 @@ class CompatibilityEngineTest {
         assertThat(desktop.supportsOperatingSystem("Android 16")).isFalse()
         assertThat(mobile.supportsOperatingSystem("iPadOS")).isTrue()
         assertThat(mobile.supportsOperatingSystem("Windows 11")).isFalse()
+    }
+
+    @Test fun acceptedProcessorListIsEnforcedWithoutTier(){
+        val requirement=min().copy(minimumCpuTier=null,acceptedProcessorIds=setOf(99))
+        val result=engine.evaluate(product(),software,listOf(requirement))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.BELOW_MINIMUM)
+        assertThat(result.components.first{it.component=="CPU"}.explanation).contains("not in")
+    }
+
+    @Test fun acceptedGpuListIsEnforcedWithoutTier(){
+        val requirement=min().copy(minimumGpuTier=null,minimumVramGB=null,acceptedGpuIds=setOf(99))
+        val result=engine.evaluate(product(),software,listOf(requirement))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.BELOW_MINIMUM)
+        assertThat(result.components.first{it.component=="GPU"}.explanation).contains("not in")
+    }
+
+    @Test fun architectureAliasesAndAlternativesMatch(){
+        assertThat(architectureMatches("x86_64","x64")).isTrue()
+        assertThat(architectureMatches("arm64","x64 or arm64")).isTrue()
+        assertThat(architectureMatches("arm64","x64")).isFalse()
+    }
+
+    @Test fun missingRequiredFeatureDataIsUnknownNotFailure(){
+        val requirement=min().copy(requiredArchitecture=null,requiredFeatures=setOf("AVX2"))
+        val result=engine.evaluate(product(),software,listOf(requirement))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)
+        assertThat(result.components.first{it.component=="Required features"}.status).isEqualTo(ComponentStatus.UNKNOWN)
+    }
+
+    @Test fun unknownAppPlatformIsNotTreatedAsUniversal(){
+        val result=engine.evaluate(product(),software.copy(platform="Desktop edition"),listOf(min(),rec()))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)
+        assertThat(software.copy(platform="Desktop edition").supportsOperatingSystem("Windows 11")).isFalse()
+    }
+
+    @Test fun iphoneAndIpadPlatformsStaySeparate(){
+        assertThat(software.copy(platform="iOS").supportsOperatingSystem("iPhone iOS 26")).isTrue()
+        assertThat(software.copy(platform="iOS").supportsOperatingSystem("iPadOS 26")).isFalse()
+        assertThat(software.copy(platform="iPadOS").supportsOperatingSystem("iPadOS 26")).isTrue()
+        assertThat(software.copy(platform="iPadOS").supportsOperatingSystem("iOS 26")).isFalse()
+    }
+
+    @Test fun unknownLaptopOsIsNotAssumedToBeWindows(){
+        val laptop=product(os=null).copy(brand="Generic",model="Notebook")
+        assertThat(laptop.operatingSystemForCompatibility()).isNull()
+        assertThat(engine.evaluate(laptop,software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)
     }
 }

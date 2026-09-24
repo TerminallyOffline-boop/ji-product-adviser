@@ -15,6 +15,8 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.first
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okio.Buffer
 import retrofit2.http.GET
 import retrofit2.http.Url
 
@@ -50,8 +52,23 @@ class RemoteUpdateWorker @AssistedInject constructor(
             if (current != null && compareVersion(manifest.databaseVersion, current) <= 0) {
                 return Result.success(Data.Builder().putString("message", "Database is already up to date ($current).").build())
             }
-            val response = client.newCall(Request.Builder().url(manifest.downloadUrl).build()).execute()
-            val bytes = response.use { if (!it.isSuccessful) error("Download failed with HTTP ${it.code}"); it.body?.bytes() ?: error("Empty update file") }
+            val downloadUrl = manifest.downloadUrl.toHttpUrlOrNull()
+            if (downloadUrl?.isHttps != true) return failure("The database download URL must use HTTPS.")
+            val response = client.newCall(Request.Builder().url(downloadUrl).build()).execute()
+            val bytes = response.use {
+                if (!it.isSuccessful) error("Download failed with HTTP ${it.code}")
+                if (!it.request.url.isHttps) error("The database download redirected to an insecure URL.")
+                val body = it.body ?: error("Empty update file")
+                if (body.contentLength() > MAX_DATABASE_BYTES) error("The database update is larger than 25 MB.")
+                val source = body.source()
+                val buffer = Buffer()
+                while (true) {
+                    val read = source.read(buffer, 8_192)
+                    if (read == -1L) break
+                    if (buffer.size > MAX_DATABASE_BYTES) error("The database update is larger than 25 MB.")
+                }
+                buffer.readByteArray()
+            }
             val name = manifest.downloadUrl.substringAfterLast('/').substringBefore('?').ifBlank { "database.json" }
             val imported = importExport.importPackage(bytes, name, manifest.checksum)
             if (imported.success) Result.success(Data.Builder().putString("message", imported.message).build()) else failure(imported.message)
@@ -59,4 +76,6 @@ class RemoteUpdateWorker @AssistedInject constructor(
     }
     private fun failure(message: String) = Result.failure(Data.Builder().putString("message", message).build())
     private fun compareVersion(a: String, b: String): Int { val x=a.split('.').mapNotNull(String::toIntOrNull); val y=b.split('.').mapNotNull(String::toIntOrNull); for(i in 0 until maxOf(x.size,y.size)){ val d=x.getOrElse(i){0}-y.getOrElse(i){0}; if(d!=0)return d }; return 0 }
+
+    companion object { private const val MAX_DATABASE_BYTES = 25L * 1024L * 1024L }
 }

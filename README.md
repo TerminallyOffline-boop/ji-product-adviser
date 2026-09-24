@@ -2,7 +2,7 @@
 
 JI Product Adviser is a tablet-first Android staff tool for browsing the JI Telecom product lineup, checking whether a device can run selected software, and finding suitable products using clear, deterministic rules. It is designed to work offline and remains usable on phones.
 
-**Current documented release:** `1.1.0` (`versionCode 6`)
+**Current documented release:** `1.1.1` (`versionCode 7`)
 
 > The bundled product catalog comes from **Product-Line-up-x-July-2026.xlsx**. Prices and availability are a dated snapshot. Printers are intentionally excluded.
 
@@ -11,8 +11,9 @@ JI Product Adviser is a tablet-first Android staff tool for browsing the JI Tele
 - Browse and search the offline product catalog
 - Filter products by category, brand, price, and availability
 - View enriched laptop CPU and GPU information
-- Check software compatibility with platform-aware Windows, macOS, Android, and iOS rules
-- Distinguish minimum, recommended, unsupported-platform, and not-verified results
+- Check software compatibility with platform-aware Windows, macOS, Android, iPhone, and iPad rules
+- Distinguish minimum, recommended, unavailable-platform, and not-verified results
+- Show the calculated compatibility verdict separately from the reliability of its source data
 - Find best matches using budget, performance, capacity, preference, and software-fit scoring
 - Search, filter, sort, favorite, revisit, and compare products without losing navigation state
 - Explain when an app is unavailable for a platform separately from insufficient hardware
@@ -65,7 +66,7 @@ The core engines have no Android UI dependency and are covered by local unit tes
 
 Products refer to normalized processor and GPU tables. Software is version-aware; each software record can have one `MINIMUM` and one `RECOMMENDED` requirement record. Important records carry source and verification metadata. CPU/GPU tiers are explicitly internal classifications from 1–7 and are editable—not manufacturer ratings.
 
-Unknown hardware, absent minimum requirements, or unverified source records result in `NOT_VERIFIED`; missing information never becomes a positive result. A below-minimum component always results in `BELOW_MINIMUM`.
+Unknown required hardware facts or absent minimum requirements result in `NOT_VERIFIED`; missing information never becomes a positive result. Source verification is displayed separately, so a complete but unverified record can retain its calculated minimum/recommended verdict with a clear confidence warning. A below-minimum component always results in `BELOW_MINIMUM`.
 
 ### Add a product
 
@@ -81,13 +82,13 @@ Software entries declare the platforms on which they are actually available. The
 
 Component results are aggregated conservatively:
 
-1. App is unavailable on the product platform → `UNSUPPORTED_PLATFORM`
+1. App is unavailable on the product platform → `NOT_AVAILABLE`
 2. Any stored minimum failure → `BELOW_MINIMUM`
-3. Missing required facts or non-verified data → `NOT_VERIFIED`
+3. Missing required facts or an unknown platform → `NOT_VERIFIED`
 4. Minimum passes but a recommendation is not met or is absent → `MEETS_MINIMUM`
 5. Every stored recommended requirement passes → `MEETS_RECOMMENDED`
 
-Results describe stored requirements and expected suitability; they never guarantee performance.
+The result also carries an independent data-confidence label: verified, needs review, needs verification, or outdated. Lower-confidence results are penalized during recommendation scoring. Results describe stored requirements and expected suitability; they never guarantee performance.
 
 ## Recommendation methodology
 
@@ -103,7 +104,7 @@ The displayed integer is labeled an **internal recommendation score**, not a pro
 
 ## Verification status
 
-The current implementation has automated tests for the compatibility, platform, recommendation, catalog, and release-safety rules. The `1.1.0` build is checked with unit tests, Android lint, APK assembly, and Android signature verification. See [release notes](docs/RELEASES.md) for the recorded artifact checksum.
+The current implementation has automated tests for the compatibility, platform, recommendation, catalog, and release-safety rules. The `1.1.1` build is checked with unit tests, Android lint, APK assembly, and Android signature verification. See [release notes](docs/RELEASES.md) for the recorded artifact checksum.
 
 ## Import, export and updates
 

@@ -1,5 +1,5 @@
 {
-  "version": "2026.09.22.3",
+  "version": "2026.09.24.1",
   "verifiedDate": "2026-09-22",
   "processors": [
     {"id":1101,"manufacturer":"Intel","family":"Core Ultra 5","model":"Core Ultra 5 225U","architecture":"x64","coreCount":12,"threadCount":14,"boostClockGhz":4.8,"performanceTier":4,"sourceUrl":"https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157358"},

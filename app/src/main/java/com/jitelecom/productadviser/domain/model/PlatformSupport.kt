@@ -4,10 +4,13 @@ enum class PlatformFamily(val displayName: String) {
     WINDOWS("Windows"),
     MACOS("macOS"),
     ANDROID("Android"),
-    IOS("iPhone / iPad"),
+    IOS("iPhone"),
+    IPADOS("iPad"),
     LINUX("Linux"),
     CHROMEOS("ChromeOS")
 }
+
+enum class PlatformCompatibility { SUPPORTED, NOT_SUPPORTED, UNKNOWN }
 
 fun platformFamilies(value: String?): Set<PlatformFamily> {
     val normalized = value.orEmpty().lowercase()
@@ -16,7 +19,8 @@ fun platformFamilies(value: String?): Set<PlatformFamily> {
         if ("windows" in normalized || Regex("\\bwin(10|11)?\\b").containsMatchIn(normalized)) add(PlatformFamily.WINDOWS)
         if ("macos" in normalized || "mac os" in normalized || "macbook" in normalized) add(PlatformFamily.MACOS)
         if ("android" in normalized) add(PlatformFamily.ANDROID)
-        if ("ios" in normalized || "ipados" in normalized || "iphone" in normalized || "ipad" in normalized) add(PlatformFamily.IOS)
+        if (Regex("(^|[^a-z])ios([^a-z]|$)").containsMatchIn(normalized) || "iphone" in normalized) add(PlatformFamily.IOS)
+        if ("ipados" in normalized || "ipad" in normalized) add(PlatformFamily.IPADOS)
         if ("linux" in normalized || "ubuntu" in normalized || "debian" in normalized || "fedora" in normalized) add(PlatformFamily.LINUX)
         if ("chromeos" in normalized || "chrome os" in normalized || "chromebook" in normalized) add(PlatformFamily.CHROMEOS)
     }
@@ -25,18 +29,25 @@ fun platformFamilies(value: String?): Set<PlatformFamily> {
 fun ProductSpec.operatingSystemForCompatibility(): String? = operatingSystem?.takeIf { it.isNotBlank() } ?: when (category) {
     ProductCategory.SMARTPHONE -> if (brand.equals("Apple", true)) "iOS (inferred)" else "Android (inferred)"
     ProductCategory.TABLET -> if (brand.equals("Apple", true)) "iPadOS (inferred)" else "Android (inferred)"
-    ProductCategory.LAPTOP, ProductCategory.DESKTOP -> if (brand.equals("Apple", true)) "macOS (inferred)" else "Windows (inferred)"
+    ProductCategory.LAPTOP, ProductCategory.DESKTOP -> when {
+        brand.equals("Apple", true) -> "macOS (inferred)"
+        model.contains("Chromebook", true) -> "ChromeOS (inferred)"
+        else -> null
+    }
     else -> null
 }
 
 fun ProductSpec.hasInferredOperatingSystem(): Boolean = operatingSystem.isNullOrBlank() && operatingSystemForCompatibility() != null
 
-fun SoftwareSpec.supportsOperatingSystem(operatingSystem: String?): Boolean {
+fun platformCompatibility(appPlatform: String?, operatingSystem: String?): PlatformCompatibility {
     val deviceFamilies = platformFamilies(operatingSystem)
-    if (deviceFamilies.isEmpty()) return true
-    val appFamilies = platformFamilies(platform)
-    return appFamilies.isEmpty() || deviceFamilies.any { it in appFamilies }
+    val appFamilies = platformFamilies(appPlatform)
+    if (deviceFamilies.isEmpty() || appFamilies.isEmpty()) return PlatformCompatibility.UNKNOWN
+    return if (deviceFamilies.any { it in appFamilies }) PlatformCompatibility.SUPPORTED else PlatformCompatibility.NOT_SUPPORTED
 }
+
+fun SoftwareSpec.supportsOperatingSystem(operatingSystem: String?): Boolean =
+    platformCompatibility(platform, operatingSystem) == PlatformCompatibility.SUPPORTED
 
 fun operatingSystemMatches(actual: String, required: String): Boolean {
     val actualFamilies = platformFamilies(actual)

@@ -16,6 +16,7 @@ class BundledSoftwareCatalogTest {
         assertThat(entries.count { PlatformFamily.WINDOWS in platformFamilies(it.platform) }).isAtLeast(10)
         assertThat(entries.count { PlatformFamily.ANDROID in platformFamilies(it.platform) }).isAtLeast(5)
         assertThat(entries.count { PlatformFamily.IOS in platformFamilies(it.platform) }).isAtLeast(5)
+        assertThat(entries.count { PlatformFamily.IPADOS in platformFamilies(it.platform) }).isAtLeast(5)
     }
 
     @Test fun everyBundledAppHasSourceAndOperatingSystemData() {

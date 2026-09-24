@@ -4,17 +4,17 @@
 
 | Field | Value |
 |---|---|
-| App version | `1.1.0` |
-| Android version code | `6` |
-| Artifact | `JI-Product-Adviser-1.1.0-test.apk` |
-| Size | `4,953,628 bytes` |
-| SHA-256 | `D8B82D1D20ACB75FF0370FFD2B16F5673355A8A41258111F11A2FB891263FC6B` |
+| App version | `1.1.1` |
+| Android version code | `7` |
+| Artifact | `JI-Product-Adviser-1.1.1.apk` |
+| Size | `4,970,012 bytes` |
+| SHA-256 | `BB97B1EA7AC560597552A3D0FBEC818B8D528F967FB176D9F51B28AD29A6D13A` |
 | Signing | Android debug certificate; optimized/minified test build |
 | Upgrade compatibility | Certificate matches the `1.0.4` test APK |
 
 The APK is intentionally not committed to the source repository. Generated binaries are attached to GitHub Releases instead. This keeps source history small and separates reviewable code from distributable builds.
 
-The `1.1.0` artifact is optimized and much smaller than the earlier debug package, but it still uses a debug certificate. It is suitable for testing and internal distribution, not Play Store production publishing.
+The `1.1.1` artifact is optimized and much smaller than the earlier debug package, but it still uses a debug certificate. It is suitable for testing and internal distribution, not Play Store production publishing.
 
 ## Installing the test APK
 
@@ -33,6 +33,7 @@ Before distribution, compare the file's SHA-256 checksum with the value recorded
 
 | App version | Artifact | SHA-256 |
 |---|---|---|
+| `1.1.0` | `JI-Product-Adviser-1.1.0-test.apk` | `D8B82D1D20ACB75FF0370FFD2B16F5673355A8A41258111F11A2FB891263FC6B` |
 | `1.0.4` | `JI-Product-Adviser-1.0.4-debug.apk` | `43ABE013C23EC798399114AB3BAC32A2DCF52D33601E2726C1F9304351419117` |
 
 ## Creating a production release
@@ -47,4 +48,4 @@ Before distribution, compare the file's SHA-256 checksum with the value recorded
 
 ## Release history
 
-See [`CHANGELOG.md`](../CHANGELOG.md) for the user-visible history from `1.0.1` through `1.1.0`.
+See [`CHANGELOG.md`](../CHANGELOG.md) for the user-visible history from `1.0.1` through `1.1.1`.

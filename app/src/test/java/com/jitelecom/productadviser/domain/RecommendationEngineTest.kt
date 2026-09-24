@@ -24,4 +24,5 @@ class RecommendationEngineTest {
     @Test fun missingSpecificationsArePenalized(){val complete=product(1,30000.0);val missing=product(2,30000.0,ram=null,cpuValue=null);val result=run(CustomerRequest(budget=40000.0,softwareIds=setOf(1)),listOf(missing,complete));assertThat(result.first().product.id).isEqualTo(1)}
     @Test fun requiredSoftwareBelowMinimumIsNotRecommended(){val weak=product(1,30000.0,ram=4);assertThat(run(CustomerRequest(budget=40000.0,softwareIds=setOf(1)),listOf(weak))).isEmpty()}
     @Test fun selectedRamStoragePriorityChangesPreferenceScore(){val scorer=PreferenceScorer();val request=CustomerRequest(profile="Office Worker",budget=50000.0,priorities=setOf("RAM / storage"));assertThat(scorer.score(product(1,30000.0,ram=16),request)).isGreaterThan(scorer.score(product(2,30000.0,ram=8).copy(storageGB=256),request))}
+    @Test fun demandingStudentProfileIsNotAlsoScoredAsEveryday(){val score=PreferenceScorer().score(product(1,30000.0),CustomerRequest(profile="Architecture Student",budget=50000.0));assertThat(score).isWithin(0.0001).of(0.53)}
 }

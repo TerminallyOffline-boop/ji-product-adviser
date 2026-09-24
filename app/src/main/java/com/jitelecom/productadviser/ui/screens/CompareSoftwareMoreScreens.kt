@@ -22,7 +22,7 @@ import com.jitelecom.productadviser.ui.SoftwareViewModel
 
 @Composable
 fun CompareScreen(onProduct:(Long)->Unit,viewModel:CompareViewModel=hiltViewModel()){
-    val products by viewModel.products.collectAsState();val selected by viewModel.selected.collectAsState();val chosen=products.filter{it.id in selected}
+    val products by viewModel.products.collectAsState();val selected by viewModel.selected.collectAsState();val chosen=selected.mapNotNull{id->products.firstOrNull{it.id==id}}
     val software by viewModel.software.collectAsState();val softwareId by viewModel.selectedSoftware.collectAsState();val compatibility by viewModel.compatibility.collectAsState();val message by viewModel.message.collectAsState();var query by remember{mutableStateOf("")};var category by remember{mutableStateOf<ProductCategory?>(null)};var differencesOnly by remember{mutableStateOf(true)}
     val categories=remember(products){products.map{it.category}.distinct().sortedBy{it.name}}
     val filtered=remember(products,query,category){products.filter{(category==null||it.category==category)&&(query.isBlank()||it.displayName.contains(query,true)||it.sku.contains(query,true)||it.processor?.displayName?.contains(query,true)==true)}}
@@ -34,7 +34,7 @@ fun CompareScreen(onProduct:(Long)->Unit,viewModel:CompareViewModel=hiltViewMode
             item{OutlinedTextField(query,{query=it},label={Text("Search products")},leadingIcon={Icon(Icons.Default.Search,null)},trailingIcon={if(query.isNotBlank())IconButton(onClick={query=""}){Icon(Icons.Default.Clear,"Clear")}},singleLine=true,modifier=Modifier.fillMaxWidth())}
             item{LazyRow(horizontalArrangement=Arrangement.spacedBy(7.dp)){item{FilterChip(selected=category==null,onClick={category=null},label={Text("All")})};items(categories){type->FilterChip(selected=category==type,onClick={category=type},label={Text(type.name.lowercase().replace('_',' ').replaceFirstChar(Char::uppercase))})}}}
             items(filtered,key={it.id}){product->OutlinedCard(onClick={viewModel.toggle(product.id)}){Row(Modifier.fillMaxWidth().padding(12.dp),verticalAlignment=Alignment.CenterVertically){Checkbox(checked=product.id in selected,onCheckedChange={viewModel.toggle(product.id)});Column(Modifier.weight(1f)){Text(product.displayName,fontWeight=FontWeight.SemiBold);Text("${peso(product.effectivePrice)} • ${product.processor?.model?:"CPU unknown"}",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}}}}
-            if(chosen.size>=2)item{SearchableSelector("Compatibility for (optional)",software,software.firstOrNull{it.id==softwareId},{it.displayName}){viewModel.selectedSoftware.value=it.id}}
+            if(chosen.size>=2)item{Column(verticalArrangement=Arrangement.spacedBy(4.dp)){SearchableSelector("Compatibility for (optional)",software,software.firstOrNull{it.id==softwareId},{it.displayName}){viewModel.selectedSoftware.value=it.id};if(softwareId!=null)TextButton(onClick={viewModel.selectedSoftware.value=null},modifier=Modifier.align(Alignment.End)){Icon(Icons.Default.Clear,null);Spacer(Modifier.width(4.dp));Text("Remove software check")}}}
             if(chosen.size>=2)item{Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text("Show differences only",Modifier.weight(1f));Switch(differencesOnly,{differencesOnly=it})}}
             if(chosen.size>=2)item{ComparisonTable(chosen,compatibility,differencesOnly,onProduct)}
         }
@@ -54,7 +54,7 @@ private fun ComparisonTable(products:List<ProductSpec>,compatibility:Map<Long,Co
         "Display" to products.map{it.displaySize?.let{"$it in"} ?: "Unknown"},
         "Weight" to products.map{it.weightKg?.let{"$it kg"} ?: "Unknown"},
         "Battery" to products.map{it.batteryCapacityWh?.let{"$it Wh"} ?: "Unknown"}
-    ) + if(compatibility.isNotEmpty()) listOf("Software" to products.map{compatibility[it.id]?.status?.name?.replace('_',' ') ?: "Not checked"}) else emptyList()
+    ) + if(compatibility.isNotEmpty()) listOf("Software" to products.map{product->compatibility[product.id]?.let{"${it.status.name.replace('_',' ')} • ${if(it.dataStatus==VerificationStatus.VERIFIED)"verified" else "needs verification"}"} ?: "Not checked"}) else emptyList()
     val visibleRows=if(differencesOnly)rows.filter{(_,values)->values.distinct().size>1}else rows
     Column(Modifier.horizontalScroll(rememberScrollState())){
         CompareRow("",products.map{it.displayName},header=true)
@@ -68,10 +68,16 @@ private fun ComparisonTable(products:List<ProductSpec>,compatibility:Map<Long,Co
 
 @Composable
 fun SoftwareScreen(viewModel:SoftwareViewModel=hiltViewModel()){
-    val software by viewModel.software.collectAsState()
+    val software by viewModel.software.collectAsState();var query by remember{mutableStateOf("")};var category by remember{mutableStateOf<String?>(null)}
+    val categories=remember(software){software.map{it.category}.distinct().sorted()}
+    val filtered=remember(software,query,category){software.filter{app->(category==null||app.category==category)&&(query.isBlank()||app.displayName.contains(query,true)||app.developer?.contains(query,true)==true||app.platform.contains(query,true))}}
     LazyColumn(Modifier.fillMaxSize().padding(20.dp),verticalArrangement=Arrangement.spacedBy(9.dp)){
         item{ScreenHeader("Software & Apps","Version-aware local requirements catalog")}
-        items(software,key={it.id}){app->
+        item{OutlinedTextField(query,{query=it},label={Text("Search software, developer or platform")},leadingIcon={Icon(Icons.Default.Search,null)},trailingIcon={if(query.isNotBlank())IconButton(onClick={query=""}){Icon(Icons.Default.Clear,"Clear search")}},singleLine=true,modifier=Modifier.fillMaxWidth())}
+        item{LazyRow(horizontalArrangement=Arrangement.spacedBy(7.dp)){item{FilterChip(selected=category==null,onClick={category=null},label={Text("All")})};items(categories){value->FilterChip(selected=category==value,onClick={category=value},label={Text(value)})}}}
+        item{Text("${filtered.size} app${if(filtered.size==1)"" else "s"}",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+        if(filtered.isEmpty())item{EmptyState(Icons.Default.SearchOff,"No software found","Try another search or category.")}
+        items(filtered,key={it.id}){app->
             OutlinedCard{Column(Modifier.padding(15.dp)){
                 Row{Column(Modifier.weight(1f)){Text(app.displayName,fontWeight=FontWeight.Bold);Text("${app.category} • ${app.platform}",style=MaterialTheme.typography.bodySmall)};VerificationBadge(app.verificationStatus)}
                 app.developer?.let{Text(it,style=MaterialTheme.typography.bodyMedium)}

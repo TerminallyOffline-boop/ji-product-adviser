@@ -9,12 +9,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -40,14 +38,14 @@ fun ProductsScreen(onProduct:(Long)->Unit, viewModel:ProductsViewModel= hiltView
         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text("Available products only",Modifier.weight(1f));Switch(availableOnly,{viewModel.availableOnly.value=it});if(filtered)TextButton(onClick=viewModel::resetFilters){Text("Reset filters")}}
         Text("${products.size} result${if(products.size==1)"" else "s"}",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(8.dp))
-        if(products.isEmpty())EmptyState(Icons.Default.SearchOff,"No products found","Try a shorter search or reset the filters.")else LazyColumn(verticalArrangement=Arrangement.spacedBy(9.dp)){items(products,key={it.id}){product->ProductCard(product,{viewModel.submitSearch();onProduct(product.id)})};item{Spacer(Modifier.height(16.dp))}}
+        if(products.isEmpty())EmptyState(Icons.Default.SearchOff,"No products found","Try a shorter search or reset the filters.")else LazyColumn(verticalArrangement=Arrangement.spacedBy(9.dp)){items(products,key={it.id}){product->ProductCard(product,{onProduct(product.id)})};item{Spacer(Modifier.height(16.dp))}}
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(onBack:()->Unit,onCompatibility:(Long)->Unit,viewModel:ProductDetailViewModel=hiltViewModel()){
-    val product by viewModel.product.collectAsState();val loading by viewModel.loading.collectAsState();val settings by viewModel.settings.collectAsState();val uri=LocalUriHandler.current
+    val product by viewModel.product.collectAsState();val loading by viewModel.loading.collectAsState();val settings by viewModel.settings.collectAsState()
     Scaffold(topBar={TopAppBar(title={Text("Product details")},navigationIcon={IconButton(onClick=onBack){Icon(Icons.AutoMirrored.Filled.ArrowBack,"Back")}},actions={product?.let{p->IconButton(onClick=viewModel::toggleFavorite){Icon(if(p.id in settings.favoriteProductIds)Icons.Default.Favorite else Icons.Default.FavoriteBorder,if(p.id in settings.favoriteProductIds)"Remove favorite" else "Add favorite")}}})}){padding->
         product?.let{p->LazyColumn(Modifier.padding(padding).fillMaxSize().padding(horizontal=20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
             item{Spacer(Modifier.height(4.dp));Row(verticalAlignment=Alignment.Top){Surface(Modifier.size(84.dp),shape=MaterialTheme.shapes.large,color=MaterialTheme.colorScheme.primaryContainer){Box(contentAlignment=Alignment.Center){Icon(Icons.Default.Laptop,null,Modifier.size(42.dp))}};Spacer(Modifier.width(16.dp));Column(Modifier.weight(1f)){Text(p.displayName,style=MaterialTheme.typography.headlineSmall,fontWeight=FontWeight.Bold);Text(p.sku,style=MaterialTheme.typography.bodySmall);Text(peso(p.effectivePrice),style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Black,color=MaterialTheme.colorScheme.primary);VerificationBadge(p.verificationStatus)}}}
@@ -55,7 +53,6 @@ fun ProductDetailScreen(onBack:()->Unit,onCompatibility:(Long)->Unit,viewModel:P
             item{SpecSection(p)}
             if(p.ramUpgradeable!=null || p.additionalStorageSupport!=null) item { Card { Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(7.dp)) { Text("Upgrade options",fontWeight=FontWeight.Bold);p.ramUpgradeable?.let { InfoRow("Memory upgrade",if(it) "Supported" else "Onboard memory") };p.maximumRamGB?.let { InfoRow("Maximum memory","$it GB") };p.additionalStorageSupport?.let { InfoRow("Storage slots",it) } } } }
             p.notes?.takeIf { it.isNotBlank() }?.let { notes -> item { Card { Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) { Text("Specification notes",fontWeight=FontWeight.Bold);Text(notes,style=MaterialTheme.typography.bodySmall) } } } }
-            item{Card{Column(Modifier.padding(16.dp)){Text("Data reliability",fontWeight=FontWeight.Bold);InfoRow("Source",p.sourceName?:"Not stored");InfoRow("Verified date",p.verifiedDate?:"Not stored");InfoRow("Last updated",p.lastUpdated?:"Not stored");p.sourceUrl?.let{OutlinedButton(onClick={uri.openUri(it)},modifier=Modifier.fillMaxWidth()){Icon(Icons.AutoMirrored.Filled.OpenInNew,null);Spacer(Modifier.width(6.dp));Text("OPEN OFFICIAL SOURCE")}}}}}
             if(p.verificationStatus!=com.jitelecom.productadviser.domain.model.VerificationStatus.VERIFIED)item{NoticeCard("This product record is ${p.verificationStatus.name.lowercase().replace('_',' ')}. Confirm its specifications against the official source.",true)}
             item{Spacer(Modifier.height(24.dp))}
         }}?:Box(Modifier.fillMaxSize().padding(padding),contentAlignment=Alignment.Center){if(loading)CircularProgressIndicator()else EmptyState(Icons.Default.SearchOff,"Product not found","It may have been archived or removed from the local catalog.")}

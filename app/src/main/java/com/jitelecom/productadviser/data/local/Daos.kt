@@ -44,6 +44,8 @@ interface HardwareDao {
     @Insert(onConflict = OnConflictStrategy.ABORT) suspend fun insertGpu(value: GpuEntity): Long
     @Update suspend fun updateProcessor(value: ProcessorEntity)
     @Update suspend fun updateGpu(value: GpuEntity)
+    @Delete suspend fun deleteProcessor(value: ProcessorEntity)
+    @Delete suspend fun deleteGpu(value: GpuEntity)
     @Query("DELETE FROM processors") suspend fun deleteProcessors()
     @Query("DELETE FROM gpus") suspend fun deleteGpus()
 }
@@ -84,7 +86,7 @@ interface MetadataDao {
 @Dao
 interface AnalyticsDao {
     @Query("SELECT * FROM local_analytics ORDER BY count DESC") suspend fun getAll(): List<AnalyticsEntity>
-    @Query("SELECT * FROM local_analytics ORDER BY count DESC LIMIT :limit") fun observePopular(limit: Int): Flow<List<AnalyticsEntity>>
+    @Query("SELECT * FROM local_analytics WHERE event = :event ORDER BY count DESC, updatedAt DESC LIMIT :limit") fun observePopular(event: String, limit: Int): Flow<List<AnalyticsEntity>>
     @Query("""INSERT INTO local_analytics(event, `key`, count, updatedAt) VALUES(:event, :key, 1, :now)
         ON CONFLICT(event, `key`) DO UPDATE SET count = count + 1, updatedAt = :now""")
     suspend fun increment(event: String, key: String, now: Long = System.currentTimeMillis())

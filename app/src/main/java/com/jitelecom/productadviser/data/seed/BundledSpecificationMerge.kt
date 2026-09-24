@@ -19,9 +19,11 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
     return copy(
         processorId = processorId ?: bundled.processorId,
         gpuId = gpuId ?: bundled.gpuId,
+        ramGB = ramGB ?: bundled.ramGB,
         ramType = ramType ?: bundled.ramType,
         ramUpgradeable = ramUpgradeable ?: bundled.ramUpgradeable,
         maximumRamGB = maximumRamGB ?: bundled.maximumRamGB,
+        storageGB = storageGB ?: bundled.storageGB,
         storageType = storageType ?: bundled.storageType,
         additionalStorageSupport = additionalStorageSupport ?: bundled.additionalStorageSupport,
         displaySize = displaySize ?: bundled.displaySize,

@@ -14,6 +14,7 @@ import com.jitelecom.productadviser.domain.model.*
 import com.jitelecom.productadviser.domain.recommendation.RecommendationEngine
 import com.jitelecom.productadviser.domain.repository.*
 import com.jitelecom.productadviser.util.ConnectivityObserver
+import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,7 @@ class HomeViewModel @Inject constructor(
     val products = products.observeProducts().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val software = catalog.observeSoftware().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val databaseVersion = metadata.observe("databaseVersion").stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
-    val popular = analytics.observePopular(5).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val popular = analytics.observePopular("recommended_product", 5).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
 }
 
@@ -48,7 +49,8 @@ class ProductsViewModel @Inject constructor(
     private val repository: ProductRepository,
     private val analytics: AnalyticsDao
 ) : ViewModel() {
-    val query = MutableStateFlow(savedStateHandle.get<String>("query").orEmpty())
+    private val initialQuery = savedStateHandle.get<String>("query").orEmpty()
+    val query = MutableStateFlow(initialQuery)
     val minimumPrice = MutableStateFlow("")
     val maximumPrice = MutableStateFlow("")
     val category = MutableStateFlow<ProductCategory?>(null)
@@ -78,8 +80,10 @@ class ProductsViewModel @Inject constructor(
                 }}.toList()
         }}
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    init { recordSearch(initialQuery) }
     fun setQuery(value: String) { query.value = value }
-    fun submitSearch() { query.value.trim().takeIf { it.length >= 3 }?.let { value -> viewModelScope.launch { analytics.increment("product_search", value.lowercase()) } } }
+    fun submitSearch() { recordSearch(query.value) }
+    private fun recordSearch(raw: String) { raw.trim().takeIf { it.length >= 3 }?.let { value -> viewModelScope.launch { analytics.increment("product_search", value.lowercase()) } } }
     fun resetFilters() { minimumPrice.value=""; maximumPrice.value=""; category.value=null; brand.value=null; availableOnly.value=false; sort.value=ProductSort.NAME }
 }
 
@@ -233,7 +237,8 @@ class RecommendationViewModel @Inject constructor(
         val families = platformFamilies(platform)
         return when (category) {
             ProductCategory.LAPTOP, ProductCategory.DESKTOP -> PlatformFamily.WINDOWS in families || PlatformFamily.MACOS in families || PlatformFamily.LINUX in families
-            ProductCategory.SMARTPHONE, ProductCategory.TABLET -> PlatformFamily.ANDROID in families || PlatformFamily.IOS in families
+            ProductCategory.SMARTPHONE -> PlatformFamily.ANDROID in families || PlatformFamily.IOS in families
+            ProductCategory.TABLET -> PlatformFamily.ANDROID in families || PlatformFamily.IPADOS in families
             else -> false
         }
     }
@@ -288,14 +293,14 @@ data class AdminUiState(
 @HiltViewModel
 class AdminViewModel @Inject constructor(
     private val preferences: AppPreferences,
-    private val importExport: ImportExportManager,
+    private val importExport: Lazy<ImportExportManager>,
     private val products: ProductRepository,
     private val productDao: ProductDao,
     private val hardwareDao: HardwareDao,
     private val softwareDao: SoftwareDao,
     private val requirementDao: RequirementDao,
     private val analytics: AnalyticsDao,
-    private val workManager: WorkManager
+    private val workManager: Lazy<WorkManager>
 ) : ViewModel() {
     private val _state = MutableStateFlow(AdminUiState()); val state = _state.asStateFlow()
     val productsFlow = products.observeProducts().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -310,7 +315,7 @@ class AdminViewModel @Inject constructor(
     fun unlock(pin: String) = viewModelScope.launch {
         val now=System.currentTimeMillis()
         if(now<pinLockedUntil){message("Too many attempts. Try again in ${((pinLockedUntil-now)/1000).coerceAtLeast(1)} seconds.");return@launch}
-        val valid=preferences.verifyAdminPin(pin)
+        val valid=runCatching { preferences.verifyAdminPin(pin) }.getOrElse { error -> message(error.message ?: "Could not read the Admin PIN.");return@launch }
         if(valid){failedPinAttempts=0;_state.update{it.copy(unlocked=true,message=null)}}else{
             failedPinAttempts++
             if(failedPinAttempts>=5){pinLockedUntil=now+30_000;failedPinAttempts=0;message("Too many attempts. Admin is locked for 30 seconds.")}else message("Incorrect PIN. ${5-failedPinAttempts} attempts remaining.")
@@ -323,17 +328,33 @@ class AdminViewModel @Inject constructor(
         _state.update { it.copy(isBusy=true,message="Validating import…") }
         pending = bytes to name
         pendingIsCsv = name.endsWith(".csv", true)
-        val preview = if (pendingIsCsv) importExport.previewProductCsv(bytes.toString(Charsets.UTF_8), processors.value.map { it.id }.toSet(), gpus.value.map { it.id }.toSet()).second else importExport.preview(bytes, name).second
-        _state.update { it.copy(preview=preview,message=if(preview.canImport)"Import is ready for review." else "Import has validation errors.",isBusy=false) }
+        runCatching {
+            val manager = importExport.get()
+            if (pendingIsCsv) manager.previewProductCsv(bytes.toString(Charsets.UTF_8), processors.value.map { it.id }.toSet(), gpus.value.map { it.id }.toSet()).second else manager.preview(bytes, name).second
+        }.onSuccess { preview ->
+            _state.update { it.copy(preview=preview,message=if(preview.canImport)"Import is ready for review." else "Import has validation errors.",isBusy=false) }
+        }.onFailure { error ->
+            _state.update { it.copy(preview=null,message=error.message ?: "Could not read the import file.",isBusy=false) }
+        }
     }
-    fun commitImport() = viewModelScope.launch { val (bytes, name)=pending ?: return@launch; _state.update { it.copy(isBusy=true,message="Importing database…") }; val result=if(pendingIsCsv) importExport.importProductCsv(bytes) else importExport.importPackage(bytes,name); _state.update { it.copy(message=result.message,preview=result.preview,isBusy=false) } }
-    suspend fun exportBytes() = importExport.exportJson()
+    fun commitImport() = viewModelScope.launch {
+        val (bytes, name)=pending ?: return@launch
+        _state.update { it.copy(isBusy=true,message="Importing database…") }
+        runCatching { if(pendingIsCsv) importExport.get().importProductCsv(bytes) else importExport.get().importPackage(bytes,name) }
+            .onSuccess { result -> _state.update { it.copy(message=result.message,preview=result.preview,isBusy=false) } }
+            .onFailure { error -> _state.update { it.copy(message=error.message ?: "Import failed. Existing data was not changed.",isBusy=false) } }
+    }
+    suspend fun exportBytes(): ByteArray? = runCatching { importExport.get().exportJson() }
+        .onFailure { error -> message(error.message ?: "Could not create the backup file.") }
+        .getOrNull()
     fun checkUpdate() {
         val request = OneTimeWorkRequestBuilder<RemoteUpdateWorker>().setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()).build()
-        workManager.enqueueUniqueWork("remote_database_update", ExistingWorkPolicy.REPLACE, request)
+        val manager = runCatching { workManager.get() }.getOrElse { error -> message(error.message ?: "The update service is unavailable.");return }
+        runCatching { manager.enqueueUniqueWork("remote_database_update", ExistingWorkPolicy.REPLACE, request) }
+            .onFailure { error -> message(error.message ?: "Could not start the database update.");return }
         message("Checking for a database update…")
         viewModelScope.launch {
-            val info = workManager.getWorkInfoByIdFlow(request.id).filterNotNull().filter { it.state.isFinished }.first()
+            val info = manager.getWorkInfoByIdFlow(request.id).filterNotNull().filter { it.state.isFinished }.first()
             message(info.outputData.getString("message") ?: when(info.state){
                 WorkInfo.State.SUCCEEDED -> "Database update check completed."
                 WorkInfo.State.CANCELLED -> "Database update check was cancelled."
@@ -342,13 +363,24 @@ class AdminViewModel @Inject constructor(
         }
     }
     fun saveProduct(product: ProductSpec) = viewModelScope.launch { runCatching { products.saveProduct(product) }.onSuccess { message("Product saved.") }.onFailure { message(it.message ?: "Could not save product.") } }
-    fun archiveProduct(id: Long) = viewModelScope.launch { products.archiveProduct(id); _state.update { it.copy(message="Product archived. You can undo this action.",undoArchiveId=id) } }
-    fun restoreArchived() = viewModelScope.launch { val id=_state.value.undoArchiveId ?: return@launch; productDao.setArchived(id,false); _state.update { it.copy(message="Product restored.",undoArchiveId=null) } }
-    fun clearLocalHistory() = viewModelScope.launch { analytics.deleteAll();preferences.clearProductHistory();message("Local searches, favorites, recent products and usage counters were cleared.") }
-    fun saveProcessor(value: ProcessorEntity) = viewModelScope.launch { if(value.id==0L) hardwareDao.insertProcessor(value) else hardwareDao.updateProcessor(value); message("Processor saved.") }
-    fun saveGpu(value: GpuEntity) = viewModelScope.launch { if(value.id==0L) hardwareDao.insertGpu(value) else hardwareDao.updateGpu(value); message("GPU saved.") }
-    fun saveSoftware(value: SoftwareEntity) = viewModelScope.launch { if(value.id==0L) softwareDao.insert(value) else softwareDao.update(value); message("Software saved.") }
-    fun saveRequirement(value: RequirementEntity) = viewModelScope.launch { requirementDao.insert(value); message("Requirement saved.") }
+    fun archiveProduct(id: Long) = viewModelScope.launch { runCatching { products.archiveProduct(id) }.onSuccess { _state.update { it.copy(message="Product archived. You can undo this action.",undoArchiveId=id) } }.onFailure { message(it.message ?: "Could not archive the product.") } }
+    fun restoreArchived() = viewModelScope.launch { val id=_state.value.undoArchiveId ?: return@launch;runCatching { productDao.setArchived(id,false) }.onSuccess { _state.update { it.copy(message="Product restored.",undoArchiveId=null) } }.onFailure { message(it.message ?: "Could not restore the product.") } }
+    fun clearLocalHistory() = viewModelScope.launch { runCatching { analytics.deleteAll();preferences.clearProductHistory() }.onSuccess { message("Local searches, favorites, recent products and usage counters were cleared.") }.onFailure { message(it.message ?: "Could not clear local history.") } }
+    fun saveProcessor(value: ProcessorEntity) = adminAction("Processor saved.", "processor") { if(value.id==0L) hardwareDao.insertProcessor(value) else hardwareDao.updateProcessor(value) }
+    fun saveGpu(value: GpuEntity) = adminAction("GPU saved.", "GPU") { if(value.id==0L) hardwareDao.insertGpu(value) else hardwareDao.updateGpu(value) }
+    fun saveSoftware(value: SoftwareEntity) = adminAction("Software saved.", "software record") { if(value.id==0L) softwareDao.insert(value) else softwareDao.update(value) }
+    fun saveRequirement(value: RequirementEntity) = adminAction("Requirement saved.", "requirement") { requirementDao.insert(value) }
+    fun deleteProcessor(value: ProcessorEntity) = adminAction("Processor deleted. Linked products now show an unspecified processor.", "processor") { hardwareDao.deleteProcessor(value) }
+    fun deleteGpu(value: GpuEntity) = adminAction("GPU deleted. Linked products now show an unspecified GPU.", "GPU") { hardwareDao.deleteGpu(value) }
+    fun deleteSoftware(value: SoftwareEntity) = adminAction("Software and its requirements were deleted.", "software record") { softwareDao.delete(value) }
+    fun reportFileError(error: Throwable, fallback: String) { message(error.message ?: fallback) }
+    fun reportMessage(value: String) { message(value) }
+    private fun adminAction(success: String, itemName: String, action: suspend () -> Unit) = viewModelScope.launch {
+        runCatching { action() }.onSuccess { message(success) }.onFailure { error ->
+            val duplicate = error.message?.contains("unique", true) == true
+            message(if(duplicate) "A matching $itemName already exists." else error.message ?: "Could not save the $itemName.")
+        }
+    }
     private fun message(value: String) { _state.update { it.copy(message=value) } }
 }
 

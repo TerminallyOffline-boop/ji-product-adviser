@@ -30,13 +30,20 @@ class SoftwareCompatibilityScorer @Inject constructor() {
     fun score(results: Collection<CompatibilityResult>): Double {
         if (results.isEmpty()) return 0.5
         return results.map {
-            when (it.status) {
+            val compatibilityScore = when (it.status) {
                 CompatibilityStatus.MEETS_RECOMMENDED -> 1.0
                 CompatibilityStatus.MEETS_MINIMUM -> 0.65
                 CompatibilityStatus.NOT_VERIFIED -> 0.20
                 CompatibilityStatus.NOT_AVAILABLE -> 0.0
                 CompatibilityStatus.BELOW_MINIMUM -> 0.0
             }
+            val confidenceMultiplier = when (it.dataStatus) {
+                VerificationStatus.VERIFIED -> 1.0
+                VerificationStatus.NEEDS_REVIEW -> 0.85
+                VerificationStatus.UNVERIFIED -> 0.65
+                VerificationStatus.OUTDATED -> 0.55
+            }
+            compatibilityScore * confidenceMultiplier
         }.average()
     }
 }
@@ -54,7 +61,7 @@ class PreferenceScorer @Inject constructor() {
             listOf("architecture", "engineering", "programmer", "graphic", "video", "gamer", "content").any(profile::contains)
         } == true
         if (demandingProfile && (product.processor?.performanceTier ?: 0) >= 5 && (product.ramGB ?: 0) >= 16) points += 0.18
-        val everydayProfile = request.profile?.lowercase()?.let { profile ->
+        val everydayProfile = !demandingProfile && request.profile?.lowercase()?.let { profile ->
             listOf("student", "teacher", "office", "business").any(profile::contains)
         } == true
         if (everydayProfile && (product.ramGB ?: 0) >= 8 && (product.storageGB ?: 0) >= 256) points += 0.12
@@ -93,6 +100,7 @@ class RecommendationExplanationBuilder @Inject constructor() {
             if (results.any { it.status == CompatibilityStatus.BELOW_MINIMUM }) add("Below minimum for at least one selected application")
             if (results.any { it.status == CompatibilityStatus.NOT_AVAILABLE }) add("At least one selected application is unavailable on this platform")
             if (results.any { it.status == CompatibilityStatus.NOT_VERIFIED }) add("Some compatibility data is not verified")
+            if (results.any { it.dataStatus != VerificationStatus.VERIFIED }) add("Some source specifications still need verification")
             if (product.verificationStatus != VerificationStatus.VERIFIED) add("Product specifications are not verified")
         }
         val explanation = "Internal recommendation score: $score/100. ${strengths.first()}. This is a relative match against locally stored products, not a performance guarantee."

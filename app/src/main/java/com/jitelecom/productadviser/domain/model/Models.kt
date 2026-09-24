@@ -141,6 +141,7 @@ data class CompatibilityResult(
     val status: CompatibilityStatus,
     val components: List<ComponentCompatibilityResult>,
     val explanation: String,
+    val dataStatus: VerificationStatus = VerificationStatus.UNVERIFIED,
     val disclaimer: String = COMPATIBILITY_DISCLAIMER
 )
 

@@ -2,6 +2,36 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.1.1 - 2026-09-24
+
+### Fixed
+
+- Admin controls no longer crash while their import/export and background-update services are initialized
+- Duplicate processor, GPU, software, and requirement entries now show a useful error instead of closing the app
+- Manual import/export failures are handled safely, large imports are rejected, and file work runs away from the interface thread
+- CPU and GPU approved-model lists are enforced even when no performance tier is stored
+- Architecture aliases such as x64, x86-64, AMD64, ARM64, and AArch64 now match correctly
+- Unknown platforms are no longer treated as universally compatible, iPhone and iPad support remain distinct, and unknown laptop operating systems are not assumed to be Windows
+- Missing required-feature data now produces an unknown result instead of a false minimum failure
+- Search analytics no longer double-count product selections, and Home popularity is limited to recommendation events
+- Remote catalog downloads now require HTTPS and reject oversized or insecurely redirected files
+
+### Added
+
+- Separate compatibility and data-confidence results, allowing “Meets minimum” and “Needs verification” to be shown together
+- Edit and delete controls for processors, GPUs, and software in Admin
+- Search and category filters for the software catalog
+- Regression coverage for platform separation, approved hardware lists, architecture aliases, missing features, and data-confidence behavior
+
+### Changed
+
+- Unverified but complete records retain their calculated compatibility verdict while receiving a visible confidence warning and a recommendation-score penalty
+- Missing decisive specifications still produce `NOT_VERIFIED`; confirmed failures still produce `BELOW_MINIMUM`
+- Compare keeps the user's selection order and allows the optional software check to be removed
+- Recommendation reset clears every local search and customer input
+- Product details now show only technical specifications and specification notes
+- Explicit catalog values were recovered for selected configurations without guessing unavailable specifications
+
 ## 1.1.0 - 2026-09-23
 
 ### Fixed

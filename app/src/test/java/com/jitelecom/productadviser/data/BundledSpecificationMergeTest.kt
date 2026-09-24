@@ -47,4 +47,13 @@ class BundledSpecificationMergeTest {
             current.copy(archived = true)
         ).forEach { custom -> assertThat(custom.withMissingBundledSpecifications(bundled)).isEqualTo(custom) }
     }
+
+    @Test fun fillsMissingRamAndStorageWithoutReplacingExistingValues() {
+        val missing = current.copy(ramGB=null,storageGB=null)
+        val result = missing.withMissingBundledSpecifications(bundled)
+        assertThat(result.ramGB).isEqualTo(32)
+        assertThat(result.storageGB).isEqualTo(1024)
+        assertThat(current.withMissingBundledSpecifications(bundled).ramGB).isEqualTo(16)
+        assertThat(current.withMissingBundledSpecifications(bundled).storageGB).isEqualTo(512)
+    }
 }

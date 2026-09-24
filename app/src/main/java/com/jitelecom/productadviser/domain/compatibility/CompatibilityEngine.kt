@@ -11,8 +11,17 @@ class CpuEvaluator @Inject constructor() {
         val minTier = min.minimumCpuTier
         val recTier = rec?.minimumCpuTier
         if (minTier == null && min.acceptedProcessorIds.isEmpty()) return notApplicable("CPU", cpu?.displayName)
-        if (cpu == null || cpu.performanceTier == null) return unknown("CPU", cpu?.displayName, minTier, recTier)
+        if (cpu == null) return unknown("CPU", null, minTier, recTier)
         val accepted = min.acceptedProcessorIds.isEmpty() || cpu.id in min.acceptedProcessorIds
+        if (!accepted) return ComponentCompatibilityResult(
+            "CPU", cpu.displayName, "Approved processor list", recTier?.let { "Internal tier $it" },
+            ComponentStatus.BELOW_MINIMUM, "This processor is not in the stored list of accepted processors."
+        )
+        if (minTier == null) return ComponentCompatibilityResult(
+            "CPU", cpu.displayName, "Approved processor list", recTier?.let { "Internal tier $it" },
+            ComponentStatus.MEETS_MINIMUM, "This processor is in the stored list of accepted processors."
+        )
+        if (cpu.performanceTier == null) return unknown("CPU", cpu.displayName, minTier, recTier)
         return tierResult("CPU", cpu.displayName, cpu.performanceTier, minTier, recTier, accepted)
     }
 }
@@ -24,8 +33,13 @@ class GpuEvaluator @Inject constructor() {
         val minTier = min.minimumGpuTier
         val recTier = rec?.minimumGpuTier
         if (minTier == null && min.minimumVramGB == null && min.acceptedGpuIds.isEmpty()) return notApplicable("GPU", gpu?.displayName)
-        if (gpu == null || (minTier != null && gpu.performanceTier == null)) return unknown("GPU", gpu?.displayName, minTier, recTier)
+        if (gpu == null) return unknown("GPU", null, minTier, recTier)
         val accepted = min.acceptedGpuIds.isEmpty() || gpu.id in min.acceptedGpuIds
+        if (!accepted) return ComponentCompatibilityResult(
+            "GPU", gpu.displayName, "Approved graphics list", recTier?.let { "Internal tier $it" },
+            ComponentStatus.BELOW_MINIMUM, "This graphics processor is not in the stored list of accepted GPUs."
+        )
+        if (minTier != null && gpu.performanceTier == null) return unknown("GPU", gpu.displayName, minTier, recTier)
         val tier = if (minTier == null) ComponentStatus.MEETS_MINIMUM else tierStatus(gpu.performanceTier!!, minTier, recTier, accepted)
         val vramStatus = valueStatus(gpu.vramGB, min.minimumVramGB, rec?.minimumVramGB)
         val status = worst(tier, vramStatus)
@@ -94,19 +108,26 @@ class RequirementEvaluator @Inject constructor(
             val actual = product.architecture
             results += if (actual == null) unknown("Architecture", null, null, null) else ComponentCompatibilityResult(
                 "Architecture", actual, minimum.requiredArchitecture, recommended?.requiredArchitecture,
-                if (!actual.contains(minimum.requiredArchitecture, true)) ComponentStatus.BELOW_MINIMUM
-                else if (recommended?.requiredArchitecture?.let { actual.contains(it, true) } == true) ComponentStatus.MEETS_RECOMMENDED
+                if (!architectureMatches(actual, minimum.requiredArchitecture)) ComponentStatus.BELOW_MINIMUM
+                else if (recommended?.requiredArchitecture?.let { architectureMatches(actual, it) } == true) ComponentStatus.MEETS_RECOMMENDED
                 else ComponentStatus.MEETS_MINIMUM,
-                if (actual.contains(minimum.requiredArchitecture, true)) "Required architecture is present." else "Required architecture is not present."
+                if (architectureMatches(actual, minimum.requiredArchitecture)) "Required architecture is present." else "Required architecture is not present."
             )
         }
         if (minimum.requiredFeatures.isNotEmpty()) {
-            val missing = minimum.requiredFeatures.filterNot { required -> product.supportedFeatures.any { it.equals(required, true) } }
-            results += ComponentCompatibilityResult(
-                "Required features", product.supportedFeatures.ifEmpty { setOf("Unknown") }.joinToString(), minimum.requiredFeatures.joinToString(),
-                recommended?.requiredFeatures?.joinToString(), if (missing.isEmpty()) ComponentStatus.MEETS_MINIMUM else ComponentStatus.BELOW_MINIMUM,
-                if (missing.isEmpty()) "All stored required features are present." else "Missing: ${missing.joinToString()}."
-            )
+            if (product.supportedFeatures.isEmpty()) {
+                results += ComponentCompatibilityResult(
+                    "Required features", "Unknown", minimum.requiredFeatures.joinToString(), recommended?.requiredFeatures?.joinToString(),
+                    ComponentStatus.UNKNOWN, "Stored product data does not say whether these required features are present."
+                )
+            } else {
+                val missing = minimum.requiredFeatures.filterNot { required -> product.supportedFeatures.any { it.equals(required, true) } }
+                results += ComponentCompatibilityResult(
+                    "Required features", product.supportedFeatures.joinToString(), minimum.requiredFeatures.joinToString(),
+                    recommended?.requiredFeatures?.joinToString(), if (missing.isEmpty()) ComponentStatus.MEETS_MINIMUM else ComponentStatus.BELOW_MINIMUM,
+                    if (missing.isEmpty()) "All stored required features are present." else "Missing: ${missing.joinToString()}."
+                )
+            }
         }
         return results
     }
@@ -141,7 +162,11 @@ class CompatibilityEngine @Inject constructor(
 ) {
     fun evaluate(product: ProductSpec, software: SoftwareSpec, requirements: List<RequirementSet>): CompatibilityResult {
         val operatingSystem = product.operatingSystemForCompatibility()
-        if (!software.supportsOperatingSystem(operatingSystem)) {
+        val platformCompatibility = platformCompatibility(software.platform, operatingSystem)
+        val storedDataStatus = aggregateVerificationStatus(
+            listOf(product.verificationStatus, software.verificationStatus) + requirements.map { it.verificationStatus }
+        )
+        if (platformCompatibility == PlatformCompatibility.NOT_SUPPORTED) {
             val actualPlatform = platformLabel(operatingSystem)
             return CompatibilityResult(
                 productId = product.id,
@@ -156,30 +181,53 @@ class CompatibilityEngine @Inject constructor(
                         explanation = "${software.name} is not available for $actualPlatform. Stored app platforms: ${software.platform}."
                     )
                 ),
-                explanation = "${software.name} is not available for $actualPlatform. Choose an app built for this platform or a different device."
+                explanation = "${software.name} is not available for $actualPlatform. Choose an app built for this platform or a different device.",
+                dataStatus = storedDataStatus
             )
         }
         val minimum = requirements.firstOrNull { it.type == RequirementType.MINIMUM }
-        if (minimum == null) return unverified(product.id, software.id, "Minimum requirements are not stored.")
+        if (minimum == null) return unverified(product.id, software.id, "Minimum requirements are not stored.", VerificationStatus.UNVERIFIED)
         val recommended = requirements.firstOrNull { it.type == RequirementType.RECOMMENDED }
         val components = evaluator.evaluate(product, minimum, recommended)
-        val dataVerified = product.verificationStatus == VerificationStatus.VERIFIED &&
-            software.verificationStatus == VerificationStatus.VERIFIED &&
-            minimum.verificationStatus == VerificationStatus.VERIFIED &&
-            (recommended == null || recommended.verificationStatus == VerificationStatus.VERIFIED)
+        val hasUnresolvedData = platformCompatibility == PlatformCompatibility.UNKNOWN ||
+            components.any { it.status == ComponentStatus.UNKNOWN }
+        val dataStatus = if (hasUnresolvedData && storedDataStatus == VerificationStatus.VERIFIED) {
+            VerificationStatus.NEEDS_REVIEW
+        } else {
+            storedDataStatus
+        }
         val status = when {
             components.any { it.status == ComponentStatus.BELOW_MINIMUM } -> CompatibilityStatus.BELOW_MINIMUM
-            components.any { it.status == ComponentStatus.UNKNOWN } || !dataVerified -> CompatibilityStatus.NOT_VERIFIED
+            hasUnresolvedData -> CompatibilityStatus.NOT_VERIFIED
             recommended == null -> CompatibilityStatus.MEETS_MINIMUM
             components.any { it.status == ComponentStatus.MEETS_MINIMUM } -> CompatibilityStatus.MEETS_MINIMUM
             else -> CompatibilityStatus.MEETS_RECOMMENDED
         }
-        return CompatibilityResult(product.id, software.id, status, components, explanationBuilder.build(status, components))
+        return CompatibilityResult(
+            productId = product.id,
+            softwareId = software.id,
+            status = status,
+            components = components,
+            explanation = explanationBuilder.build(status, components),
+            dataStatus = dataStatus
+        )
     }
 
-    private fun unverified(productId: Long, softwareId: Long, reason: String) = CompatibilityResult(
-        productId, softwareId, CompatibilityStatus.NOT_VERIFIED, emptyList(), reason
+    private fun unverified(productId: Long, softwareId: Long, reason: String, dataStatus: VerificationStatus) = CompatibilityResult(
+        productId = productId,
+        softwareId = softwareId,
+        status = CompatibilityStatus.NOT_VERIFIED,
+        components = emptyList(),
+        explanation = reason,
+        dataStatus = dataStatus
     )
+}
+
+private fun aggregateVerificationStatus(statuses: List<VerificationStatus>): VerificationStatus = when {
+    statuses.any { it == VerificationStatus.OUTDATED } -> VerificationStatus.OUTDATED
+    statuses.any { it == VerificationStatus.UNVERIFIED } -> VerificationStatus.UNVERIFIED
+    statuses.any { it == VerificationStatus.NEEDS_REVIEW } -> VerificationStatus.NEEDS_REVIEW
+    else -> VerificationStatus.VERIFIED
 }
 
 private fun numericResult(name: String, actual: Double?, min: Double?, rec: Double?, unit: String): ComponentCompatibilityResult {
@@ -236,3 +284,20 @@ private fun explanationFor(status: ComponentStatus, noun: String) = when (status
 
 private fun describeTierAndValue(tier: Int?, value: Double?): String? = listOfNotNull(tier?.let { "Tier $it" }, value?.let { "${format(it, "GB")} VRAM" }).takeIf { it.isNotEmpty() }?.joinToString(" • ")
 private fun format(value: Double, unit: String) = "${if (value % 1.0 == 0.0) value.toInt() else value} $unit"
+
+internal fun architectureMatches(actual: String, required: String): Boolean {
+    val actualValues = architectureValues(actual)
+    val requiredValues = architectureValues(required)
+    if (actualValues.isNotEmpty() && requiredValues.isNotEmpty()) return actualValues.any { it in requiredValues }
+    return actual.contains(required, true) || required.contains(actual, true)
+}
+
+private fun architectureValues(value: String): Set<String> {
+    val normalized = value.lowercase()
+    return buildSet {
+        if (Regex("\\b(x64|x86[-_ ]?64|amd64)\\b").containsMatchIn(normalized)) add("x64")
+        if (Regex("\\b(arm64|aarch64|armv8(?:-a)?)\\b").containsMatchIn(normalized)) add("arm64")
+        if (Regex("\\b(x86|i[3-6]86|32[- ]?bit)\\b").containsMatchIn(normalized) && "x86_64" !in normalized && "x86-64" !in normalized) add("x86")
+        if (Regex("\\b(armv7|armeabi|arm32)\\b").containsMatchIn(normalized)) add("arm32")
+    }
+}

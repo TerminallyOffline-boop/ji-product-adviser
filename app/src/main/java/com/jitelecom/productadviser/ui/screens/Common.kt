@@ -62,6 +62,17 @@ fun StatusBadge(status: CompatibilityStatus) {
 }
 
 @Composable
+fun DataConfidenceBadge(status: VerificationStatus) {
+    val (label,color)=when(status){
+        VerificationStatus.VERIFIED -> "DATA VERIFIED" to Color(0xFF167A47)
+        VerificationStatus.NEEDS_REVIEW -> "DATA NEEDS REVIEW" to Color(0xFFB36800)
+        VerificationStatus.UNVERIFIED -> "NEEDS VERIFICATION" to Color(0xFF616675)
+        VerificationStatus.OUTDATED -> "DATA OUTDATED" to Color(0xFFB3261E)
+    }
+    Surface(color=color.copy(alpha=.12f), contentColor=color, shape=RoundedCornerShape(50)) { Text(label, Modifier.padding(horizontal=10.dp,vertical=5.dp), style=MaterialTheme.typography.labelSmall, fontWeight=FontWeight.SemiBold) }
+}
+
+@Composable
 fun ProductCard(product: ProductSpec, onClick: () -> Unit, modifier: Modifier = Modifier) {
     ElevatedCard(modifier.fillMaxWidth().clickable(onClick=onClick)) {
         Row(Modifier.padding(16.dp), verticalAlignment=Alignment.CenterVertically) {

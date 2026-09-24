@@ -44,6 +44,10 @@ class BundledCatalogAssetTest {
         assertThat(products.map { it.sku }.distinct()).hasSize(products.size)
         assertThat(products.all { it.price > 0 }).isTrue()
         assertThat(products.all { it.verificationStatus == "NEEDS_REVIEW" }).isTrue()
+        assertThat(products.single { it.sku == "JUL26-PHN-042" }.storageGB).isEqualTo(1024)
+        assertThat(products.single { it.sku == "JUL26-PHN-049" }.storageGB).isEqualTo(1024)
+        assertThat(products.single { it.sku == "JUL26-PHN-140" }.ramGB).isEqualTo(4)
+        assertThat(products.single { it.sku == "JUL26-PHN-140" }.storageGB).isEqualTo(128)
     }
 
     @Test
@@ -54,7 +58,7 @@ class BundledCatalogAssetTest {
         val processorIds = specifications.processors.map { it.id }.toSet()
         val gpuIds = specifications.gpus.map { it.id }.toSet()
 
-        assertThat(specifications.version).isEqualTo("2026.09.22.3")
+        assertThat(specifications.version).isEqualTo("2026.09.24.1")
         assertThat(assignedSkus).hasSize(84)
         assertThat(assignedSkus.distinct()).hasSize(assignedSkus.size)
         assertThat(catalogSkus).containsAtLeastElementsIn(assignedSkus)

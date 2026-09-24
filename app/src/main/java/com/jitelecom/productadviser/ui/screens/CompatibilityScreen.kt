@@ -166,7 +166,13 @@ private fun SetupPanel(
             } else if (compatibleSoftware.isEmpty()) {
                 NoticeCard("No platform-matched apps are stored for this device yet.", warning = true)
             } else {
-                SearchableSelector("App or game", compatibleSoftware, selectedApp, { app -> if(app.supportsOperatingSystem(selectedProduct.operatingSystemForCompatibility())) app.displayName else "${app.displayName} • Not available" }, onSelected = { onSoftware(it.id) })
+                SearchableSelector("App or game", compatibleSoftware, selectedApp, { app ->
+                    when (platformCompatibility(app.platform, selectedProduct.operatingSystemForCompatibility())) {
+                        PlatformCompatibility.SUPPORTED -> app.displayName
+                        PlatformCompatibility.NOT_SUPPORTED -> "${app.displayName} • Not available"
+                        PlatformCompatibility.UNKNOWN -> "${app.displayName} • Platform unverified"
+                    }
+                }, onSelected = { onSoftware(it.id) })
                 selectedApp?.let { SoftwareSnapshot(it) }
             }
 
@@ -230,7 +236,7 @@ private fun SoftwareSnapshot(app: SoftwareSpec) {
 private fun PlatformNotice(product: ProductSpec?, availableCount: Int, totalCount: Int, showUnavailable: Boolean) {
     val text = when {
         product == null -> "The catalog separates desktop and mobile apps. Pick a device to filter the list."
-        showUnavailable -> "Showing all $totalCount apps. The $availableCount apps made for ${platformLabel(product.operatingSystemForCompatibility())} can be checked normally; unavailable apps receive a separate Not Available result."
+        showUnavailable -> "Showing all $totalCount apps. The $availableCount verified platform matches can be checked normally; incompatible apps show Not Available and unknown platforms show Not Verified."
         else -> "Showing $availableCount app${if (availableCount == 1) "" else "s"} available for ${platformLabel(product.operatingSystemForCompatibility())}. Enable Show unavailable apps to explain why another app cannot run on this platform."
     }
     Card(
@@ -307,9 +313,24 @@ private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, ap
                     Text(app?.displayName ?: "Compatibility result", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Text(product?.displayName.orEmpty(), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                StatusBadge(result.status)
+                Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                    StatusBadge(result.status)
+                    DataConfidenceBadge(result.dataStatus)
+                }
             }
             Text(result.explanation, style = MaterialTheme.typography.bodyLarge)
+            if (result.dataStatus != VerificationStatus.VERIFIED) {
+                Text(
+                    when (result.dataStatus) {
+                        VerificationStatus.NEEDS_REVIEW -> "The compatibility comparison is shown, but some stored source data still needs review."
+                        VerificationStatus.UNVERIFIED -> "The compatibility comparison is shown, but some stored specifications have not been verified against an official source."
+                        VerificationStatus.OUTDATED -> "The compatibility comparison is shown using data marked as outdated. Confirm current requirements before recommending this device."
+                        VerificationStatus.VERIFIED -> ""
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
@@ -351,6 +372,7 @@ private fun DisclaimerCard(text: String) {
 private fun platformIcon(value: String?): ImageVector = when {
     PlatformFamily.MACOS in platformFamilies(value) -> Icons.Default.LaptopMac
     PlatformFamily.ANDROID in platformFamilies(value) -> Icons.Default.Android
+    PlatformFamily.IPADOS in platformFamilies(value) -> Icons.Default.TabletMac
     PlatformFamily.IOS in platformFamilies(value) -> Icons.Default.PhoneIphone
     else -> Icons.Default.Computer
 }
