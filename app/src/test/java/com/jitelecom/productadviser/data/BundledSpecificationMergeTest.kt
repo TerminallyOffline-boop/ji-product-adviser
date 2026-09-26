@@ -56,4 +56,20 @@ class BundledSpecificationMergeTest {
         assertThat(current.withMissingBundledSpecifications(bundled).ramGB).isEqualTo(16)
         assertThat(current.withMissingBundledSpecifications(bundled).storageGB).isEqualTo(512)
     }
+
+    @Test fun promotesUntouchedCatalogRecordWhenBundledSourceIsVerified() {
+        val verified = bundled.copy(
+            sourceName = "HP official specifications",
+            verifiedDate = "2026-09-25",
+            verifiedBy = "JI Telecom official-source audit",
+            verificationStatus = VerificationStatus.VERIFIED
+        )
+        val result = current.copy(verificationStatus = VerificationStatus.NEEDS_REVIEW)
+            .withMissingBundledSpecifications(verified)
+
+        assertThat(result.verificationStatus).isEqualTo(VerificationStatus.VERIFIED)
+        assertThat(result.sourceName).isEqualTo("HP official specifications")
+        assertThat(result.verifiedDate).isEqualTo("2026-09-25")
+        assertThat(result.verifiedBy).isEqualTo("JI Telecom official-source audit")
+    }
 }

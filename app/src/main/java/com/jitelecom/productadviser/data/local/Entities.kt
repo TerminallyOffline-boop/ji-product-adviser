@@ -61,7 +61,7 @@ data class SoftwareEntity(
 @Entity(
     tableName = "requirements",
     foreignKeys = [ForeignKey(entity = SoftwareEntity::class, parentColumns = ["id"], childColumns = ["softwareId"], onDelete = ForeignKey.CASCADE)],
-    indices = [Index("softwareId"), Index(value = ["softwareId", "requirementType"], unique = true)]
+    indices = [Index("softwareId"), Index(value = ["softwareId", "requirementType", "platform"], unique = true)]
 )
 data class RequirementEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0, val softwareId: Long, @ColumnInfo(name = "requirementType") val type: RequirementType,
@@ -69,7 +69,8 @@ data class RequirementEntity(
     val minimumGpuTier: Int? = null, val minimumVramGB: Double? = null, val requiredArchitecture: String? = null,
     val supportedOperatingSystems: Set<String> = emptySet(), val requiredFeatures: Set<String> = emptySet(),
     val acceptedProcessorIds: Set<Long> = emptySet(), val acceptedGpuIds: Set<Long> = emptySet(), val notes: String? = null,
-    val verificationStatus: VerificationStatus = VerificationStatus.UNVERIFIED
+    val verificationStatus: VerificationStatus = VerificationStatus.UNVERIFIED,
+    val platform: String = ""
 )
 
 @Entity(

@@ -58,12 +58,15 @@ class BundledCatalogAssetTest {
         val processorIds = specifications.processors.map { it.id }.toSet()
         val gpuIds = specifications.gpus.map { it.id }.toSet()
 
-        assertThat(specifications.version).isEqualTo("2026.09.24.1")
-        assertThat(assignedSkus).hasSize(84)
+        assertThat(specifications.version).isEqualTo("2026.09.25.1")
+        assertThat(assignedSkus).hasSize(161)
         assertThat(assignedSkus.distinct()).hasSize(assignedSkus.size)
         assertThat(catalogSkus).containsAtLeastElementsIn(assignedSkus)
         assertThat(specifications.assignments.mapNotNull { it.processorId }.all { it in processorIds }).isTrue()
         assertThat(specifications.assignments.mapNotNull { it.gpuId }.all { it in gpuIds }).isTrue()
         assertThat(specifications.assignments.all { it.sourceUrl.startsWith("https://") }).isTrue()
+        val verified = specifications.assignments.filter { it.verificationStatus == "VERIFIED" }
+        assertThat(verified.flatMap { it.skus }).hasSize(101)
+        assertThat(verified.all { !it.sourceName.isNullOrBlank() && !it.verifiedBy.isNullOrBlank() }).isTrue()
     }
 }

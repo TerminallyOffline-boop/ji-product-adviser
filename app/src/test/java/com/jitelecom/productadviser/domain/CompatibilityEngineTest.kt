@@ -75,6 +75,13 @@ class CompatibilityEngineTest {
         assertThat(mobile.supportsOperatingSystem("Windows 11")).isFalse()
     }
 
+    @Test fun androidManufacturerSkinsAreRecognizedAsAndroid(){
+        val androidApp=software.copy(id=2,platform="Android")
+        listOf("ColorOS 16","MagicOS 10","HiOS 16","Xiaomi HyperOS 3","OriginOS 6","realme UI 7","One UI 8").forEach { os ->
+            assertThat(androidApp.supportsOperatingSystem(os)).isTrue()
+        }
+    }
+
     @Test fun acceptedProcessorListIsEnforcedWithoutTier(){
         val requirement=min().copy(minimumCpuTier=null,acceptedProcessorIds=setOf(99))
         val result=engine.evaluate(product(),software,listOf(requirement))
@@ -119,5 +126,47 @@ class CompatibilityEngineTest {
         val laptop=product(os=null).copy(brand="Generic",model="Notebook")
         assertThat(laptop.operatingSystemForCompatibility()).isNull()
         assertThat(engine.evaluate(laptop,software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)
+    }
+
+    @Test fun windows10DoesNotMeetWindows11Minimum(){
+        val result=engine.evaluate(product(os="Windows 10"),software,listOf(min(),rec()))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.BELOW_MINIMUM)
+        assertThat(result.components.first{it.component=="Operating system"}.status).isEqualTo(ComponentStatus.BELOW_MINIMUM)
+    }
+
+    @Test fun windowsWithoutVersionNeedsVerificationForWindows11Requirement(){
+        val result=engine.evaluate(product(os="Windows"),software,listOf(min(),rec()))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)
+        assertThat(result.components.first{it.component=="Operating system"}.status).isEqualTo(ComponentStatus.UNKNOWN)
+    }
+
+    @Test fun androidVersionComparisonIsNumeric(){
+        val requirement=min().copy(requiredArchitecture=null,supportedOperatingSystems=setOf("Android 12"))
+        val androidApp=software.copy(platform="Android")
+        val supported=engine.evaluate(product(os="Android 13"),androidApp,listOf(requirement))
+        val unsupported=engine.evaluate(product(os="Android 11"),androidApp,listOf(requirement))
+        assertThat(supported.components.first{it.component=="Operating system"}.status).isEqualTo(ComponentStatus.MEETS_MINIMUM)
+        assertThat(unsupported.components.first{it.component=="Operating system"}.status).isEqualTo(ComponentStatus.BELOW_MINIMUM)
+    }
+
+    @Test fun macOsVersionComparisonIsNumeric(){
+        val requirement=min().copy(requiredArchitecture=null,supportedOperatingSystems=setOf("macOS 13"))
+        val result=engine.evaluate(product(os="macOS 14"),software.copy(platform="macOS"),listOf(requirement))
+        assertThat(result.components.first{it.component=="Operating system"}.status).isEqualTo(ComponentStatus.MEETS_MINIMUM)
+    }
+
+    @Test fun platformSpecificRequirementIsChosenForTheDevice(){
+        val windows=min().copy(minimumRamGB=64,requiredArchitecture=null,supportedOperatingSystems=setOf("Windows 11"),platform="Windows")
+        val mac=min().copy(id=2,minimumRamGB=8,requiredArchitecture=null,supportedOperatingSystems=setOf("macOS 13"),platform="macOS")
+        val result=engine.evaluate(product(os="macOS 14",ram=16),software.copy(platform="Windows • macOS"),listOf(windows,mac))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_MINIMUM)
+        assertThat(result.components.first{it.component=="RAM"}.status).isEqualTo(ComponentStatus.MEETS_MINIMUM)
+    }
+
+    @Test fun scopedMinimumCanUseGeneralRecommendedRequirement(){
+        val macMinimum=min().copy(requiredArchitecture=null,supportedOperatingSystems=setOf("macOS 13"),platform="macOS")
+        val generalRecommended=rec().copy(requiredArchitecture=null,supportedOperatingSystems=setOf("macOS 13"),platform="")
+        val result=engine.evaluate(product(os="macOS 14"),software.copy(platform="Windows • macOS"),listOf(macMinimum,generalRecommended))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_RECOMMENDED)
     }
 }

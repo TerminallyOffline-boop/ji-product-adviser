@@ -33,9 +33,12 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
         architecture = architecture ?: bundled.architecture,
         batteryCapacityWh = batteryCapacityWh ?: bundled.batteryCapacityWh,
         weightKg = weightKg ?: bundled.weightKg,
+        supportedFeatures = supportedFeatures.ifEmpty { bundled.supportedFeatures },
         notes = mergedNotes,
+        sourceName = bundled.sourceName ?: sourceName,
         sourceUrl = sourceUrl ?: bundled.sourceUrl,
-        verifiedDate = verifiedDate ?: bundled.verifiedDate,
-        verifiedBy = verifiedBy ?: bundled.verifiedBy
+        verifiedDate = bundled.verifiedDate ?: verifiedDate,
+        verifiedBy = bundled.verifiedBy ?: verifiedBy,
+        verificationStatus = bundled.verificationStatus
     )
 }

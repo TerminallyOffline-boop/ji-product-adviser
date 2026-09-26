@@ -57,7 +57,7 @@ class DemoDataSeeder @Inject constructor(
                 DatabaseMetadataEntity("databaseVersion", BuildConfig.DATABASE_VERSION),
                 DatabaseMetadataEntity("bundledSpecificationsVersion", catalogLoader.specifications().version),
                 DatabaseMetadataEntity("bundledSoftwareVersion", BundledSoftwareCatalog.VERSION),
-                DatabaseMetadataEntity("lastUpdated", "2026-09-23"),
+                DatabaseMetadataEntity("lastUpdated", "2026-09-26"),
                 DatabaseMetadataEntity("dataNotice", DATA_NOTICE)
             ))
         }
@@ -106,7 +106,7 @@ class DemoDataSeeder @Inject constructor(
             }
             db.metadataDao().putAll(listOf(
                 DatabaseMetadataEntity("bundledSpecificationsVersion", specificationsVersion),
-                DatabaseMetadataEntity("specificationsUpdated", "2026-09-22"),
+                DatabaseMetadataEntity("specificationsUpdated", "2026-09-25"),
                 DatabaseMetadataEntity("dataNotice", DATA_NOTICE)
             ))
         }
@@ -131,12 +131,22 @@ class DemoDataSeeder @Inject constructor(
                     current.id
                 }
                 val existingRequirements = db.requirementDao().getForSoftware(softwareId)
-                db.requirementDao().insertAll(bundled.requirements(softwareId, existingRequirements))
+                val bundledRequirements = bundled.requirements(softwareId, existingRequirements)
+                db.requirementDao().insertAll(bundledRequirements)
+                if (bundled.recommended == null) {
+                    existingRequirements.filter { requirement ->
+                        requirement.type == RequirementType.RECOMMENDED &&
+                            requirement.platform.isBlank() &&
+                            listOf("JI target", "Practical JI", "Comfortable JI").any {
+                                marker -> requirement.notes.orEmpty().contains(marker, ignoreCase = true)
+                            }
+                    }.forEach { db.requirementDao().delete(it) }
+                }
             }
             db.metadataDao().putAll(listOf(
                 DatabaseMetadataEntity("bundledSoftwareVersion", BundledSoftwareCatalog.VERSION),
                 DatabaseMetadataEntity("databaseVersion", BuildConfig.DATABASE_VERSION),
-                DatabaseMetadataEntity("softwareUpdated", "2026-09-23")
+                DatabaseMetadataEntity("softwareUpdated", "2026-09-26")
             ))
         }
     }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.withTransaction
 import com.jitelecom.productadviser.BuildConfig
 import com.jitelecom.productadviser.data.local.*
+import com.jitelecom.productadviser.domain.model.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -148,6 +149,7 @@ class ImportExportManager @Inject constructor(
         if (compareVersions(pkg.metadata.minimumAppVersion, BuildConfig.VERSION_NAME) > 0) errors += ImportIssue("metadata", "Requires app ${pkg.metadata.minimumAppVersion} or later.")
         duplicateValues(pkg.products.map { it.sku.lowercase() }).forEach { errors += ImportIssue("products", "Duplicate SKU: $it") }
         duplicateValues(pkg.software.map { "${it.name}|${it.version}|${it.platform}".lowercase() }).forEach { errors += ImportIssue("software", "Duplicate software version: $it") }
+        duplicateValues(pkg.requirements.map { "${it.softwareId}|${it.type}|${it.platform.trim()}".lowercase() }).forEach { errors += ImportIssue("requirements", "Duplicate software/type/platform requirement: $it") }
         val processorIds = pkg.processors.map { it.id }.toSet(); val gpuIds = pkg.gpus.map { it.id }.toSet(); val softwareIds = pkg.software.map { it.id }.toSet()
         pkg.products.forEach {
             if (it.sku.isBlank() || it.brand.isBlank() || it.model.isBlank()) errors += ImportIssue(it.sku, "SKU, brand and model are required.")
@@ -156,10 +158,38 @@ class ImportExportManager @Inject constructor(
             if (it.processorId != null && it.processorId !in processorIds) errors += ImportIssue(it.sku, "Invalid processor reference.")
             if (it.gpuId != null && it.gpuId !in gpuIds) errors += ImportIssue(it.sku, "Invalid GPU reference.")
             if (it.sourceUrl.isNullOrBlank()) warnings += ImportIssue(it.sku, "Official source is missing.")
+            if (it.verificationStatus == VerificationStatus.VERIFIED && it.sourceUrl?.startsWith("https://", true) != true) errors += ImportIssue(it.sku, "Verified products require an HTTPS source URL.")
         }
         pkg.requirements.forEach {
             if (it.softwareId !in softwareIds) errors += ImportIssue("requirement ${it.id}", "Invalid software reference.")
-            if (listOfNotNull(it.minimumRamGB, it.minimumStorageGB, it.minimumCpuTier, it.minimumGpuTier).any { value -> value < 0 }) errors += ImportIssue("requirement ${it.id}", "Requirement values cannot be negative.")
+            if (listOfNotNull(it.minimumRamGB, it.minimumStorageGB, it.minimumCpuTier, it.minimumGpuTier).any { value -> value <= 0 }) errors += ImportIssue("requirement ${it.id}", "Stored requirement values must be greater than zero.")
+            if (it.minimumVramGB != null && it.minimumVramGB <= 0) errors += ImportIssue("requirement ${it.id}", "VRAM must be greater than zero.")
+            if (it.minimumCpuTier != null && it.minimumCpuTier !in 1..7) errors += ImportIssue("requirement ${it.id}", "CPU tier must be from 1 to 7.")
+            if (it.minimumGpuTier != null && it.minimumGpuTier !in 1..7) errors += ImportIssue("requirement ${it.id}", "GPU tier must be from 1 to 7.")
+            if (it.acceptedProcessorIds.any { id -> id !in processorIds }) errors += ImportIssue("requirement ${it.id}", "Approved processor list contains an invalid reference.")
+            if (it.acceptedGpuIds.any { id -> id !in gpuIds }) errors += ImportIssue("requirement ${it.id}", "Approved GPU list contains an invalid reference.")
+            val app = pkg.software.firstOrNull { app -> app.id == it.softwareId }
+            if (it.verificationStatus == VerificationStatus.VERIFIED && app?.requirementsSourceUrl?.startsWith("https://", true) != true) errors += ImportIssue("requirement ${it.id}", "Verified requirements need an HTTPS source URL on the software record.")
+            if (it.platform.isNotBlank() && platformFamilies(it.platform).intersect(platformFamilies(app?.platform)).isEmpty()) errors += ImportIssue("requirement ${it.id}", "Requirement platform is not supported by its software record.")
+            val hasMeaningfulValue = it.minimumRamGB != null || it.minimumStorageGB != null || it.minimumCpuTier != null || it.minimumGpuTier != null ||
+                it.minimumVramGB != null || !it.requiredArchitecture.isNullOrBlank() || it.supportedOperatingSystems.isNotEmpty() ||
+                it.requiredFeatures.isNotEmpty() || it.acceptedProcessorIds.isNotEmpty() || it.acceptedGpuIds.isNotEmpty()
+            if (!hasMeaningfulValue) errors += ImportIssue("requirement ${it.id}", "At least one meaningful requirement value is required.")
+        }
+        pkg.requirements.groupBy { it.softwareId to it.platform.trim().lowercase() }.values.forEach { group ->
+            val minimum = group.firstOrNull { it.type == RequirementType.MINIMUM } ?: return@forEach
+            val recommended = group.firstOrNull { it.type == RequirementType.RECOMMENDED } ?: return@forEach
+            val comparisons = listOf(
+                "RAM" to (minimum.minimumRamGB?.toDouble() to recommended.minimumRamGB?.toDouble()),
+                "storage" to (minimum.minimumStorageGB?.toDouble() to recommended.minimumStorageGB?.toDouble()),
+                "CPU tier" to (minimum.minimumCpuTier?.toDouble() to recommended.minimumCpuTier?.toDouble()),
+                "GPU tier" to (minimum.minimumGpuTier?.toDouble() to recommended.minimumGpuTier?.toDouble()),
+                "VRAM" to (minimum.minimumVramGB to recommended.minimumVramGB)
+            )
+            comparisons.forEach { (label, values) ->
+                val (minimumValue, recommendedValue) = values
+                if (minimumValue != null && recommendedValue != null && recommendedValue < minimumValue) errors += ImportIssue("requirement ${recommended.id}", "Recommended $label cannot be below minimum $label.")
+            }
         }
         return ImportPreview(pkg.products.size, pkg.processors.size, pkg.gpus.size, pkg.software.size, pkg.requirements.size, pkg.metadata.databaseVersion, errors, warnings)
     }

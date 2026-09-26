@@ -2,6 +2,52 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.2.0 - 2026-09-26 (local test build)
+
+### Fixed
+
+- Existing installations now receive updated official-source verification states, source labels, and dates without overwriting admin-maintained hardware or pricing
+- ColorOS, MagicOS, HiOS, HyperOS, OriginOS, realme UI, and One UI are recognized as Android platforms
+- Mobile compatibility no longer invents universal CPU/GPU minimums when an app publisher only documents platform or operating-system availability
+- Obsolete bundled mobile comfort tiers are removed safely during upgrade while custom requirements remain untouched
+
+### Added
+
+- A traced specification record for every one of the 161 non-printer products in the July 2026 lineup
+- Exact official-source verification for 101 configurations, including current HONOR, OPPO, realme, Samsung, TechLife, TECNO, vivo, Xiaomi, Apple, HP, and GIGABYTE products
+- Explicit review reasons for the remaining 60 records when a manufacturer omits the chipset name, the official region differs, or the store variant cannot be matched exactly
+- New processor and graphics records for current Snapdragon, Dimensity, Helio, Exynos, UNISOC, Adreno, and Mali platforms
+
+### Changed
+
+- Can It Run explanations now say they compare stored published or reviewed requirements and do not guarantee real-world performance or continued app availability
+- Verified products show the official manufacturer source; retailer-only and incomplete records no longer claim manufacturer verification
+- Mobile apps use publisher-backed platform/version requirements, including Android 8 or iOS/iPadOS 14 for Roblox Mobile
+
+## 1.1.2 - 2026-09-25 (local test build)
+
+### Fixed
+
+- Operating-system checks now compare versions, so Windows 10 no longer satisfies Windows 11 and older Android or macOS versions no longer pass newer minimums
+- An OS family without a stored version now returns Needs verification instead of an unsupported or falsely compatible answer
+- Cross-platform apps can store different minimum and recommended requirements for Windows, macOS, Android, iOS, and iPadOS
+- Imports reject invalid platform rules, empty requirements, unknown approved hardware IDs, non-positive values, and recommended values below the minimum
+- Existing installations upgrade the requirements table safely without deleting local edits
+
+### Added
+
+- A complete Admin requirements manager with edit and delete actions, platform scope, approved CPU/GPU lists, source status, and specification notes
+- Expanded product, CPU, GPU, and software editors for OS versions, architecture, tiers, VRAM, storage type, publisher sources, verification details, and other comparison fields
+- A Data quality report that identifies missing decisive specifications, sources, verification, invalid platform scopes, and inconsistent requirement levels
+- Clear Main blocker, Needs verification, and Main limitation guidance in Can It Run results
+- Up to three compatible alternative devices ranked by compatibility and price
+- Regression tests for Windows, Android, macOS, platform-specific rules, and data-quality reporting
+
+### Changed
+
+- Admin lists are searchable and show verification status and requirement counts
+- Verified products, software, and requirements require their official HTTPS source details before saving
+
 ## 1.1.1 - 2026-09-24
 
 ### Fixed

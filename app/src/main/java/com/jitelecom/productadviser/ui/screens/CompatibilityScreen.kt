@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jitelecom.productadviser.domain.model.*
+import com.jitelecom.productadviser.ui.CompatibilityAlternative
 import com.jitelecom.productadviser.ui.CompatibilityViewModel
 
 @Composable
@@ -33,6 +34,7 @@ fun CompatibilityScreen(initialProductId: Long? = null, viewModel: Compatibility
     val productId by viewModel.selectedProduct.collectAsState()
     val softwareId by viewModel.selectedSoftware.collectAsState()
     val result by viewModel.result.collectAsState()
+    val alternatives by viewModel.alternatives.collectAsState()
     val showUnavailable by viewModel.showUnavailableApps.collectAsState()
     val availableCount by viewModel.availableSoftwareCount.collectAsState()
     val selectedProduct = products.firstOrNull { it.id == productId }
@@ -75,7 +77,7 @@ fun CompatibilityScreen(initialProductId: Long? = null, viewModel: Compatibility
                         item { PlatformNotice(selectedProduct, availableCount, software.size, showUnavailable) }
                         item { Spacer(Modifier.height(8.dp)) }
                     }
-                    ResultsColumn(result, selectedProduct, selectedApp, true, Modifier.weight(1f).fillMaxHeight())
+                    ResultsColumn(result, selectedProduct, selectedApp, alternatives, {id->viewModel.selectProduct(id);viewModel.evaluate()}, true, Modifier.weight(1f).fillMaxHeight())
                 }
             } else {
                 LazyColumn(
@@ -96,6 +98,7 @@ fun CompatibilityScreen(initialProductId: Long? = null, viewModel: Compatibility
                     } else {
                         item { ResultSummary(result!!, selectedProduct, selectedApp) }
                         items(result!!.components, key = { it.component }) { ComponentResultCard(it) }
+                        if(result!!.status!=CompatibilityStatus.MEETS_RECOMMENDED&&alternatives.isNotEmpty())item{AlternativeDevices(alternatives){id->viewModel.selectProduct(id);viewModel.evaluate()}}
                         item { DisclaimerCard(result!!.disclaimer) }
                     }
                 }
@@ -257,6 +260,8 @@ private fun ResultsColumn(
     result: CompatibilityResult?,
     product: ProductSpec?,
     app: SoftwareSpec?,
+    alternatives: List<CompatibilityAlternative>,
+    onAlternative: (Long) -> Unit,
     grid: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -275,6 +280,7 @@ private fun ResultsColumn(
             } else {
                 items(result.components, key = { it.component }) { ComponentResultCard(it) }
             }
+            if(result.status!=CompatibilityStatus.MEETS_RECOMMENDED&&alternatives.isNotEmpty())item{AlternativeDevices(alternatives,onAlternative)}
             item { DisclaimerCard(result.disclaimer) }
         }
     }
@@ -298,6 +304,7 @@ private fun EmptyResultsCard() {
 @Composable
 private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, app: SoftwareSpec?) {
     val color = statusColor(result.status)
+    val mainIssue = mainCompatibilityIssue(result)
     Card(
         colors = CardDefaults.cardColors(containerColor = color.copy(alpha = .10f)),
         border = BorderStroke(1.dp, color.copy(alpha = .32f)),
@@ -319,6 +326,28 @@ private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, ap
                 }
             }
             Text(result.explanation, style = MaterialTheme.typography.bodyLarge)
+            mainIssue?.let { issue ->
+                val heading=when(issue.status){
+                    ComponentStatus.NOT_AVAILABLE->"Main blocker"
+                    ComponentStatus.BELOW_MINIMUM->"Main blocker"
+                    ComponentStatus.UNKNOWN->"Needs verification"
+                    ComponentStatus.MEETS_MINIMUM->"Main limitation"
+                    else->"Important detail"
+                }
+                Surface(shape=RoundedCornerShape(14.dp),color=color.copy(alpha=.08f)){
+                    Column(Modifier.fillMaxWidth().padding(12.dp),verticalArrangement=Arrangement.spacedBy(4.dp)){
+                        Text("$heading: ${issue.component}",fontWeight=FontWeight.Bold,color=color)
+                        Text(issue.explanation,style=MaterialTheme.typography.bodySmall)
+                        Text(when(issue.status){
+                            ComponentStatus.UNKNOWN->"Verify this device specification and the app requirement in More > Admin before making a firm recommendation."
+                            ComponentStatus.NOT_AVAILABLE->"Choose a device on a supported operating system, or confirm that the publisher now supports this platform."
+                            ComponentStatus.BELOW_MINIMUM->"Choose a device that meets this minimum requirement. Compatible catalog alternatives are shown below when available."
+                            ComponentStatus.MEETS_MINIMUM->"It should meet the minimum, but a recommended-level device will provide more headroom."
+                            else->"Review the component details below."
+                        },style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+            }
             if (result.dataStatus != VerificationStatus.VERIFIED) {
                 Text(
                     when (result.dataStatus) {
@@ -334,6 +363,29 @@ private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, ap
         }
     }
 }
+
+@Composable
+private fun AlternativeDevices(alternatives:List<CompatibilityAlternative>,onSelect:(Long)->Unit){
+    ElevatedCard(Modifier.fillMaxWidth(),shape=RoundedCornerShape(20.dp)){
+        Column(Modifier.fillMaxWidth().padding(16.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){
+            Row(verticalAlignment=Alignment.CenterVertically){Icon(Icons.Default.Recommend,null,tint=MaterialTheme.colorScheme.primary);Spacer(Modifier.width(8.dp));Column{Text("Compatible alternatives",fontWeight=FontWeight.Bold,style=MaterialTheme.typography.titleMedium);Text("Same product category, ranked by compatibility then price",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}}
+            alternatives.forEach{alternative->
+                OutlinedCard(Modifier.fillMaxWidth(),shape=RoundedCornerShape(15.dp)){
+                    Row(Modifier.fillMaxWidth().padding(12.dp),verticalAlignment=Alignment.CenterVertically){
+                        Column(Modifier.weight(1f)){Text(alternative.product.displayName,fontWeight=FontWeight.SemiBold);Text("${peso(alternative.product.effectivePrice)} • ${alternative.product.operatingSystemForCompatibility()?:"OS unverified"}",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant);StatusBadge(alternative.result.status)}
+                        TextButton(onClick={onSelect(alternative.product.id)}){Text("Use this")}
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun mainCompatibilityIssue(result:CompatibilityResult):ComponentCompatibilityResult? =
+    result.components.firstOrNull{it.status==ComponentStatus.NOT_AVAILABLE}
+        ?:result.components.firstOrNull{it.status==ComponentStatus.BELOW_MINIMUM}
+        ?:result.components.firstOrNull{it.status==ComponentStatus.UNKNOWN}
+        ?:result.components.firstOrNull{it.status==ComponentStatus.MEETS_MINIMUM}
 
 @Composable
 private fun ComponentResultCard(result: ComponentCompatibilityResult, modifier: Modifier = Modifier) {

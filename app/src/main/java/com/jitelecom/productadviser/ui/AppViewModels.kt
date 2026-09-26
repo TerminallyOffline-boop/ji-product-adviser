@@ -97,6 +97,8 @@ class ProductDetailViewModel @Inject constructor(savedState: SavedStateHandle, r
     fun toggleFavorite() = viewModelScope.launch { preferences.toggleFavorite(id) }
 }
 
+data class CompatibilityAlternative(val product: ProductSpec, val result: CompatibilityResult)
+
 @HiltViewModel
 class CompatibilityViewModel @Inject constructor(
     products: ProductRepository,
@@ -110,6 +112,7 @@ class CompatibilityViewModel @Inject constructor(
     val selectedSoftware = MutableStateFlow<Long?>(null)
     val showUnavailableApps = MutableStateFlow(false)
     private val _result = MutableStateFlow<CompatibilityResult?>(null); val result = _result.asStateFlow()
+    private val _alternatives = MutableStateFlow<List<CompatibilityAlternative>>(emptyList()); val alternatives = _alternatives.asStateFlow()
     val compatibleSoftware = combine(software, this.products, selectedProduct, showUnavailableApps) { apps, allProducts, productId, showUnavailable ->
         val product = allProducts.firstOrNull { it.id == productId }
         if (product == null || showUnavailable) apps else apps.filter { it.supportsOperatingSystem(product.operatingSystemForCompatibility()) }
@@ -128,11 +131,13 @@ class CompatibilityViewModel @Inject constructor(
             selectedSoftware.value = null
         }
         _result.value = null
+        _alternatives.value = emptyList()
     }
 
     fun selectSoftware(id: Long) {
         selectedSoftware.value = id
         _result.value = null
+        _alternatives.value = emptyList()
     }
     fun setShowUnavailable(value: Boolean) {
         showUnavailableApps.value = value
@@ -142,12 +147,21 @@ class CompatibilityViewModel @Inject constructor(
             if (product != null && app != null && !app.supportsOperatingSystem(product.operatingSystemForCompatibility())) selectedSoftware.value = null
         }
         _result.value = null
+        _alternatives.value = emptyList()
     }
 
     fun evaluate() = viewModelScope.launch {
         val product = products.value.firstOrNull { it.id == selectedProduct.value } ?: return@launch
         val app = software.value.firstOrNull { it.id == selectedSoftware.value } ?: return@launch
-        _result.value = engine.evaluate(product, app, repository.getRequirements(app.id))
+        val requirements = repository.getRequirements(app.id)
+        _result.value = engine.evaluate(product, app, requirements)
+        _alternatives.value = products.value.asSequence()
+            .filter { candidate -> candidate.id != product.id && candidate.category == product.category && candidate.availabilityStatus in setOf(AvailabilityStatus.AVAILABLE, AvailabilityStatus.LIMITED, AvailabilityStatus.DISPLAY_UNIT) && app.supportsOperatingSystem(candidate.operatingSystemForCompatibility()) }
+            .map { candidate -> CompatibilityAlternative(candidate, engine.evaluate(candidate, app, requirements)) }
+            .filter { it.result.status == CompatibilityStatus.MEETS_RECOMMENDED || it.result.status == CompatibilityStatus.MEETS_MINIMUM }
+            .sortedWith(compareBy<CompatibilityAlternative> { if(it.result.status == CompatibilityStatus.MEETS_RECOMMENDED) 0 else 1 }.thenBy { it.product.effectivePrice })
+            .take(3)
+            .toList()
         analytics.increment("compatibility_check", app.displayName)
     }
 }
@@ -290,6 +304,16 @@ data class AdminUiState(
     val undoArchiveId: Long? = null
 )
 
+enum class DataQualitySeverity { ERROR, WARNING }
+
+data class DataQualityIssue(
+    val severity: DataQualitySeverity,
+    val area: String,
+    val recordId: Long,
+    val title: String,
+    val detail: String
+)
+
 @HiltViewModel
 class AdminViewModel @Inject constructor(
     private val preferences: AppPreferences,
@@ -307,6 +331,10 @@ class AdminViewModel @Inject constructor(
     val processors = hardwareDao.observeProcessors().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val gpus = hardwareDao.observeGpus().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val software = softwareDao.observeAll().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val requirements = requirementDao.observeAllRequirements().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val qualityIssues = combine(productsFlow, processors, gpus, software, requirements) { productValues, processorValues, gpuValues, softwareValues, requirementValues ->
+        buildDataQualityIssues(productValues, processorValues, gpuValues, softwareValues, requirementValues)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
     private var pending: Pair<ByteArray, String>? = null
     private var pendingIsCsv = false
@@ -362,17 +390,30 @@ class AdminViewModel @Inject constructor(
             })
         }
     }
-    fun saveProduct(product: ProductSpec) = viewModelScope.launch { runCatching { products.saveProduct(product) }.onSuccess { message("Product saved.") }.onFailure { message(it.message ?: "Could not save product.") } }
+    fun saveProduct(product: ProductSpec) = viewModelScope.launch { runCatching {
+        require(product.verificationStatus != VerificationStatus.VERIFIED || product.sourceUrl.isHttpsUrl()) { "Verified products require an HTTPS official source URL." }
+        require(product.verificationStatus != VerificationStatus.VERIFIED || !product.verifiedBy.isNullOrBlank()) { "Verified products require a verifier name." }
+        products.saveProduct(product)
+    }.onSuccess { message("Product saved.") }.onFailure { message(it.message ?: "Could not save product.") } }
     fun archiveProduct(id: Long) = viewModelScope.launch { runCatching { products.archiveProduct(id) }.onSuccess { _state.update { it.copy(message="Product archived. You can undo this action.",undoArchiveId=id) } }.onFailure { message(it.message ?: "Could not archive the product.") } }
     fun restoreArchived() = viewModelScope.launch { val id=_state.value.undoArchiveId ?: return@launch;runCatching { productDao.setArchived(id,false) }.onSuccess { _state.update { it.copy(message="Product restored.",undoArchiveId=null) } }.onFailure { message(it.message ?: "Could not restore the product.") } }
     fun clearLocalHistory() = viewModelScope.launch { runCatching { analytics.deleteAll();preferences.clearProductHistory() }.onSuccess { message("Local searches, favorites, recent products and usage counters were cleared.") }.onFailure { message(it.message ?: "Could not clear local history.") } }
     fun saveProcessor(value: ProcessorEntity) = adminAction("Processor saved.", "processor") { if(value.id==0L) hardwareDao.insertProcessor(value) else hardwareDao.updateProcessor(value) }
     fun saveGpu(value: GpuEntity) = adminAction("GPU saved.", "GPU") { if(value.id==0L) hardwareDao.insertGpu(value) else hardwareDao.updateGpu(value) }
-    fun saveSoftware(value: SoftwareEntity) = adminAction("Software saved.", "software record") { if(value.id==0L) softwareDao.insert(value) else softwareDao.update(value) }
-    fun saveRequirement(value: RequirementEntity) = adminAction("Requirement saved.", "requirement") { requirementDao.insert(value) }
+    fun saveSoftware(value: SoftwareEntity) = adminAction("Software saved.", "software record") {
+        require(value.verificationStatus != VerificationStatus.VERIFIED || value.requirementsSourceUrl.isHttpsUrl()) { "Verified software requires an HTTPS requirements source URL." }
+        if(value.id==0L) softwareDao.insert(value) else softwareDao.update(value)
+    }
+    fun saveRequirement(value: RequirementEntity) = adminAction("Requirement saved.", "requirement") {
+        val app = softwareDao.get(value.softwareId) ?: error("The software record no longer exists.")
+        require(value.verificationStatus != VerificationStatus.VERIFIED || app.requirementsSourceUrl.isHttpsUrl()) { "Verified requirements require an HTTPS source URL on the software record." }
+        require(value.hasMeaningfulRequirement()) { "Add at least one hardware, operating-system, architecture, feature, or approved-model requirement." }
+        if(value.id==0L) requirementDao.insert(value) else requirementDao.update(value)
+    }
     fun deleteProcessor(value: ProcessorEntity) = adminAction("Processor deleted. Linked products now show an unspecified processor.", "processor") { hardwareDao.deleteProcessor(value) }
     fun deleteGpu(value: GpuEntity) = adminAction("GPU deleted. Linked products now show an unspecified GPU.", "GPU") { hardwareDao.deleteGpu(value) }
     fun deleteSoftware(value: SoftwareEntity) = adminAction("Software and its requirements were deleted.", "software record") { softwareDao.delete(value) }
+    fun deleteRequirement(value: RequirementEntity) = adminAction("Requirement deleted.", "requirement") { requirementDao.delete(value) }
     fun reportFileError(error: Throwable, fallback: String) { message(error.message ?: fallback) }
     fun reportMessage(value: String) { message(value) }
     private fun adminAction(success: String, itemName: String, action: suspend () -> Unit) = viewModelScope.launch {
@@ -383,6 +424,79 @@ class AdminViewModel @Inject constructor(
     }
     private fun message(value: String) { _state.update { it.copy(message=value) } }
 }
+
+private fun String?.isHttpsUrl(): Boolean = this?.trim()?.startsWith("https://", ignoreCase = true) == true
+
+private fun RequirementEntity.hasMeaningfulRequirement(): Boolean =
+    minimumRamGB != null || minimumStorageGB != null || minimumCpuTier != null || minimumGpuTier != null ||
+        minimumVramGB != null || !requiredArchitecture.isNullOrBlank() || supportedOperatingSystems.isNotEmpty() ||
+        requiredFeatures.isNotEmpty() || acceptedProcessorIds.isNotEmpty() || acceptedGpuIds.isNotEmpty()
+
+internal fun buildDataQualityIssues(
+    products: List<ProductSpec>,
+    processors: List<ProcessorEntity>,
+    gpus: List<GpuEntity>,
+    software: List<SoftwareEntity>,
+    requirements: List<RequirementEntity>
+): List<DataQualityIssue> = buildList {
+    fun issue(severity: DataQualitySeverity, area: String, id: Long, title: String, detail: String) {
+        add(DataQualityIssue(severity, area, id, title, detail))
+    }
+    products.forEach { product ->
+        val name = product.displayName
+        val compatibilityDevice = product.category in setOf(ProductCategory.LAPTOP, ProductCategory.DESKTOP, ProductCategory.SMARTPHONE, ProductCategory.TABLET, ProductCategory.GAMING_CONSOLE)
+        if (compatibilityDevice && product.ramGB == null) issue(DataQualitySeverity.ERROR, "Product", product.id, name, "RAM is missing.")
+        if (compatibilityDevice && product.storageGB == null) issue(DataQualitySeverity.WARNING, "Product", product.id, name, "Storage capacity is missing.")
+        if (compatibilityDevice && product.processor == null) issue(DataQualitySeverity.WARNING, "Product", product.id, name, "Processor is not assigned.")
+        if (compatibilityDevice && product.operatingSystemForCompatibility() == null) issue(DataQualitySeverity.WARNING, "Product", product.id, name, "Operating system is unknown.")
+        if (compatibilityDevice && product.architecture.isNullOrBlank()) issue(DataQualitySeverity.WARNING, "Product", product.id, name, "Architecture is missing.")
+        if (!product.sourceUrl.isHttpsUrl()) issue(DataQualitySeverity.WARNING, "Product", product.id, name, "Official HTTPS source is missing.")
+        if (product.verificationStatus != VerificationStatus.VERIFIED) issue(DataQualitySeverity.WARNING, "Product", product.id, name, "Status is ${product.verificationStatus.name.lowercase().replace('_', ' ')}.")
+    }
+    processors.forEach { processor ->
+        val name = "${processor.manufacturer} ${processor.model}"
+        if (processor.performanceTier == null) issue(DataQualitySeverity.WARNING, "Processor", processor.id, name, "Internal performance tier is missing.")
+        if (processor.architecture.isNullOrBlank()) issue(DataQualitySeverity.WARNING, "Processor", processor.id, name, "Architecture is missing.")
+        if (!processor.sourceUrl.isHttpsUrl()) issue(DataQualitySeverity.WARNING, "Processor", processor.id, name, "Official HTTPS source is missing.")
+    }
+    gpus.forEach { gpu ->
+        val name = "${gpu.manufacturer} ${gpu.model}"
+        if (gpu.performanceTier == null) issue(DataQualitySeverity.WARNING, "GPU", gpu.id, name, "Internal performance tier is missing.")
+        if (gpu.type == GpuType.DEDICATED && gpu.vramGB == null) issue(DataQualitySeverity.ERROR, "GPU", gpu.id, name, "Dedicated GPU VRAM is missing.")
+        if (!gpu.sourceUrl.isHttpsUrl()) issue(DataQualitySeverity.WARNING, "GPU", gpu.id, name, "Official HTTPS source is missing.")
+    }
+    val requirementsBySoftware = requirements.groupBy { it.softwareId }
+    software.forEach { app ->
+        val name = "${app.name} ${app.version}"
+        val appRequirements = requirementsBySoftware[app.id].orEmpty()
+        if (appRequirements.none { it.type == RequirementType.MINIMUM }) issue(DataQualitySeverity.ERROR, "Software", app.id, name, "Minimum requirements are missing.")
+        if (!app.requirementsSourceUrl.isHttpsUrl()) issue(DataQualitySeverity.WARNING, "Software", app.id, name, "Official HTTPS requirements source is missing.")
+        if (app.verificationStatus != VerificationStatus.VERIFIED) issue(DataQualitySeverity.WARNING, "Software", app.id, name, "Status is ${app.verificationStatus.name.lowercase().replace('_', ' ')}.")
+    }
+    requirements.forEach { requirement ->
+        val app = software.firstOrNull { it.id == requirement.softwareId }
+        val title = "${app?.name ?: "Unknown software"} • ${requirement.platform.ifBlank { "All platforms" }} • ${requirement.type.name.lowercase()}"
+        if (!requirement.hasMeaningfulRequirement()) issue(DataQualitySeverity.ERROR, "Requirement", requirement.id, title, "No meaningful requirement values are stored.")
+        if (requirement.verificationStatus == VerificationStatus.VERIFIED && !app?.requirementsSourceUrl.isHttpsUrl()) issue(DataQualitySeverity.ERROR, "Requirement", requirement.id, title, "Marked verified without an HTTPS source.")
+        if (requirement.verificationStatus != VerificationStatus.VERIFIED) issue(DataQualitySeverity.WARNING, "Requirement", requirement.id, title, "Requirement needs source verification.")
+        if (requirement.platform.isNotBlank() && platformFamilies(requirement.platform).intersect(platformFamilies(app?.platform)).isEmpty()) issue(DataQualitySeverity.ERROR, "Requirement", requirement.id, title, "Platform is not included in the software record.")
+    }
+    requirements.groupBy { it.softwareId to it.platform.trim().lowercase() }.values.forEach { group ->
+        val minimum = group.firstOrNull { it.type == RequirementType.MINIMUM } ?: return@forEach
+        val recommended = group.firstOrNull { it.type == RequirementType.RECOMMENDED } ?: return@forEach
+        val regressions = listOfNotNull(
+            comparisonProblem("RAM", minimum.minimumRamGB?.toDouble(), recommended.minimumRamGB?.toDouble()),
+            comparisonProblem("storage", minimum.minimumStorageGB?.toDouble(), recommended.minimumStorageGB?.toDouble()),
+            comparisonProblem("CPU tier", minimum.minimumCpuTier?.toDouble(), recommended.minimumCpuTier?.toDouble()),
+            comparisonProblem("GPU tier", minimum.minimumGpuTier?.toDouble(), recommended.minimumGpuTier?.toDouble()),
+            comparisonProblem("VRAM", minimum.minimumVramGB, recommended.minimumVramGB)
+        )
+        if (regressions.isNotEmpty()) issue(DataQualitySeverity.ERROR, "Requirement", recommended.id, "Recommended requirements", regressions.joinToString(" "))
+    }
+}.sortedWith(compareBy<DataQualityIssue> { it.severity != DataQualitySeverity.ERROR }.thenBy { it.area }.thenBy { it.title })
+
+private fun comparisonProblem(label: String, minimum: Double?, recommended: Double?): String? =
+    if (minimum != null && recommended != null && recommended < minimum) "$label is below the minimum value." else null
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(private val preferences: AppPreferences) : ViewModel() {

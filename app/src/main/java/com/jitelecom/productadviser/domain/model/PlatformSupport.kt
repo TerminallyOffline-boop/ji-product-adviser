@@ -11,6 +11,7 @@ enum class PlatformFamily(val displayName: String) {
 }
 
 enum class PlatformCompatibility { SUPPORTED, NOT_SUPPORTED, UNKNOWN }
+enum class OperatingSystemCompatibility { MATCH, NOT_SUPPORTED, UNKNOWN }
 
 fun platformFamilies(value: String?): Set<PlatformFamily> {
     val normalized = value.orEmpty().lowercase()
@@ -18,7 +19,10 @@ fun platformFamilies(value: String?): Set<PlatformFamily> {
     return buildSet {
         if ("windows" in normalized || Regex("\\bwin(10|11)?\\b").containsMatchIn(normalized)) add(PlatformFamily.WINDOWS)
         if ("macos" in normalized || "mac os" in normalized || "macbook" in normalized) add(PlatformFamily.MACOS)
-        if ("android" in normalized) add(PlatformFamily.ANDROID)
+        if (
+            "android" in normalized ||
+            listOf("coloros", "magic os", "magicos", "hios", "hyperos", "originos", "realme ui", "one ui").any { it in normalized }
+        ) add(PlatformFamily.ANDROID)
         if (Regex("(^|[^a-z])ios([^a-z]|$)").containsMatchIn(normalized) || "iphone" in normalized) add(PlatformFamily.IOS)
         if ("ipados" in normalized || "ipad" in normalized) add(PlatformFamily.IPADOS)
         if ("linux" in normalized || "ubuntu" in normalized || "debian" in normalized || "fedora" in normalized) add(PlatformFamily.LINUX)
@@ -49,19 +53,58 @@ fun platformCompatibility(appPlatform: String?, operatingSystem: String?): Platf
 fun SoftwareSpec.supportsOperatingSystem(operatingSystem: String?): Boolean =
     platformCompatibility(platform, operatingSystem) == PlatformCompatibility.SUPPORTED
 
-fun operatingSystemMatches(actual: String, required: String): Boolean {
+fun operatingSystemCompatibility(actual: String, required: String): OperatingSystemCompatibility {
     val actualFamilies = platformFamilies(actual)
     val requiredFamilies = platformFamilies(required)
     if (actualFamilies.isNotEmpty() && requiredFamilies.isNotEmpty()) {
-        if (actualFamilies.none { it in requiredFamilies }) return false
-        if (PlatformFamily.WINDOWS in actualFamilies && PlatformFamily.WINDOWS in requiredFamilies) {
-            val requiredVersion = Regex("windows\\s*(10|11)", RegexOption.IGNORE_CASE).find(required)?.groupValues?.get(1)?.toIntOrNull()
-            val actualVersion = Regex("windows\\s*(10|11)", RegexOption.IGNORE_CASE).find(actual)?.groupValues?.get(1)?.toIntOrNull()
-            if (requiredVersion != null && actualVersion != null) return actualVersion >= requiredVersion
+        val sharedFamilies = actualFamilies.intersect(requiredFamilies)
+        if (sharedFamilies.isEmpty()) return OperatingSystemCompatibility.NOT_SUPPORTED
+        var needsVersion = false
+        sharedFamilies.forEach { family ->
+            val requiredVersion = operatingSystemVersion(required, family)
+            if (requiredVersion == null) return OperatingSystemCompatibility.MATCH
+            needsVersion = true
+            val actualVersion = operatingSystemVersion(actual, family) ?: return@forEach
+            if (compareVersionParts(actualVersion, requiredVersion) >= 0) return OperatingSystemCompatibility.MATCH
         }
-        return true
+        return if (needsVersion && sharedFamilies.none { operatingSystemVersion(actual, it) != null }) {
+            OperatingSystemCompatibility.UNKNOWN
+        } else {
+            OperatingSystemCompatibility.NOT_SUPPORTED
+        }
     }
-    return actual.contains(required, ignoreCase = true) || required.contains(actual, ignoreCase = true)
+    return if (actual.contains(required, ignoreCase = true) || required.contains(actual, ignoreCase = true)) {
+        OperatingSystemCompatibility.MATCH
+    } else {
+        OperatingSystemCompatibility.NOT_SUPPORTED
+    }
+}
+
+fun operatingSystemMatches(actual: String, required: String): Boolean =
+    operatingSystemCompatibility(actual, required) == OperatingSystemCompatibility.MATCH
+
+private fun operatingSystemVersion(value: String, family: PlatformFamily): List<Int>? {
+    val prefix = when (family) {
+        PlatformFamily.WINDOWS -> "windows|win"
+        PlatformFamily.MACOS -> "macos|mac\\s+os(?:\\s+x)?"
+        PlatformFamily.ANDROID -> "android"
+        PlatformFamily.IOS -> "ios|iphone\\s+os"
+        PlatformFamily.IPADOS -> "ipados"
+        PlatformFamily.CHROMEOS -> "chromeos|chrome\\s+os"
+        PlatformFamily.LINUX -> return null
+    }
+    val match = Regex("(?:$prefix)\\s*(?:version\\s*)?(\\d+(?:\\.\\d+)*)", RegexOption.IGNORE_CASE).find(value)
+        ?: return null
+    return match.groupValues[1].split('.').mapNotNull(String::toIntOrNull).takeIf { it.isNotEmpty() }
+}
+
+private fun compareVersionParts(actual: List<Int>, required: List<Int>): Int {
+    val length = maxOf(actual.size, required.size)
+    repeat(length) { index ->
+        val comparison = (actual.getOrElse(index) { 0 }).compareTo(required.getOrElse(index) { 0 })
+        if (comparison != 0) return comparison
+    }
+    return 0
 }
 
 fun platformLabel(value: String?): String = platformFamilies(value).joinToString(" / ") { it.displayName }

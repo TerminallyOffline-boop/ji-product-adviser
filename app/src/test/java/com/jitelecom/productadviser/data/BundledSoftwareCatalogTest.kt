@@ -1,8 +1,11 @@
 package com.jitelecom.productadviser.data
 
 import com.google.common.truth.Truth.assertThat
+import com.jitelecom.productadviser.data.local.RequirementEntity
 import com.jitelecom.productadviser.data.seed.BundledSoftwareCatalog
 import com.jitelecom.productadviser.domain.model.PlatformFamily
+import com.jitelecom.productadviser.domain.model.RequirementType
+import com.jitelecom.productadviser.domain.model.VerificationStatus
 import com.jitelecom.productadviser.domain.model.platformFamilies
 import org.junit.Test
 
@@ -31,5 +34,30 @@ class BundledSoftwareCatalogTest {
         val finalCut = entries.single { it.name == "Final Cut Pro" }
         assertThat(platformFamilies(valorant.platform)).containsExactly(PlatformFamily.WINDOWS)
         assertThat(platformFamilies(finalCut.platform)).containsExactly(PlatformFamily.MACOS)
+    }
+
+    @Test fun mobileMinimumsUsePublishedAvailabilityWithoutInventedHardwareTiers() {
+        entries.filter { PlatformFamily.ANDROID in platformFamilies(it.platform) }.forEach { app ->
+            assertThat(app.minimum.cpuTier).isNull()
+            assertThat(app.minimum.gpuTier).isNull()
+            assertThat(app.minimum.verificationStatus).isEqualTo(VerificationStatus.VERIFIED)
+            assertThat(app.recommended).isNull()
+        }
+    }
+
+    @Test fun requirementIdIsPreservedOnlyForTheSameTypeAndPlatform() {
+        val definition = entries.first().copy(
+            minimum = entries.first().minimum.copy(platform = "macOS"),
+            recommended = null
+        )
+        val requirements = definition.requirements(
+            softwareId = 7,
+            existing = listOf(
+                RequirementEntity(id = 11, softwareId = 7, type = RequirementType.MINIMUM, platform = "Windows"),
+                RequirementEntity(id = 12, softwareId = 7, type = RequirementType.MINIMUM, platform = "macOS")
+            )
+        )
+        assertThat(requirements.single().id).isEqualTo(12)
+        assertThat(requirements.single().platform).isEqualTo("macOS")
     }
 }

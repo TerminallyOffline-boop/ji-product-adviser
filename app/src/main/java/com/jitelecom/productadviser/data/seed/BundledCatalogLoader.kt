@@ -97,6 +97,9 @@ data class BundledSpecificationAssignment(
     val weightKg: Double? = null,
     val supportedFeatures: Set<String> = emptySet(),
     val sourceUrl: String,
+    val sourceName: String? = null,
+    val verifiedBy: String? = null,
+    val verificationStatus: String = "NEEDS_REVIEW",
     val notes: String? = null
 )
 
@@ -158,6 +161,10 @@ class BundledCatalogLoader @Inject constructor(
             .toMap()
         return load().products.map { product ->
             val specification = assignments[product.sku]
+            val specificationStatus = specification?.verificationStatus
+                ?.let(VerificationStatus::valueOf)
+                ?: VerificationStatus.valueOf(product.verificationStatus)
+            val isOfficiallyVerified = specificationStatus == VerificationStatus.VERIFIED
         ProductEntity(
             sku = product.sku,
             brand = product.brand,
@@ -189,14 +196,20 @@ class BundledCatalogLoader @Inject constructor(
                 product.notes,
                 product.processorLabel?.let { "Spreadsheet processor label: $it." },
                 specification?.notes,
-                specification?.let { "Selected hardware details are supported by the linked manufacturer source. See the matching notes above for any variant limitations." }
+                specification?.let {
+                    if (isOfficiallyVerified) {
+                        "The compatibility-critical details were checked against the linked official specification."
+                    } else {
+                        "A linked reference supports some details, but the exact model or variant still needs verification."
+                    }
+                }
             ).joinToString(" "),
-            sourceName = product.sourceName,
+            sourceName = specification?.sourceName ?: product.sourceName,
             sourceUrl = specification?.sourceUrl,
             verifiedDate = specification?.let { specifications.verifiedDate },
             lastUpdated = product.lastUpdated,
-            verifiedBy = specification?.let { "Official manufacturer specifications" },
-            verificationStatus = VerificationStatus.valueOf(product.verificationStatus)
+            verifiedBy = specification?.verifiedBy?.takeIf { isOfficiallyVerified },
+            verificationStatus = specificationStatus
         )
     }
 

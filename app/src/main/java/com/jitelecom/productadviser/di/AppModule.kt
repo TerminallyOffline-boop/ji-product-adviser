@@ -24,7 +24,9 @@ import javax.inject.Singleton
 @Module @InstallIn(SingletonComponent::class)
 object AppModule {
     @Provides @Singleton fun database(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "ji_product_adviser.db").build()
+        Room.databaseBuilder(context, AppDatabase::class.java, "ji_product_adviser.db")
+            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .build()
     @Provides fun productDao(db: AppDatabase) = db.productDao()
     @Provides fun hardwareDao(db: AppDatabase) = db.hardwareDao()
     @Provides fun softwareDao(db: AppDatabase) = db.softwareDao()

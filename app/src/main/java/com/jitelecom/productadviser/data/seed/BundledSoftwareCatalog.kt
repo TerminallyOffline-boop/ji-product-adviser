@@ -13,7 +13,8 @@ data class SoftwareRequirementTemplate(
     val vramGB: Double? = null,
     val operatingSystems: Set<String>,
     val notes: String,
-    val verificationStatus: VerificationStatus = VerificationStatus.VERIFIED
+    val verificationStatus: VerificationStatus = VerificationStatus.VERIFIED,
+    val platform: String = ""
 ) {
     fun entity(softwareId: Long, type: RequirementType, id: Long = 0) = RequirementEntity(
         id = id,
@@ -26,7 +27,8 @@ data class SoftwareRequirementTemplate(
         minimumVramGB = vramGB,
         supportedOperatingSystems = operatingSystems,
         notes = notes,
-        verificationStatus = verificationStatus
+        verificationStatus = verificationStatus,
+        platform = platform
     )
 }
 
@@ -52,19 +54,19 @@ data class BundledSoftwareDefinition(
         description = description,
         officialWebsite = officialWebsite,
         requirementsSourceUrl = requirementsSourceUrl,
-        lastVerified = "2026-09-23",
+        lastVerified = "2026-09-26",
         verificationStatus = VerificationStatus.VERIFIED
     )
 
     fun requirements(softwareId: Long, existing: List<RequirementEntity> = emptyList()): List<RequirementEntity> =
         listOfNotNull(
-            minimum.entity(softwareId, RequirementType.MINIMUM, existing.firstOrNull { it.type == RequirementType.MINIMUM }?.id ?: 0),
-            recommended?.entity(softwareId, RequirementType.RECOMMENDED, existing.firstOrNull { it.type == RequirementType.RECOMMENDED }?.id ?: 0)
+            minimum.entity(softwareId, RequirementType.MINIMUM, existing.firstOrNull { it.type == RequirementType.MINIMUM && it.platform == minimum.platform }?.id ?: 0),
+            recommended?.entity(softwareId, RequirementType.RECOMMENDED, existing.firstOrNull { it.type == RequirementType.RECOMMENDED && it.platform == recommended.platform }?.id ?: 0)
         )
 }
 
 object BundledSoftwareCatalog {
-    const val VERSION = "2026.09.23.1"
+    const val VERSION = "2026.09.26.1"
 
     private fun requirement(
         ram: Int? = null,
@@ -74,8 +76,9 @@ object BundledSoftwareCatalog {
         vram: Double? = null,
         os: Set<String>,
         note: String,
-        status: VerificationStatus = VerificationStatus.VERIFIED
-    ) = SoftwareRequirementTemplate(ram, storage, cpu, gpu, vram, os, note, status)
+        status: VerificationStatus = VerificationStatus.VERIFIED,
+        platform: String = ""
+    ) = SoftwareRequirementTemplate(ram, storage, cpu, gpu, vram, os, note, status, platform)
 
     private val windowsMac = setOf("Windows 10", "Windows 11", "macOS")
     private val windowsMacLinux = setOf("Windows 10", "Windows 11", "macOS", "Linux")
@@ -200,43 +203,37 @@ object BundledSoftwareCatalog {
             "Microsoft 365 Mobile", "Current", "Office", "Microsoft", "Android • iOS • iPadOS",
             "Microsoft productivity apps for Android phones/tablets, iPhone and iPad.", "https://www.microsoft.com/microsoft-365/mobile",
             "https://support.microsoft.com/en-us/accounts-billing/subscriptions/microsoft-365-system-requirements",
-            requirement(2, 1, 1, 1, os = mobile, note = "Official mobile platform availability; device-level performance varies."),
-            requirement(4, 2, 2, 2, os = mobile, note = "Practical JI target for document multitasking.")
+            requirement(os = mobile, note = "Official mobile platform availability. Microsoft does not publish a comparable CPU/GPU tier for every supported phone and tablet.")
         ),
         BundledSoftwareDefinition(
             "Canva Mobile", "Current", "Graphic Design", "Canva", "Android • iOS • iPadOS",
             "Design and mobile video editing on Android, iPhone and iPad.", "https://www.canva.com/mobile/",
             "https://www.canva.com/video-editor/mobile-app/",
-            requirement(2, 1, 1, 1, os = mobile, note = "Canva confirms Android and iOS availability; hardware values are JI guidance.", status = VerificationStatus.NEEDS_REVIEW),
-            requirement(6, 3, 3, 3, os = mobile, note = "JI target for smoother design and mobile video work.", status = VerificationStatus.NEEDS_REVIEW)
+            requirement(os = mobile, note = "Canva confirms Android and iOS availability but does not publish universal CPU/GPU tiers for all devices.")
         ),
         BundledSoftwareDefinition(
             "CapCut Mobile", "Current", "Video Editing", "ByteDance", "Android • iOS • iPadOS",
             "Mobile video editor for Android phones/tablets, iPhone and iPad.", "https://www.capcut.com/",
             "https://www.capcut.com/tools/video-editor-download",
-            requirement(3, 2, 2, 2, os = mobile, note = "Official platform availability; hardware values are JI guidance.", status = VerificationStatus.NEEDS_REVIEW),
-            requirement(6, 5, 4, 4, os = mobile, note = "JI target for higher-resolution editing and effects.", status = VerificationStatus.NEEDS_REVIEW)
+            requirement(os = mobile, note = "Official mobile platform availability; no invented universal CPU/GPU minimum is applied.")
         ),
         BundledSoftwareDefinition(
             "Zoom Workplace Mobile", "Current", "Communication", "Zoom", "Android • iOS • iPadOS",
             "Meetings and collaboration on Android, iPhone and iPad.", "https://zoom.us/download",
             "https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0079800",
-            requirement(2, 1, 1, 1, os = mobile, note = "Official Android and iOS availability; hardware values are JI guidance.", status = VerificationStatus.NEEDS_REVIEW),
-            requirement(4, 2, 2, 2, os = mobile, note = "JI target for video calls and screen sharing.", status = VerificationStatus.NEEDS_REVIEW)
+            requirement(os = mobile, note = "Official Android and iOS availability; actual call features depend on the device and app release.")
         ),
         BundledSoftwareDefinition(
             "Roblox Mobile", "Current", "Gaming", "Roblox Corporation", "Android • iOS • iPadOS",
             "Roblox experiences on supported Android, iPhone and iPad devices.", "https://www.roblox.com/mobile",
             "https://en.help.roblox.com/hc/en-us/articles/203625474-Roblox-Mobile-System-Requirements",
-            requirement(2, 1, 2, 2, os = mobile, note = "Roblox requires Android 8+ or iOS/iPadOS 14+; hardware tiers are JI guidance."),
-            requirement(4, 2, 3, 3, os = mobile, note = "JI target for smoother 3D experiences.")
+            requirement(os = setOf("Android 8", "iOS 14", "iPadOS 14"), note = "Publisher minimum operating-system versions. Roblox does not provide one comparable CPU/GPU tier covering every mobile device.")
         ),
         BundledSoftwareDefinition(
             "Google Chrome Mobile", "Current", "Productivity", "Google", "Android • iOS • iPadOS",
             "Chrome browser for Android phones/tablets, iPhone and iPad.", "https://www.google.com/chrome/mobile/",
             "https://support.google.com/chrome/answer/95346",
-            requirement(2, 1, 1, 1, os = mobile, note = "Mobile platform availability; hardware values are JI guidance.", status = VerificationStatus.NEEDS_REVIEW),
-            requirement(4, 2, 2, 2, os = mobile, note = "JI target for browsing with several tabs.", status = VerificationStatus.NEEDS_REVIEW)
+            requirement(os = mobile, note = "Official mobile platform availability; no invented universal CPU/GPU minimum is applied.")
         )
     )
 }

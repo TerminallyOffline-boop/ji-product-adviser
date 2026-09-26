@@ -113,7 +113,8 @@ data class RequirementSet(
     val acceptedProcessorIds: Set<Long> = emptySet(),
     val acceptedGpuIds: Set<Long> = emptySet(),
     val notes: String? = null,
-    val verificationStatus: VerificationStatus = VerificationStatus.UNVERIFIED
+    val verificationStatus: VerificationStatus = VerificationStatus.UNVERIFIED,
+    val platform: String = ""
 )
 
 data class WorkloadProfile(

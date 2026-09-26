@@ -64,12 +64,14 @@ interface SoftwareDao {
 
 @Dao
 interface RequirementDao {
+    @Query("SELECT * FROM requirements ORDER BY softwareId, platform, requirementType") fun observeAllRequirements(): Flow<List<RequirementEntity>>
     @Query("SELECT * FROM requirements WHERE softwareId = :softwareId ORDER BY requirementType") fun observeForSoftware(softwareId: Long): Flow<List<RequirementEntity>>
     @Query("SELECT * FROM requirements WHERE softwareId = :softwareId ORDER BY requirementType") suspend fun getForSoftware(softwareId: Long): List<RequirementEntity>
     @Query("SELECT * FROM requirements ORDER BY softwareId, requirementType") suspend fun getAll(): List<RequirementEntity>
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insert(value: RequirementEntity): Long
+    @Insert(onConflict = OnConflictStrategy.ABORT) suspend fun insert(value: RequirementEntity): Long
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertAll(values: List<RequirementEntity>): List<Long>
     @Update suspend fun update(value: RequirementEntity)
+    @Delete suspend fun delete(value: RequirementEntity)
     @Query("DELETE FROM requirements") suspend fun deleteAll()
 }
 

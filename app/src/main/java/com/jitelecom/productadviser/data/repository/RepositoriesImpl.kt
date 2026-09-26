@@ -49,7 +49,7 @@ fun ProductWithHardware.toDomain() = ProductSpec(
 fun ProcessorEntity.toDomain() = ProcessorSpec(id, manufacturer, family, model, generation, architecture, coreCount, threadCount, baseClockGhz, boostClockGhz, integratedGpu, performanceTier, workloadTier, notes, sourceUrl)
 fun GpuEntity.toDomain() = GpuSpec(id, manufacturer, model, type, vramGB, architecture, performanceTier, graphicsTier, notes, sourceUrl)
 fun SoftwareEntity.toDomain() = SoftwareSpec(id, name, developer, version, category, platform, description, officialWebsite, requirementsSourceUrl, lastVerified, iconPath, verificationStatus)
-fun RequirementEntity.toDomain() = RequirementSet(id, softwareId, type, minimumRamGB, minimumStorageGB, minimumCpuTier, minimumGpuTier, minimumVramGB, requiredArchitecture, supportedOperatingSystems, requiredFeatures, acceptedProcessorIds, acceptedGpuIds, notes, verificationStatus)
+fun RequirementEntity.toDomain() = RequirementSet(id, softwareId, type, minimumRamGB, minimumStorageGB, minimumCpuTier, minimumGpuTier, minimumVramGB, requiredArchitecture, supportedOperatingSystems, requiredFeatures, acceptedProcessorIds, acceptedGpuIds, notes, verificationStatus, platform)
 
 fun ProductSpec.toEntity() = ProductEntity(
     id, sku, brand, model, modelFamily, variant, category, subcategory, releaseYear, productImage, price, promotionalPrice,
