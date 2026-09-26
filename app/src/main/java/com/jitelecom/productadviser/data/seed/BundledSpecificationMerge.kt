@@ -6,8 +6,12 @@ import com.jitelecom.productadviser.domain.model.VerificationStatus
 /** Add missing published specs without replacing store-maintained prices or hardware. */
 internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEntity): ProductEntity {
     if (sku != bundled.sku || brand != bundled.brand || model != bundled.model || category != bundled.category) return this
-    if (archived || verificationStatus == VerificationStatus.VERIFIED || bundled.sourceUrl == null) return this
-    if (sourceUrl != null && sourceUrl != bundled.sourceUrl) return this
+    if (archived || bundled.sourceUrl == null) return this
+    val managedByBundledCatalog = sourceUrl == null ||
+        verifiedBy?.startsWith("JI Telecom", ignoreCase = true) == true ||
+        sourceName?.contains("Product-Line-up", ignoreCase = true) == true ||
+        sourceUrl == bundled.sourceUrl
+    if (!managedByBundledCatalog) return this
     if (processorId != null && processorId != bundled.processorId) return this
     if (gpuId != null && gpuId != bundled.gpuId) return this
 
@@ -36,7 +40,7 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
         supportedFeatures = supportedFeatures.ifEmpty { bundled.supportedFeatures },
         notes = mergedNotes,
         sourceName = bundled.sourceName ?: sourceName,
-        sourceUrl = sourceUrl ?: bundled.sourceUrl,
+        sourceUrl = bundled.sourceUrl,
         verifiedDate = bundled.verifiedDate ?: verifiedDate,
         verifiedBy = bundled.verifiedBy ?: verifiedBy,
         verificationStatus = bundled.verificationStatus

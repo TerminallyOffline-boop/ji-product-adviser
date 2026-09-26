@@ -43,7 +43,6 @@ class BundledSpecificationMergeTest {
             current.copy(gpuId = 778),
             current.copy(model = "Another model"),
             current.copy(sourceUrl = "https://www.hp.com/custom-source"),
-            current.copy(verificationStatus = VerificationStatus.VERIFIED),
             current.copy(archived = true)
         ).forEach { custom -> assertThat(custom.withMissingBundledSpecifications(bundled)).isEqualTo(custom) }
     }
@@ -71,5 +70,30 @@ class BundledSpecificationMergeTest {
         assertThat(result.sourceName).isEqualTo("HP official specifications")
         assertThat(result.verifiedDate).isEqualTo("2026-09-25")
         assertThat(result.verifiedBy).isEqualTo("JI Telecom official-source audit")
+    }
+
+    @Test fun upgradesPreviouslyBundledVerifiedRecordWhenTheExactSourceImproves() {
+        val previous = current.copy(
+            ramGB = null,
+            storageGB = null,
+            sourceName = "GIGABYTE official specifications",
+            sourceUrl = "https://www.gigabyte.com/Laptop/G5--2023",
+            verifiedBy = "JI Telecom official-source audit",
+            verificationStatus = VerificationStatus.VERIFIED
+        )
+        val exact = bundled.copy(
+            ramGB = 8,
+            storageGB = 512,
+            sourceName = "NVIDIA Philippines marketplace exact configuration",
+            sourceUrl = "https://marketplace.nvidia.com/en-ph/example",
+            verifiedBy = "JI Telecom exact-model audit",
+            verificationStatus = VerificationStatus.VERIFIED
+        )
+        val result = previous.withMissingBundledSpecifications(exact)
+
+        assertThat(result.ramGB).isEqualTo(8)
+        assertThat(result.storageGB).isEqualTo(512)
+        assertThat(result.sourceUrl).isEqualTo(exact.sourceUrl)
+        assertThat(result.sourceName).isEqualTo(exact.sourceName)
     }
 }

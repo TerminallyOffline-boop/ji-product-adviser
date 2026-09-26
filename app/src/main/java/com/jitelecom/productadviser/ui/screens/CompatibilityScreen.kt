@@ -320,17 +320,14 @@ private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, ap
                     Text(app?.displayName ?: "Compatibility result", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Text(product?.displayName.orEmpty(), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                    StatusBadge(result.status)
-                    DataConfidenceBadge(result.dataStatus)
-                }
+                StatusBadge(result.status)
             }
             Text(result.explanation, style = MaterialTheme.typography.bodyLarge)
             mainIssue?.let { issue ->
                 val heading=when(issue.status){
                     ComponentStatus.NOT_AVAILABLE->"Main blocker"
                     ComponentStatus.BELOW_MINIMUM->"Main blocker"
-                    ComponentStatus.UNKNOWN->"Needs verification"
+                    ComponentStatus.UNKNOWN->"Missing required specification"
                     ComponentStatus.MEETS_MINIMUM->"Main limitation"
                     else->"Important detail"
                 }
@@ -339,7 +336,7 @@ private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, ap
                         Text("$heading: ${issue.component}",fontWeight=FontWeight.Bold,color=color)
                         Text(issue.explanation,style=MaterialTheme.typography.bodySmall)
                         Text(when(issue.status){
-                            ComponentStatus.UNKNOWN->"Verify this device specification and the app requirement in More > Admin before making a firm recommendation."
+                            ComponentStatus.UNKNOWN->"This check needs a compatibility-critical specification that is missing from the product or app requirement record."
                             ComponentStatus.NOT_AVAILABLE->"Choose a device on a supported operating system, or confirm that the publisher now supports this platform."
                             ComponentStatus.BELOW_MINIMUM->"Choose a device that meets this minimum requirement. Compatible catalog alternatives are shown below when available."
                             ComponentStatus.MEETS_MINIMUM->"It should meet the minimum, but a recommended-level device will provide more headroom."
@@ -347,18 +344,6 @@ private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, ap
                         },style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-            }
-            if (result.dataStatus != VerificationStatus.VERIFIED) {
-                Text(
-                    when (result.dataStatus) {
-                        VerificationStatus.NEEDS_REVIEW -> "The compatibility comparison is shown, but some stored source data still needs review."
-                        VerificationStatus.UNVERIFIED -> "The compatibility comparison is shown, but some stored specifications have not been verified against an official source."
-                        VerificationStatus.OUTDATED -> "The compatibility comparison is shown using data marked as outdated. Confirm current requirements before recommending this device."
-                        VerificationStatus.VERIFIED -> ""
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
         }
     }

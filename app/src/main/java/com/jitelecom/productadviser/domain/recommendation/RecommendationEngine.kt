@@ -99,9 +99,7 @@ class RecommendationExplanationBuilder @Inject constructor() {
             if (results.any { it.status == CompatibilityStatus.MEETS_MINIMUM }) add("Some selected software only meets minimum requirements")
             if (results.any { it.status == CompatibilityStatus.BELOW_MINIMUM }) add("Below minimum for at least one selected application")
             if (results.any { it.status == CompatibilityStatus.NOT_AVAILABLE }) add("At least one selected application is unavailable on this platform")
-            if (results.any { it.status == CompatibilityStatus.NOT_VERIFIED }) add("Some compatibility data is not verified")
-            if (results.any { it.dataStatus != VerificationStatus.VERIFIED }) add("Some source specifications still need verification")
-            if (product.verificationStatus != VerificationStatus.VERIFIED) add("Product specifications are not verified")
+            if (results.any { it.status == CompatibilityStatus.NOT_VERIFIED }) add("A required product or app specification is missing")
         }
         val explanation = "Internal recommendation score: $score/100. ${strengths.first()}. This is a relative match against locally stored products, not a performance guarantee."
         return Triple(strengths, limitations, explanation)

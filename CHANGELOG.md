@@ -2,6 +2,21 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.2.1 - 2026-09-26
+
+### Fixed
+
+- Can It Run now bases a decisive result on the specifications required by that app instead of turning the result into “Needs verification” because of a separate source-audit label
+- Integrated laptop graphics are evaluated by the reviewed GPU performance tier when they use shared system memory instead of being rejected for not having fixed dedicated VRAM
+- The three incomplete HP/GIGABYTE laptop records now include the RAM, storage, operating system, and exact-model details needed for compatibility checks
+- Existing v1.2.0 installations receive those improved bundled laptop specifications without overwriting store-maintained prices or admin-customized hardware
+
+### Changed
+
+- Customer product, software, comparison, recommendation, and Can It Run screens no longer show internal source-review badges
+- A genuinely missing compatibility-critical field is now labeled “Cannot check — missing spec” instead of the vague “Needs verification”
+- Automated coverage now rejects any bundled laptop that lacks CPU, GPU, RAM, storage, OS, or architecture data
+
 ## 1.2.0 - 2026-09-26 (local test build)
 
 ### Fixed

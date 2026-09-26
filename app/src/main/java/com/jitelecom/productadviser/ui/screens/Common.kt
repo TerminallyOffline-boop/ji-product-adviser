@@ -39,37 +39,15 @@ fun OnlineBadge(online: Boolean) {
 }
 
 @Composable
-fun VerificationBadge(status: VerificationStatus) {
-    val (label,color)=when(status){
-        VerificationStatus.VERIFIED -> "Verified" to Color(0xFF167A47)
-        VerificationStatus.NEEDS_REVIEW -> "Needs review" to Color(0xFFB36800)
-        VerificationStatus.UNVERIFIED -> "Unverified" to Color(0xFF616675)
-        VerificationStatus.OUTDATED -> "Outdated" to Color(0xFFB3261E)
-    }
-    Surface(color=color.copy(alpha=.12f), contentColor=color, shape=RoundedCornerShape(50)) { Text(label, Modifier.padding(horizontal=9.dp,vertical=4.dp), style=MaterialTheme.typography.labelSmall) }
-}
-
-@Composable
 fun StatusBadge(status: CompatibilityStatus) {
     val (label,color)=when(status){
         CompatibilityStatus.MEETS_RECOMMENDED -> "MEETS RECOMMENDED" to Color(0xFF167A47)
         CompatibilityStatus.MEETS_MINIMUM -> "MEETS MINIMUM" to Color(0xFFB36800)
         CompatibilityStatus.BELOW_MINIMUM -> "BELOW MINIMUM" to Color(0xFFB3261E)
         CompatibilityStatus.NOT_AVAILABLE -> "NOT AVAILABLE" to Color(0xFF7A3E9D)
-        CompatibilityStatus.NOT_VERIFIED -> "NOT VERIFIED" to Color(0xFF616675)
+        CompatibilityStatus.NOT_VERIFIED -> "CANNOT CHECK — MISSING SPEC" to Color(0xFF616675)
     }
     Surface(color=color.copy(alpha=.14f), contentColor=color, shape=RoundedCornerShape(50)) { Text(label, Modifier.padding(horizontal=12.dp,vertical=7.dp), style=MaterialTheme.typography.labelMedium, fontWeight=FontWeight.Bold) }
-}
-
-@Composable
-fun DataConfidenceBadge(status: VerificationStatus) {
-    val (label,color)=when(status){
-        VerificationStatus.VERIFIED -> "DATA VERIFIED" to Color(0xFF167A47)
-        VerificationStatus.NEEDS_REVIEW -> "DATA NEEDS REVIEW" to Color(0xFFB36800)
-        VerificationStatus.UNVERIFIED -> "NEEDS VERIFICATION" to Color(0xFF616675)
-        VerificationStatus.OUTDATED -> "DATA OUTDATED" to Color(0xFFB3261E)
-    }
-    Surface(color=color.copy(alpha=.12f), contentColor=color, shape=RoundedCornerShape(50)) { Text(label, Modifier.padding(horizontal=10.dp,vertical=5.dp), style=MaterialTheme.typography.labelSmall, fontWeight=FontWeight.SemiBold) }
 }
 
 @Composable
@@ -80,7 +58,6 @@ fun ProductCard(product: ProductSpec, onClick: () -> Unit, modifier: Modifier = 
             Spacer(Modifier.width(14.dp)); Column(Modifier.weight(1f)) {
                 Text(product.displayName, fontWeight=FontWeight.SemiBold, maxLines=1, overflow=TextOverflow.Ellipsis)
                 Text(listOfNotNull(product.processor?.model, product.ramGB?.let{"${it} GB"}, product.storageGB?.let{"${it} GB ${product.storageType.orEmpty()}"}).joinToString(" • "), style=MaterialTheme.typography.bodySmall, color=MaterialTheme.colorScheme.onSurfaceVariant, maxLines=2)
-                Spacer(Modifier.height(5.dp)); VerificationBadge(product.verificationStatus)
             }
             Column(horizontalAlignment=Alignment.End) { Text(peso(product.effectivePrice), fontWeight=FontWeight.Bold); Icon(Icons.Default.ChevronRight, null) }
         }

@@ -54,7 +54,7 @@ private fun ComparisonTable(products:List<ProductSpec>,compatibility:Map<Long,Co
         "Display" to products.map{it.displaySize?.let{"$it in"} ?: "Unknown"},
         "Weight" to products.map{it.weightKg?.let{"$it kg"} ?: "Unknown"},
         "Battery" to products.map{it.batteryCapacityWh?.let{"$it Wh"} ?: "Unknown"}
-    ) + if(compatibility.isNotEmpty()) listOf("Software" to products.map{product->compatibility[product.id]?.let{"${it.status.name.replace('_',' ')} • ${if(it.dataStatus==VerificationStatus.VERIFIED)"verified" else "needs verification"}"} ?: "Not checked"}) else emptyList()
+    ) + if(compatibility.isNotEmpty()) listOf("Software" to products.map{product->compatibility[product.id]?.status?.name?.replace('_',' ') ?: "Not checked"}) else emptyList()
     val visibleRows=if(differencesOnly)rows.filter{(_,values)->values.distinct().size>1}else rows
     Column(Modifier.horizontalScroll(rememberScrollState())){
         CompareRow("",products.map{it.displayName},header=true)
@@ -79,7 +79,7 @@ fun SoftwareScreen(viewModel:SoftwareViewModel=hiltViewModel()){
         if(filtered.isEmpty())item{EmptyState(Icons.Default.SearchOff,"No software found","Try another search or category.")}
         items(filtered,key={it.id}){app->
             OutlinedCard{Column(Modifier.padding(15.dp)){
-                Row{Column(Modifier.weight(1f)){Text(app.displayName,fontWeight=FontWeight.Bold);Text("${app.category} • ${app.platform}",style=MaterialTheme.typography.bodySmall)};VerificationBadge(app.verificationStatus)}
+                Row{Column(Modifier.weight(1f)){Text(app.displayName,fontWeight=FontWeight.Bold);Text("${app.category} • ${app.platform}",style=MaterialTheme.typography.bodySmall)}}
                 app.developer?.let{Text(it,style=MaterialTheme.typography.bodyMedium)}
                 app.description?.let{Text(it,style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}
             }}

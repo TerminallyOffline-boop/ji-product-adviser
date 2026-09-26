@@ -83,10 +83,12 @@ data class BundledSpecificationAssignment(
     val skus: List<String>,
     val processorId: Long? = null,
     val gpuId: Long? = null,
+    val ramGB: Int? = null,
     val ramType: String? = null,
     val ramUpgradeable: Boolean? = null,
     val maximumRamGB: Int? = null,
     val storageType: String? = null,
+    val storageGB: Int? = null,
     val additionalStorageSupport: String? = null,
     val displaySize: Double? = null,
     val displayResolution: String? = null,
@@ -177,11 +179,11 @@ class BundledCatalogLoader @Inject constructor(
             availabilityStatus = AvailabilityStatus.valueOf(product.availabilityStatus),
             processorId = specification?.processorId,
             gpuId = specification?.gpuId,
-            ramGB = product.ramGB,
+            ramGB = product.ramGB ?: specification?.ramGB,
             ramType = specification?.ramType,
             ramUpgradeable = specification?.ramUpgradeable,
             maximumRamGB = specification?.maximumRamGB,
-            storageGB = product.storageGB,
+            storageGB = product.storageGB ?: specification?.storageGB,
             storageType = specification?.storageType,
             additionalStorageSupport = specification?.additionalStorageSupport,
             displaySize = specification?.displaySize,
@@ -200,7 +202,7 @@ class BundledCatalogLoader @Inject constructor(
                     if (isOfficiallyVerified) {
                         "The compatibility-critical details were checked against the linked official specification."
                     } else {
-                        "A linked reference supports some details, but the exact model or variant still needs verification."
+                        "The linked reference supports family-level details but does not identify the exact regional variant."
                     }
                 }
             ).joinToString(" "),

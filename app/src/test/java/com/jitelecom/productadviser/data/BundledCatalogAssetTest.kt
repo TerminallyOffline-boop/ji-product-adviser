@@ -58,7 +58,7 @@ class BundledCatalogAssetTest {
         val processorIds = specifications.processors.map { it.id }.toSet()
         val gpuIds = specifications.gpus.map { it.id }.toSet()
 
-        assertThat(specifications.version).isEqualTo("2026.09.25.1")
+        assertThat(specifications.version).isEqualTo("2026.09.26.1")
         assertThat(assignedSkus).hasSize(161)
         assertThat(assignedSkus.distinct()).hasSize(assignedSkus.size)
         assertThat(catalogSkus).containsAtLeastElementsIn(assignedSkus)
@@ -66,7 +66,25 @@ class BundledCatalogAssetTest {
         assertThat(specifications.assignments.mapNotNull { it.gpuId }.all { it in gpuIds }).isTrue()
         assertThat(specifications.assignments.all { it.sourceUrl.startsWith("https://") }).isTrue()
         val verified = specifications.assignments.filter { it.verificationStatus == "VERIFIED" }
-        assertThat(verified.flatMap { it.skus }).hasSize(101)
+        assertThat(verified.flatMap { it.skus }).hasSize(103)
         assertThat(verified.all { !it.sourceName.isNullOrBlank() && !it.verifiedBy.isNullOrBlank() }).isTrue()
+    }
+
+    @Test
+    fun everyLaptopHasTheFieldsNeededForCompatibilityChecks() {
+        val products = catalog().products.filter { it.category == "LAPTOP" }
+        val assignments = specifications().assignments
+            .flatMap { assignment -> assignment.skus.map { it to assignment } }
+            .toMap()
+
+        products.forEach { product ->
+            val assignment = requireNotNull(assignments[product.sku]) { "Missing assignment for ${product.sku}" }
+            assertThat(assignment.processorId).isNotNull()
+            assertThat(assignment.gpuId).isNotNull()
+            assertThat(product.ramGB ?: assignment.ramGB).isNotNull()
+            assertThat(product.storageGB ?: assignment.storageGB).isNotNull()
+            assertThat(assignment.operatingSystem).isNotNull()
+            assertThat(assignment.architecture).isNotNull()
+        }
     }
 }

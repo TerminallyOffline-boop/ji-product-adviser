@@ -41,13 +41,17 @@ class GpuEvaluator @Inject constructor() {
         )
         if (minTier != null && gpu.performanceTier == null) return unknown("GPU", gpu.displayName, minTier, recTier)
         val tier = if (minTier == null) ComponentStatus.MEETS_MINIMUM else tierStatus(gpu.performanceTier!!, minTier, recTier, accepted)
-        val vramStatus = valueStatus(gpu.vramGB, min.minimumVramGB, rec?.minimumVramGB)
-        val status = worst(tier, vramStatus)
+        val usesSharedMemory = gpu.type == GpuType.INTEGRATED && gpu.vramGB == null
+        val vramStatus = if (usesSharedMemory) ComponentStatus.NOT_APPLICABLE
+        else valueStatus(gpu.vramGB, min.minimumVramGB, rec?.minimumVramGB)
+        val status = if (usesSharedMemory) tier else worst(tier, vramStatus)
         return ComponentCompatibilityResult(
             component = "GPU", actual = "${gpu.displayName}${gpu.vramGB?.let { " • ${it} GB VRAM" } ?: ""}",
             minimum = describeTierAndValue(minTier, min.minimumVramGB),
             recommended = describeTierAndValue(recTier, rec?.minimumVramGB), status = status,
-            explanation = explanationFor(status, "graphics")
+            explanation = if (usesSharedMemory) {
+                "Integrated graphics uses shared system memory; compatibility is evaluated using the reviewed graphics performance tier."
+            } else explanationFor(status, "graphics")
         )
     }
 }
@@ -92,7 +96,7 @@ class OperatingSystemEvaluator @Inject constructor() {
             if (!compatible) ComponentStatus.BELOW_MINIMUM else if (recommendedMatch) ComponentStatus.MEETS_RECOMMENDED else ComponentStatus.MEETS_MINIMUM,
             when {
                 !compatible -> "This app is not available for ${platformLabel(actual)} in the stored catalog. Supported platforms: $supported."
-                inferred -> "The app supports the inferred ${platformLabel(actual)} platform. Confirm the device's exact OS version before purchase."
+                inferred -> "The app supports the device's inferred ${platformLabel(actual)} platform for this stored requirement."
                 else -> "The app supports ${platformLabel(actual)}. Exact OS-version requirements may still apply."
             }
         )
@@ -155,9 +159,9 @@ class CompatibilityExplanationBuilder @Inject constructor() {
             CompatibilityStatus.NOT_VERIFIED -> {
                 val os = components.firstOrNull { it.component == "Operating system" }
                 if (os?.status == ComponentStatus.MEETS_MINIMUM || os?.status == ComponentStatus.MEETS_RECOMMENDED) {
-                    "The app is available for this operating-system family, but some hardware or requirement data still needs verification. Review the component details before recommending it."
+                    "The app is available for this operating-system family, but a compatibility-critical product or app specification is missing. Review the component details."
                 } else {
-                    "There is not enough verified product or requirement data to make a confident compatibility determination."
+                    "A compatibility-critical product or app specification is missing, so this check cannot produce a reliable result."
                 }
             }
         }
@@ -173,7 +177,6 @@ class CompatibilityEngine @Inject constructor(
         val operatingSystem = product.operatingSystemForCompatibility()
         val platformCompatibility = platformCompatibility(software.platform, operatingSystem)
         if (platformCompatibility == PlatformCompatibility.NOT_SUPPORTED) {
-            val storedDataStatus = aggregateVerificationStatus(listOf(product.verificationStatus, software.verificationStatus))
             val actualPlatform = platformLabel(operatingSystem)
             return CompatibilityResult(
                 productId = product.id,
@@ -189,7 +192,7 @@ class CompatibilityEngine @Inject constructor(
                     )
                 ),
                 explanation = "${software.name} is not available for $actualPlatform. Choose an app built for this platform or a different device.",
-                dataStatus = storedDataStatus
+                dataStatus = VerificationStatus.VERIFIED
             )
         }
         val applicableRequirements = requirementsForPlatform(requirements, operatingSystem)
@@ -204,17 +207,10 @@ class CompatibilityEngine @Inject constructor(
             return unverified(product.id, software.id, reason, VerificationStatus.UNVERIFIED)
         }
         val recommended = applicableRequirements.firstOrNull { it.type == RequirementType.RECOMMENDED }
-        val storedDataStatus = aggregateVerificationStatus(
-            listOf(product.verificationStatus, software.verificationStatus) + applicableRequirements.map { it.verificationStatus }
-        )
         val components = evaluator.evaluate(product, minimum, recommended)
         val hasUnresolvedData = platformCompatibility == PlatformCompatibility.UNKNOWN ||
             components.any { it.status == ComponentStatus.UNKNOWN }
-        val dataStatus = if (hasUnresolvedData && storedDataStatus == VerificationStatus.VERIFIED) {
-            VerificationStatus.NEEDS_REVIEW
-        } else {
-            storedDataStatus
-        }
+        val dataStatus = if (hasUnresolvedData) VerificationStatus.NEEDS_REVIEW else VerificationStatus.VERIFIED
         val status = when {
             components.any { it.status == ComponentStatus.BELOW_MINIMUM } -> CompatibilityStatus.BELOW_MINIMUM
             hasUnresolvedData -> CompatibilityStatus.NOT_VERIFIED
@@ -261,13 +257,6 @@ private fun bestOperatingSystemMatch(actual: String, requiredValues: Set<String>
         OperatingSystemCompatibility.UNKNOWN in matches -> OperatingSystemCompatibility.UNKNOWN
         else -> OperatingSystemCompatibility.NOT_SUPPORTED
     }
-}
-
-private fun aggregateVerificationStatus(statuses: List<VerificationStatus>): VerificationStatus = when {
-    statuses.any { it == VerificationStatus.OUTDATED } -> VerificationStatus.OUTDATED
-    statuses.any { it == VerificationStatus.UNVERIFIED } -> VerificationStatus.UNVERIFIED
-    statuses.any { it == VerificationStatus.NEEDS_REVIEW } -> VerificationStatus.NEEDS_REVIEW
-    else -> VerificationStatus.VERIFIED
 }
 
 private fun numericResult(name: String, actual: Double?, min: Double?, rec: Double?, unit: String): ComponentCompatibilityResult {

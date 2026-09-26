@@ -24,10 +24,10 @@ class CompatibilityEngineTest {
     @Test fun unknownGpu(){assertThat(engine.evaluate(product(gpuValue=null),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
     @Test fun missingRequirementData(){assertThat(engine.evaluate(product(),software,emptyList()).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
     @Test fun missingProductData(){assertThat(engine.evaluate(product(ram=null),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
-    @Test fun unverifiedSourceKeepsTheCompatibilityVerdictSeparate(){
+    @Test fun sourceAuditStatusDoesNotMakeACompleteCalculationInconclusive(){
         val result=engine.evaluate(product(verified=VerificationStatus.UNVERIFIED),software,listOf(min(),rec()))
         assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_RECOMMENDED)
-        assertThat(result.dataStatus).isEqualTo(VerificationStatus.UNVERIFIED)
+        assertThat(result.dataStatus).isEqualTo(VerificationStatus.VERIFIED)
     }
 
     @Test fun fullyVerifiedResultReportsVerifiedData(){
@@ -40,6 +40,27 @@ class CompatibilityEngineTest {
         val result=engine.evaluate(product(ram=null),software,listOf(min(),rec()))
         assertThat(result.status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)
         assertThat(result.dataStatus).isEqualTo(VerificationStatus.NEEDS_REVIEW)
+    }
+
+    @Test fun integratedGraphicsUsesPerformanceTierWhenMemoryIsShared(){
+        val integrated=gpu.copy(type=GpuType.INTEGRATED,vramGB=null)
+        val result=engine.evaluate(product(gpuValue=integrated),software,listOf(min(),rec()))
+        val graphics=result.components.first{it.component=="GPU"}
+        assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_RECOMMENDED)
+        assertThat(graphics.status).isEqualTo(ComponentStatus.MEETS_RECOMMENDED)
+        assertThat(graphics.explanation).contains("shared system memory")
+    }
+
+    @Test fun platformOnlyMobileRequirementProducesADecisiveResult(){
+        val phone=product(cpuValue=null,gpuValue=null,os=null,verified=VerificationStatus.NEEDS_REVIEW)
+            .copy(brand="Samsung",category=ProductCategory.SMARTPHONE,architecture="arm64")
+        val platformOnly=RequirementSet(
+            id=3,softwareId=2,type=RequirementType.MINIMUM,
+            supportedOperatingSystems=setOf("Android"),verificationStatus=VerificationStatus.NEEDS_REVIEW
+        )
+        val result=engine.evaluate(phone,software.copy(id=2,platform="Android"),listOf(platformOnly))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_MINIMUM)
+        assertThat(result.dataStatus).isEqualTo(VerificationStatus.VERIFIED)
     }
 
     @Test fun macOsMatchesCrossPlatformDesktopApp(){
