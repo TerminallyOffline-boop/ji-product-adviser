@@ -14,6 +14,8 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
     if (!managedByBundledCatalog) return this
     if (processorId != null && processorId != bundled.processorId) return this
     if (gpuId != null && gpuId != bundled.gpuId) return this
+    val promoteExactPlatform = bundled.verificationStatus == VerificationStatus.VERIFIED &&
+        verificationStatus != VerificationStatus.VERIFIED
 
     val mergedNotes = when {
         notes.isNullOrBlank() -> bundled.notes
@@ -33,8 +35,8 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
         displaySize = displaySize ?: bundled.displaySize,
         displayResolution = displayResolution ?: bundled.displayResolution,
         displayRefreshRate = displayRefreshRate ?: bundled.displayRefreshRate,
-        operatingSystem = operatingSystem ?: bundled.operatingSystem,
-        architecture = architecture ?: bundled.architecture,
+        operatingSystem = if (promoteExactPlatform) bundled.operatingSystem ?: operatingSystem else operatingSystem ?: bundled.operatingSystem,
+        architecture = if (promoteExactPlatform) bundled.architecture ?: architecture else architecture ?: bundled.architecture,
         batteryCapacityWh = batteryCapacityWh ?: bundled.batteryCapacityWh,
         weightKg = weightKg ?: bundled.weightKg,
         supportedFeatures = supportedFeatures.ifEmpty { bundled.supportedFeatures },
@@ -46,3 +48,4 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
         verificationStatus = bundled.verificationStatus
     )
 }
+

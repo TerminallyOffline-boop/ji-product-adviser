@@ -63,6 +63,14 @@ class CompatibilityEngineTest {
         assertThat(result.dataStatus).isEqualTo(VerificationStatus.VERIFIED)
     }
 
+    @Test fun accessoryIsClearlyNotAComputingDevice(){
+        val mouse=product(os=null).copy(category=ProductCategory.ACCESSORIES,model="Wireless Mouse")
+        val result=engine.evaluate(mouse,software,listOf(min(),rec()))
+        assertThat(result.status).isEqualTo(CompatibilityStatus.NOT_AVAILABLE)
+        assertThat(result.components.single().component).isEqualTo("Device type")
+        assertThat(result.explanation).contains("cannot run")
+    }
+
     @Test fun macOsMatchesCrossPlatformDesktopApp(){
         val macMinimum=min().copy(requiredArchitecture=null,supportedOperatingSystems=setOf("Windows 11","macOS"))
         val macRecommended=rec().copy(requiredArchitecture=null,supportedOperatingSystems=setOf("Windows 11","macOS"))
@@ -191,3 +199,4 @@ class CompatibilityEngineTest {
         assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_RECOMMENDED)
     }
 }
+

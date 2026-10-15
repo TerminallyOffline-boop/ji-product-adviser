@@ -2,6 +2,20 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.3.1 - 2026-10-15
+
+### Fixed
+
+- Completed the compatibility-critical CPU, GPU, operating-system, and architecture data for every bundled laptop, smartphone, and tablet
+- Replaced remaining provisional catalogue mappings with reviewed source-backed specifications, so Can It Run gives a hardware result instead of a missing-spec result for bundled computing products
+- Existing installations now receive the exact audited operating-system details for previously pending bundled products, while custom hardware and store-managed prices remain protected
+- Accessories now receive a clear “cannot run apps” result rather than an uncertain compatibility verdict
+
+### Changed
+
+- Catalog specification version `2026.10.15.2` verifies all 174 bundled product records; printers remain excluded
+- The Snapdragon 8 Elite Gen 5 graphics entry uses Qualcomm’s published Adreno GPU family name instead of an unconfirmed numeric model label
+
 ## 1.3.0 - 2026-10-15
 
 ### Added

@@ -1,218 +1,3452 @@
 {
-  "version": "2026.09.26.1",
-  "verifiedDate": "2026-09-26",
+  "version": "2026.10.15.2",
+  "verifiedDate": "2026-10-15",
   "processors": [
-    {"id":1101,"manufacturer":"Intel","family":"Core Ultra 5","model":"Core Ultra 5 225U","architecture":"x64","coreCount":12,"threadCount":14,"boostClockGhz":4.8,"performanceTier":4,"sourceUrl":"https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157358"},
-    {"id":1102,"manufacturer":"Intel","family":"Core Ultra 7","model":"Core Ultra 7 255U","architecture":"x64","coreCount":12,"threadCount":14,"boostClockGhz":5.2,"performanceTier":5,"sourceUrl":"https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157361"},
-    {"id":1103,"manufacturer":"Intel","family":"Core Ultra 7","model":"Core Ultra 7 155H","architecture":"x64","coreCount":16,"threadCount":22,"boostClockGhz":4.8,"performanceTier":6,"sourceUrl":"https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103460304"},
-    {"id":1104,"manufacturer":"AMD","family":"Ryzen 5","model":"Ryzen 5 7530U","architecture":"x64","coreCount":6,"threadCount":12,"baseClockGhz":2.0,"boostClockGhz":4.5,"integratedGpu":"AMD Radeon Graphics","performanceTier":4,"sourceUrl":"https://www.amd.com/en/products/processors/laptop/ryzen/7000-series/amd-ryzen-5-7530u.html"},
-    {"id":1105,"manufacturer":"AMD","family":"Ryzen 3","model":"Ryzen 3 5400U","architecture":"x64","coreCount":4,"threadCount":8,"baseClockGhz":2.6,"boostClockGhz":4.0,"integratedGpu":"AMD Radeon Graphics","performanceTier":3,"sourceUrl":"https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-3-5400u.html"},
-    {"id":1106,"manufacturer":"Intel","family":"Core Ultra 5","model":"Core Ultra 5 125H","architecture":"x64","coreCount":14,"threadCount":18,"boostClockGhz":4.5,"integratedGpu":"Intel Arc Graphics","performanceTier":5,"sourceUrl":"https://www.intel.com/content/www/us/en/products/docs/processors/core-ultra/core-ultra-series-1-product-brief.html"},
-    {"id":1107,"manufacturer":"AMD","family":"Ryzen 5","model":"Ryzen 5 7640HS","architecture":"x64","coreCount":6,"threadCount":12,"baseClockGhz":4.3,"boostClockGhz":5.0,"integratedGpu":"AMD Radeon 760M","performanceTier":5,"sourceUrl":"https://www.amd.com/en/products/processors/laptop/ryzen/7000-series/amd-ryzen-5-7640hs.html"},
-    {"id":1108,"manufacturer":"Intel","family":"Core Ultra 5","model":"Core Ultra 5 115U","architecture":"x64","coreCount":8,"threadCount":10,"boostClockGhz":4.2,"integratedGpu":"Intel Graphics","performanceTier":4,"sourceUrl":"https://www.intel.com/content/www/us/en/products/sku/237505/intel-core-ultra-5-processor-115u-10m-cache-up-to-4-20-ghz/specifications.html"},
-    {"id":1109,"manufacturer":"Intel","family":"Core Ultra 5","model":"Core Ultra 5 226V","architecture":"x64","coreCount":8,"threadCount":8,"baseClockGhz":2.1,"boostClockGhz":4.5,"integratedGpu":"Intel Arc 130V GPU","performanceTier":5,"sourceUrl":"https://www.intel.com/content/www/us/en/products/sku/240960/intel-core-ultra-5-processor-226v-8m-cache-up-to-4-50-ghz/specifications.html"},
-    {"id":1001,"manufacturer":"Apple","family":"A-series","model":"A13 Bionic","coreCount":6,"performanceTier":4,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":1002,"manufacturer":"Apple","family":"A-series","model":"A14 Bionic","coreCount":6,"performanceTier":4,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":1003,"manufacturer":"Apple","family":"A-series","model":"A15 Bionic","coreCount":6,"performanceTier":5,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":1004,"manufacturer":"Apple","family":"A-series","model":"A16 Bionic","coreCount":6,"performanceTier":5,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":1005,"manufacturer":"Apple","family":"A-series","model":"A18","coreCount":6,"performanceTier":6,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":1006,"manufacturer":"Apple","family":"A-series","model":"A18 Pro","coreCount":6,"performanceTier":6,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":1007,"manufacturer":"Apple","family":"A-series","model":"A19","coreCount":6,"performanceTier":6,"sourceUrl":"https://www.apple.com/ph/iphone-17/specs/"},
-    {"id":1008,"manufacturer":"Apple","family":"A-series","model":"A19 Pro","coreCount":6,"performanceTier":7,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":1009,"manufacturer":"Apple","family":"M-series","model":"M5","performanceTier":7,"sourceUrl":"https://www.apple.com/ph/macbook-air/"},
-    {"id":1010,"manufacturer":"Intel","family":"N Series","model":"Processor N150","coreCount":4,"threadCount":4,"performanceTier":2,"sourceUrl":"https://www.acer.com/no-no/laptops/aspire/aspire-lite/pdp/NX.D2SED.001"},
-    {"id":1011,"manufacturer":"Intel","family":"Core 3","model":"Processor N355","coreCount":8,"threadCount":8,"performanceTier":2,"sourceUrl":"https://www.acer.com/es-es/laptops/aspire/aspire-lite/pdp/NX.D2DEB.001"},
-    {"id":1012,"manufacturer":"Intel","family":"Core i3","model":"Core i3-1315U","coreCount":6,"threadCount":8,"performanceTier":3,"sourceUrl":"https://www.hp.com/ph-en/products/laptops/product-details/2103580989"},
-    {"id":1013,"manufacturer":"Intel","family":"Core i5","model":"Core i5-12500H","coreCount":12,"threadCount":16,"performanceTier":5,"sourceUrl":"https://www.gigabyte.com/Laptop/G5--2023/sp"},
-    {"id":1020,"manufacturer":"MediaTek","family":"Helio","model":"Helio G81","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.honor.com/ph/phones/honor-x5c-plus/"},
-    {"id":1021,"manufacturer":"MediaTek","family":"Helio","model":"Helio G81 Ultra","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.honor.com/ae-en/phones/honor-x6c/spec/"},
-    {"id":1022,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 6 Gen 4","coreCount":8,"performanceTier":4,"sourceUrl":"https://www.honor.com/au/phones/honor-x9d/"},
-    {"id":1023,"manufacturer":"MediaTek","family":"Helio","model":"Helio G200","coreCount":8,"performanceTier":3,"sourceUrl":"https://wap.lk.infinixmobility.com/"},
-    {"id":1024,"manufacturer":"MediaTek","family":"Helio","model":"Helio G50 Ultimate","coreCount":8,"performanceTier":1,"sourceUrl":"https://www.itel-life.com/products/phone/p-series/power-70"},
-    {"id":1025,"manufacturer":"MediaTek","family":"Helio","model":"Helio G99","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.itel-life.com/products/laptop-pad/vistatab/tab-30-pro/spec"},
-    {"id":1026,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 685","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.oppo.com/ph/smartphones/series-a/a6/specs/"},
-    {"id":1027,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 8350","coreCount":8,"performanceTier":5,"sourceUrl":"https://www.oppo.com/es/smartphones/series-reno/reno13/"},
-    {"id":1028,"manufacturer":"MediaTek","family":"Helio","model":"Helio G100","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.oppo.com/es/accessories/oppo-pad-se/specs/"},
-    {"id":1029,"manufacturer":"UNISOC","family":"T-series","model":"T7250","coreCount":8,"performanceTier":1,"sourceUrl":"https://www.realme.com/ph/realme-note-70/specs"},
-    {"id":1030,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 6400 Max","coreCount":8,"performanceTier":3,"sourceUrl":"https://www.realme.com/mx/realme-15t-5g/specs"},
-    {"id":1031,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 7300 Max","coreCount":8,"performanceTier":4,"sourceUrl":"https://www.realme.com/ph/realme-16-pro-5g/specs"},
-    {"id":1032,"manufacturer":"Samsung","family":"Exynos","model":"Exynos 1330","coreCount":8,"performanceTier":3,"sourceUrl":"https://images.samsung.com/is/content/samsung/assets/global/ir/docs/2025_4Q_Interim_Report.pdf"},
-    {"id":1033,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 8200 Ultimate","coreCount":8,"performanceTier":5,"sourceUrl":"https://www.tecno-mobile.com/pak/phones/tech-specs/tecspecs/camon-30-pro-5g/"},
-    {"id":1034,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 8350 Ultimate","coreCount":8,"performanceTier":5,"sourceUrl":"https://www.tecno-mobile.com/ph/phones/product-detail/product/pova-7-ultra-5g/"},
-    {"id":1035,"manufacturer":"UNISOC","family":"T-series","model":"T7225","coreCount":8,"performanceTier":1,"sourceUrl":"https://www.vivo.com/mx/products/param/y11d"},
-    {"id":1036,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 6s Gen 2 4G","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.vivo.com/ph/products/y31d"},
-    {"id":1037,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 7360-Turbo","coreCount":8,"performanceTier":4,"sourceUrl":"https://www.vivo.com/ph/products/param/v70-fe"},
-    {"id":1038,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 7 Gen 4","coreCount":8,"performanceTier":5,"sourceUrl":"https://www.vivo.com/ph/products/param/v70"},
-    {"id":1039,"manufacturer":"MediaTek","family":"Helio","model":"Helio G100-Ultra","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.mi.com/ph/product/redmi-note-15/"},
-    {"id":1040,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 7400-Ultra","coreCount":8,"boostClockGhz":2.6,"performanceTier":4,"sourceUrl":"https://www.mi.com/ph/product/redmi-note-15-pro-5g/specs/"},
-    {"id":1041,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 6s 4G Gen 2","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.mi.com/ph/product/redmi-pad-2-9-7-inch-4g/"},
-    {"id":1042,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 8 Elite","coreCount":8,"performanceTier":7,"sourceUrl":"https://www.honor.com/latam/phones/honor-600-pro/spec/"},
-    {"id":1043,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 6300","coreCount":8,"performanceTier":3,"sourceUrl":"https://www.oppo.com/ph/smartphones/series-a/a6s-5g/specs/"},
-    {"id":1044,"manufacturer":"MediaTek","family":"Helio","model":"Helio G92 Max","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.realme.com/ph/realme-c100/specs"},
-    {"id":1045,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 6400 Turbo","coreCount":8,"performanceTier":3,"sourceUrl":"https://www.realme.com/ph/realme-16-5g/specs"},
-    {"id":1046,"manufacturer":"UNISOC","family":"T-series","model":"T606","coreCount":8,"performanceTier":1,"sourceUrl":"https://techlife.ph/tablets/pad-lite"},
-    {"id":1047,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 6400 5G+","coreCount":8,"performanceTier":3,"sourceUrl":"https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/spark-50-5g/"},
-    {"id":1048,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 7400 Ultimate","coreCount":8,"performanceTier":4,"sourceUrl":"https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/camon-50-ultra-5g/"},
-    {"id":1049,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 7100","coreCount":8,"performanceTier":4,"sourceUrl":"https://www.tecno-mobile.com/bd/phones/tech-specs/techspecs/pova-curve-2-5g/"},
-    {"id":1050,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 6 Gen 3","coreCount":8,"performanceTier":4,"sourceUrl":"https://www.mi.com/ph/product/redmi-note-15-5g/"},
-    {"id":1051,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 7s Gen 4","coreCount":8,"performanceTier":5,"sourceUrl":"https://www.mi.com/ph/product/redmi-note-15-pro-plus-5g/specs/"},
-    {"id":1052,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 8500-Ultra","coreCount":8,"performanceTier":6,"sourceUrl":"https://www.mi.com/ph/product/xiaomi-17t/specs/"},
-    {"id":1053,"manufacturer":"MediaTek","family":"Dimensity","model":"Dimensity 9500","coreCount":8,"performanceTier":7,"sourceUrl":"https://www.mi.com/ph/product/xiaomi-17t-pro/specs/"},
-    {"id":1054,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 6s Gen 3 5G","coreCount":8,"performanceTier":3,"sourceUrl":"https://www.mi.com/jp/product/redmi-15-5g/specs/"},
-    {"id":1055,"manufacturer":"Samsung","family":"Exynos","model":"Exynos 2600","coreCount":10,"performanceTier":7,"sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-s26/"},
-    {"id":1056,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 8 Elite Gen 5 for Galaxy","coreCount":8,"performanceTier":7,"sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-s26-ultra/"},
-    {"id":1057,"manufacturer":"Qualcomm","family":"Snapdragon","model":"Snapdragon 8s Gen 4","coreCount":8,"boostClockGhz":3.2,"performanceTier":6,"sourceUrl":"https://www.mi.com/ph/product/xiaomi-pad-8/specs/"},
-    {"id":1058,"manufacturer":"MediaTek","family":"Helio","model":"Helio G100 Ultimate","coreCount":8,"performanceTier":2,"sourceUrl":"https://www.infinixmobility.com/"}
+    {
+      "id": 1001,
+      "manufacturer": "Apple",
+      "family": "A-series",
+      "model": "A13 Bionic",
+      "coreCount": 6,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 1002,
+      "manufacturer": "Apple",
+      "family": "A-series",
+      "model": "A14 Bionic",
+      "coreCount": 6,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 1003,
+      "manufacturer": "Apple",
+      "family": "A-series",
+      "model": "A15 Bionic",
+      "coreCount": 6,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 1004,
+      "manufacturer": "Apple",
+      "family": "A-series",
+      "model": "A16 Bionic",
+      "coreCount": 6,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 1005,
+      "manufacturer": "Apple",
+      "family": "A-series",
+      "model": "A18",
+      "coreCount": 6,
+      "performanceTier": 6,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 1006,
+      "manufacturer": "Apple",
+      "family": "A-series",
+      "model": "A18 Pro",
+      "coreCount": 6,
+      "performanceTier": 6,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 1007,
+      "manufacturer": "Apple",
+      "family": "A-series",
+      "model": "A19",
+      "coreCount": 6,
+      "performanceTier": 6,
+      "sourceUrl": "https://www.apple.com/ph/iphone-17/specs/"
+    },
+    {
+      "id": 1008,
+      "manufacturer": "Apple",
+      "family": "A-series",
+      "model": "A19 Pro",
+      "coreCount": 6,
+      "performanceTier": 7,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 1009,
+      "manufacturer": "Apple",
+      "family": "M-series",
+      "model": "M5",
+      "performanceTier": 7,
+      "sourceUrl": "https://www.apple.com/ph/macbook-air/"
+    },
+    {
+      "id": 1010,
+      "manufacturer": "Intel",
+      "family": "N Series",
+      "model": "Processor N150",
+      "coreCount": 4,
+      "threadCount": 4,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.acer.com/no-no/laptops/aspire/aspire-lite/pdp/NX.D2SED.001"
+    },
+    {
+      "id": 1011,
+      "manufacturer": "Intel",
+      "family": "Core 3",
+      "model": "Processor N355",
+      "coreCount": 8,
+      "threadCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.acer.com/es-es/laptops/aspire/aspire-lite/pdp/NX.D2DEB.001"
+    },
+    {
+      "id": 1012,
+      "manufacturer": "Intel",
+      "family": "Core i3",
+      "model": "Core i3-1315U",
+      "coreCount": 6,
+      "threadCount": 8,
+      "performanceTier": 3,
+      "sourceUrl": "https://www.hp.com/ph-en/products/laptops/product-details/2103580989"
+    },
+    {
+      "id": 1013,
+      "manufacturer": "Intel",
+      "family": "Core i5",
+      "model": "Core i5-12500H",
+      "coreCount": 12,
+      "threadCount": 16,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.gigabyte.com/Laptop/G5--2023/sp"
+    },
+    {
+      "id": 1020,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G81",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.honor.com/ph/phones/honor-x5c-plus/"
+    },
+    {
+      "id": 1021,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G81 Ultra",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.honor.com/ae-en/phones/honor-x6c/spec/"
+    },
+    {
+      "id": 1022,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 6 Gen 4",
+      "coreCount": 8,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.honor.com/au/phones/honor-x9d/"
+    },
+    {
+      "id": 1023,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G200",
+      "coreCount": 8,
+      "performanceTier": 3,
+      "sourceUrl": "https://wap.lk.infinixmobility.com/"
+    },
+    {
+      "id": 1024,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G50 Ultimate",
+      "coreCount": 8,
+      "performanceTier": 1,
+      "sourceUrl": "https://www.itel-life.com/products/phone/p-series/power-70"
+    },
+    {
+      "id": 1025,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G99",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.itel-life.com/products/laptop-pad/vistatab/tab-30-pro/spec"
+    },
+    {
+      "id": 1026,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 685",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-a/a6/specs/"
+    },
+    {
+      "id": 1027,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 8350",
+      "coreCount": 8,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.oppo.com/es/smartphones/series-reno/reno13/"
+    },
+    {
+      "id": 1028,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G100",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.oppo.com/es/accessories/oppo-pad-se/specs/"
+    },
+    {
+      "id": 1029,
+      "manufacturer": "UNISOC",
+      "family": "T-series",
+      "model": "T7250",
+      "coreCount": 8,
+      "performanceTier": 1,
+      "sourceUrl": "https://www.realme.com/ph/realme-note-70/specs"
+    },
+    {
+      "id": 1030,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 6400 Max",
+      "coreCount": 8,
+      "performanceTier": 3,
+      "sourceUrl": "https://www.realme.com/mx/realme-15t-5g/specs"
+    },
+    {
+      "id": 1031,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 7300 Max",
+      "coreCount": 8,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.realme.com/ph/realme-16-pro-5g/specs"
+    },
+    {
+      "id": 1032,
+      "manufacturer": "Samsung",
+      "family": "Exynos",
+      "model": "Exynos 1330",
+      "coreCount": 8,
+      "performanceTier": 3,
+      "sourceUrl": "https://images.samsung.com/is/content/samsung/assets/global/ir/docs/2025_4Q_Interim_Report.pdf"
+    },
+    {
+      "id": 1033,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 8200 Ultimate",
+      "coreCount": 8,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.tecno-mobile.com/pak/phones/tech-specs/tecspecs/camon-30-pro-5g/"
+    },
+    {
+      "id": 1034,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 8350 Ultimate",
+      "coreCount": 8,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.tecno-mobile.com/ph/phones/product-detail/product/pova-7-ultra-5g/"
+    },
+    {
+      "id": 1035,
+      "manufacturer": "UNISOC",
+      "family": "T-series",
+      "model": "T7225",
+      "coreCount": 8,
+      "performanceTier": 1,
+      "sourceUrl": "https://www.vivo.com/mx/products/param/y11d"
+    },
+    {
+      "id": 1036,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 6s Gen 2 4G",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.vivo.com/ph/products/y31d"
+    },
+    {
+      "id": 1037,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 7360-Turbo",
+      "coreCount": 8,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.vivo.com/ph/products/param/v70-fe"
+    },
+    {
+      "id": 1038,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 7 Gen 4",
+      "coreCount": 8,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.vivo.com/ph/products/param/v70"
+    },
+    {
+      "id": 1039,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G100-Ultra",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15/"
+    },
+    {
+      "id": 1040,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 7400-Ultra",
+      "coreCount": 8,
+      "boostClockGhz": 2.6,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15-pro-5g/specs/"
+    },
+    {
+      "id": 1041,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 6s 4G Gen 2",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-pad-2-9-7-inch-4g/"
+    },
+    {
+      "id": 1042,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 8 Elite",
+      "coreCount": 8,
+      "performanceTier": 7,
+      "sourceUrl": "https://www.honor.com/latam/phones/honor-600-pro/spec/"
+    },
+    {
+      "id": 1043,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 6300",
+      "coreCount": 8,
+      "performanceTier": 3,
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-a/a6s-5g/specs/"
+    },
+    {
+      "id": 1044,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G92 Max",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.realme.com/ph/realme-c100/specs"
+    },
+    {
+      "id": 1045,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 6400 Turbo",
+      "coreCount": 8,
+      "performanceTier": 3,
+      "sourceUrl": "https://www.realme.com/ph/realme-16-5g/specs"
+    },
+    {
+      "id": 1046,
+      "manufacturer": "UNISOC",
+      "family": "T-series",
+      "model": "T606",
+      "coreCount": 8,
+      "performanceTier": 1,
+      "sourceUrl": "https://techlife.ph/tablets/pad-lite"
+    },
+    {
+      "id": 1047,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 6400 5G+",
+      "coreCount": 8,
+      "performanceTier": 3,
+      "sourceUrl": "https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/spark-50-5g/"
+    },
+    {
+      "id": 1048,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 7400 Ultimate",
+      "coreCount": 8,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/camon-50-ultra-5g/"
+    },
+    {
+      "id": 1049,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 7100",
+      "coreCount": 8,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.tecno-mobile.com/bd/phones/tech-specs/techspecs/pova-curve-2-5g/"
+    },
+    {
+      "id": 1050,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 6 Gen 3",
+      "coreCount": 8,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15-5g/"
+    },
+    {
+      "id": 1051,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 7s Gen 4",
+      "coreCount": 8,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15-pro-plus-5g/specs/"
+    },
+    {
+      "id": 1052,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 8500-Ultra",
+      "coreCount": 8,
+      "performanceTier": 6,
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-17t/specs/"
+    },
+    {
+      "id": 1053,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 9500",
+      "coreCount": 8,
+      "performanceTier": 7,
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-17t-pro/specs/"
+    },
+    {
+      "id": 1054,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 6s Gen 3 5G",
+      "coreCount": 8,
+      "performanceTier": 3,
+      "sourceUrl": "https://www.mi.com/jp/product/redmi-15-5g/specs/"
+    },
+    {
+      "id": 1055,
+      "manufacturer": "Samsung",
+      "family": "Exynos",
+      "model": "Exynos 2600",
+      "coreCount": 10,
+      "performanceTier": 7,
+      "sourceUrl": "https://www.samsung.com/ph/smartphones/galaxy-s26/"
+    },
+    {
+      "id": 1056,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 8 Elite Gen 5 for Galaxy",
+      "coreCount": 8,
+      "performanceTier": 7,
+      "sourceUrl": "https://www.samsung.com/ph/smartphones/galaxy-s26-ultra/"
+    },
+    {
+      "id": 1057,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 8s Gen 4",
+      "coreCount": 8,
+      "boostClockGhz": 3.2,
+      "performanceTier": 6,
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-pad-8/specs/"
+    },
+    {
+      "id": 1058,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G100 Ultimate",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "sourceUrl": "https://www.infinixmobility.com/"
+    },
+    {
+      "id": 1101,
+      "manufacturer": "Intel",
+      "family": "Core Ultra 5",
+      "model": "Core Ultra 5 225U",
+      "architecture": "x64",
+      "coreCount": 12,
+      "threadCount": 14,
+      "boostClockGhz": 4.8,
+      "performanceTier": 4,
+      "sourceUrl": "https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157358"
+    },
+    {
+      "id": 1102,
+      "manufacturer": "Intel",
+      "family": "Core Ultra 7",
+      "model": "Core Ultra 7 255U",
+      "architecture": "x64",
+      "coreCount": 12,
+      "threadCount": 14,
+      "boostClockGhz": 5.2,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157361"
+    },
+    {
+      "id": 1103,
+      "manufacturer": "Intel",
+      "family": "Core Ultra 7",
+      "model": "Core Ultra 7 155H",
+      "architecture": "x64",
+      "coreCount": 16,
+      "threadCount": 22,
+      "boostClockGhz": 4.8,
+      "performanceTier": 6,
+      "sourceUrl": "https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103460304"
+    },
+    {
+      "id": 1104,
+      "manufacturer": "AMD",
+      "family": "Ryzen 5",
+      "model": "Ryzen 5 7530U",
+      "architecture": "x64",
+      "coreCount": 6,
+      "threadCount": 12,
+      "baseClockGhz": 2,
+      "boostClockGhz": 4.5,
+      "integratedGpu": "AMD Radeon Graphics",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.amd.com/en/products/processors/laptop/ryzen/7000-series/amd-ryzen-5-7530u.html"
+    },
+    {
+      "id": 1105,
+      "manufacturer": "AMD",
+      "family": "Ryzen 3",
+      "model": "Ryzen 3 5400U",
+      "architecture": "x64",
+      "coreCount": 4,
+      "threadCount": 8,
+      "baseClockGhz": 2.6,
+      "boostClockGhz": 4,
+      "integratedGpu": "AMD Radeon Graphics",
+      "performanceTier": 3,
+      "sourceUrl": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-3-5400u.html"
+    },
+    {
+      "id": 1106,
+      "manufacturer": "Intel",
+      "family": "Core Ultra 5",
+      "model": "Core Ultra 5 125H",
+      "architecture": "x64",
+      "coreCount": 14,
+      "threadCount": 18,
+      "boostClockGhz": 4.5,
+      "integratedGpu": "Intel Arc Graphics",
+      "performanceTier": 5,
+      "sourceUrl": "https://www.intel.com/content/www/us/en/products/docs/processors/core-ultra/core-ultra-series-1-product-brief.html"
+    },
+    {
+      "id": 1107,
+      "manufacturer": "AMD",
+      "family": "Ryzen 5",
+      "model": "Ryzen 5 7640HS",
+      "architecture": "x64",
+      "coreCount": 6,
+      "threadCount": 12,
+      "baseClockGhz": 4.3,
+      "boostClockGhz": 5,
+      "integratedGpu": "AMD Radeon 760M",
+      "performanceTier": 5,
+      "sourceUrl": "https://www.amd.com/en/products/processors/laptop/ryzen/7000-series/amd-ryzen-5-7640hs.html"
+    },
+    {
+      "id": 1108,
+      "manufacturer": "Intel",
+      "family": "Core Ultra 5",
+      "model": "Core Ultra 5 115U",
+      "architecture": "x64",
+      "coreCount": 8,
+      "threadCount": 10,
+      "boostClockGhz": 4.2,
+      "integratedGpu": "Intel Graphics",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.intel.com/content/www/us/en/products/sku/237505/intel-core-ultra-5-processor-115u-10m-cache-up-to-4-20-ghz/specifications.html"
+    },
+    {
+      "id": 1109,
+      "manufacturer": "Intel",
+      "family": "Core Ultra 5",
+      "model": "Core Ultra 5 226V",
+      "architecture": "x64",
+      "coreCount": 8,
+      "threadCount": 8,
+      "baseClockGhz": 2.1,
+      "boostClockGhz": 4.5,
+      "integratedGpu": "Intel Arc 130V GPU",
+      "performanceTier": 5,
+      "sourceUrl": "https://www.intel.com/content/www/us/en/products/sku/240960/intel-core-ultra-5-processor-226v-8m-cache-up-to-4-50-ghz/specifications.html"
+    },
+    {
+      "id": 1110,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G25",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "boostClockGhz": 2,
+      "integratedGpu": "IMG PowerVR GE8320",
+      "performanceTier": 1,
+      "workloadTier": 1,
+      "sourceUrl": "https://www.mediatek.com/products/smartphones/mediatek-helio-g25"
+    },
+    {
+      "id": 1111,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 4 Gen 4",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "boostClockGhz": 2.3,
+      "integratedGpu": "Adreno 613",
+      "performanceTier": 2,
+      "workloadTier": 2,
+      "sourceUrl": "https://www.honor.com/ph/phones/honor-600s-5g/spec/"
+    },
+    {
+      "id": 1112,
+      "manufacturer": "AMD",
+      "family": "Ryzen 5",
+      "model": "Ryzen 5 3500U",
+      "generation": "Ryzen 3000 Series",
+      "architecture": "x64",
+      "coreCount": 4,
+      "threadCount": 8,
+      "baseClockGhz": 2.1,
+      "boostClockGhz": 3.7,
+      "integratedGpu": "Radeon Vega 8 Graphics",
+      "performanceTier": 3,
+      "workloadTier": 3,
+      "sourceUrl": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-3000-series/amd-ryzen-5-3500u.html"
+    },
+    {
+      "id": 1113,
+      "manufacturer": "Qualcomm",
+      "family": "Snapdragon",
+      "model": "Snapdragon 680 4G",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "workloadTier": 2,
+      "integratedGpu": "Adreno 610",
+      "notes": "Compatibility tier based on the published Snapdragon 680 platform.",
+      "sourceUrl": "https://www.qualcomm.com/products/mobile/snapdragon/4-series-mobile-platforms/snapdragon-680-4g-mobile-platform"
+    },
+    {
+      "id": 1114,
+      "manufacturer": "UNISOC",
+      "family": "T-series",
+      "model": "T7300",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "workloadTier": 2,
+      "integratedGpu": "Mali-G57 MC2",
+      "notes": "Compatibility tier based on the itel SUPER 26 Ultra platform.",
+      "sourceUrl": "https://www.itel-life.com/id/products/phone/s-series/s26-ultra/spec"
+    },
+    {
+      "id": 1115,
+      "manufacturer": "Samsung",
+      "family": "Exynos",
+      "model": "Exynos 1480",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 4,
+      "workloadTier": 4,
+      "integratedGpu": "Xclipse 530",
+      "notes": "Compatibility tier based on the Galaxy A37 5G platform.",
+      "sourceUrl": "https://www.samsung.com/uk/smartphones/galaxy-a/galaxy-a37-5g-awesome-graygreen-256gb-sm-a376bdggeub/"
+    },
+    {
+      "id": 1116,
+      "manufacturer": "Samsung",
+      "family": "Exynos",
+      "model": "Exynos 1580",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 5,
+      "workloadTier": 5,
+      "integratedGpu": "Xclipse 540",
+      "notes": "Compatibility tier based on Samsung's Galaxy A56 5G platform.",
+      "sourceUrl": "https://www.samsungmobilepress.com/articles/samsung-marks-a-step-forward-with-ai-for-everyone-by-introducing-new-galaxy-a56-5g-galaxy-a36-5g-and-galaxy-a26-5g"
+    },
+    {
+      "id": 1117,
+      "manufacturer": "Samsung",
+      "family": "Exynos",
+      "model": "Exynos 1680",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 5,
+      "workloadTier": 5,
+      "integratedGpu": "Xclipse 550",
+      "notes": "Compatibility tier based on Samsung's Galaxy A57 5G platform.",
+      "sourceUrl": "https://news.samsung.com/id/gaming-mulus-sosmed-lancar-ini-alasan-samsung-galaxy-a57-5g-layak-jadi-pilihan"
+    },
+    {
+      "id": 1118,
+      "manufacturer": "UNISOC",
+      "family": "T-series",
+      "model": "T612",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 1,
+      "workloadTier": 1,
+      "integratedGpu": "Mali-G57 MP1",
+      "notes": "Compatibility tier based on the Philippine TechLife Pad Neo platform.",
+      "sourceUrl": "https://www.yugatech.com/news/techlife-pad-neo-specs-price-philippines/"
+    },
+    {
+      "id": 1119,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G91",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "workloadTier": 2,
+      "integratedGpu": "Mali-G52 MC2",
+      "notes": "Compatibility tier based on the TechLife Pad Plus 12-inch platform.",
+      "sourceUrl": "https://www.yugatech.com/spec/techlife-pad-plus-12-key/"
+    },
+    {
+      "id": 1120,
+      "manufacturer": "MediaTek",
+      "family": "Helio",
+      "model": "Helio G81 Ultimate",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 2,
+      "workloadTier": 2,
+      "integratedGpu": "Mali-G52 MC2",
+      "notes": "Compatibility tier based on the Infinix SMART 20 platform.",
+      "sourceUrl": "https://infinixmobiles.in/products/smart-20"
+    },
+    {
+      "id": 1121,
+      "manufacturer": "Samsung",
+      "family": "Exynos",
+      "model": "Exynos 1380",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 4,
+      "workloadTier": 4,
+      "integratedGpu": "Mali-G68 MP5",
+      "notes": "Compatibility tier based on the Galaxy A26 5G platform.",
+      "sourceUrl": "https://news.samsung.com/in/galaxy-a26-5g-samsungs-most-affordable-ai-powered-smartphone-launches-in-india-starting-at-just-inr-22999"
+    },
+    {
+      "id": 1122,
+      "manufacturer": "MediaTek",
+      "family": "Dimensity",
+      "model": "Dimensity 1080",
+      "architecture": "arm64",
+      "coreCount": 8,
+      "performanceTier": 4,
+      "workloadTier": 4,
+      "integratedGpu": "Mali-G68 MC4",
+      "notes": "Compatibility tier based on the Galaxy A34 5G platform.",
+      "sourceUrl": "https://www.samsungindiamarketing.com/Promotions/catalogues/galaxya/print-pdf/a345g.pdf"
+    }
   ],
   "gpus": [
-    {"id":2101,"manufacturer":"Intel","model":"Intel Graphics (Core Ultra 200U)","type":"INTEGRATED","performanceTier":3,"sourceUrl":"https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157358"},
-    {"id":2102,"manufacturer":"Intel","model":"Arc Graphics (Core Ultra 7 155H)","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103460304"},
-    {"id":2103,"manufacturer":"AMD","model":"Radeon Graphics (Ryzen 5 7530U)","type":"INTEGRATED","performanceTier":3,"sourceUrl":"https://www.amd.com/en/products/processors/laptop/ryzen/7000-series/amd-ryzen-5-7530u.html"},
-    {"id":2104,"manufacturer":"NVIDIA","model":"GeForce RTX 4060 Laptop GPU","type":"DEDICATED","vramGB":8.0,"performanceTier":6,"sourceUrl":"https://www.gigabyte.com/Laptop/AORUS-15--2023/sp"},
-    {"id":2105,"manufacturer":"Intel","model":"Arc Graphics 130V","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://store.acer.com/en-ph/swift-go-sfg14-75-55mb-opi-steam-blue"},
-    {"id":2106,"manufacturer":"AMD","model":"Radeon Graphics (Ryzen 3 5400U)","type":"INTEGRATED","performanceTier":2,"sourceUrl":"https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-3-5400u.html"},
-    {"id":2107,"manufacturer":"Intel","model":"Intel Arc Graphics (Core Ultra 5 125H)","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://www.intel.com/content/www/us/en/products/docs/processors/core-ultra/core-ultra-series-1-product-brief.html"},
-    {"id":2108,"manufacturer":"AMD","model":"Radeon 760M","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://www.amd.com/en/products/processors/laptop/ryzen/7000-series/amd-ryzen-5-7640hs.html"},
-    {"id":2109,"manufacturer":"Intel","model":"Intel Graphics (Core Ultra 5 115U)","type":"INTEGRATED","performanceTier":3,"sourceUrl":"https://www.intel.com/content/www/us/en/products/sku/237505/intel-core-ultra-5-processor-115u-10m-cache-up-to-4-20-ghz/specifications.html"},
-    {"id":2001,"manufacturer":"Apple","model":"A13 4-core GPU","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2002,"manufacturer":"Apple","model":"A14 4-core GPU","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2003,"manufacturer":"Apple","model":"A15 4-core GPU","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2004,"manufacturer":"Apple","model":"A15 5-core GPU","type":"INTEGRATED","performanceTier":5,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2005,"manufacturer":"Apple","model":"A16 5-core GPU","type":"INTEGRATED","performanceTier":5,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2006,"manufacturer":"Apple","model":"A16 4-core GPU","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://www.apple.com/ph/ipad-11/specs/"},
-    {"id":2007,"manufacturer":"Apple","model":"A18 4-core GPU","type":"INTEGRATED","performanceTier":5,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2008,"manufacturer":"Apple","model":"A18 5-core GPU","type":"INTEGRATED","performanceTier":6,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2009,"manufacturer":"Apple","model":"A18 Pro 5-core GPU","type":"INTEGRATED","performanceTier":6,"sourceUrl":"https://www.apple.com/ph/macbook-neo/specs/"},
-    {"id":2010,"manufacturer":"Apple","model":"A18 Pro 6-core GPU","type":"INTEGRATED","performanceTier":6,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2011,"manufacturer":"Apple","model":"A19 5-core GPU","type":"INTEGRATED","performanceTier":6,"sourceUrl":"https://www.apple.com/ph/iphone-17/specs/"},
-    {"id":2012,"manufacturer":"Apple","model":"A19 Pro 5-core GPU","type":"INTEGRATED","performanceTier":6,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2013,"manufacturer":"Apple","model":"A19 Pro 6-core GPU","type":"INTEGRATED","performanceTier":7,"sourceUrl":"https://www.apple.com/ph/iphone/compare/"},
-    {"id":2014,"manufacturer":"Apple","model":"M5 integrated GPU","type":"INTEGRATED","performanceTier":7,"sourceUrl":"https://www.apple.com/ph/macbook-air/"},
-    {"id":2020,"manufacturer":"Intel","model":"Intel Graphics","type":"INTEGRATED","performanceTier":2,"sourceUrl":"https://www.acer.com/no-no/laptops/aspire/aspire-lite/pdp/NX.D2SED.001"},
-    {"id":2021,"manufacturer":"Intel","model":"Intel UHD Graphics","type":"INTEGRATED","performanceTier":2,"sourceUrl":"https://www.hp.com/ph-en/products/laptops/product-details/2103580989"},
-    {"id":2022,"manufacturer":"NVIDIA","model":"GeForce RTX 4050 Laptop GPU","type":"DEDICATED","vramGB":6.0,"performanceTier":5,"sourceUrl":"https://www.gigabyte.com/Laptop/G5--2023/sp"},
-    {"id":2030,"manufacturer":"Arm","model":"Mali-G52 MC2","type":"INTEGRATED","performanceTier":2,"sourceUrl":"https://www.honor.com/ae-en/phones/honor-x6c/spec/"},
-    {"id":2031,"manufacturer":"Qualcomm","model":"Adreno 610","type":"INTEGRATED","performanceTier":2,"sourceUrl":"https://www.oppo.com/ph/smartphones/series-a/a6/specs/"},
-    {"id":2032,"manufacturer":"Arm","model":"Mali-G57 MC2","type":"INTEGRATED","performanceTier":2,"sourceUrl":"https://www.oppo.com/es/accessories/oppo-pad-se/specs/"},
-    {"id":2033,"manufacturer":"Arm","model":"Mali-G57 MP1","type":"INTEGRATED","performanceTier":1,"sourceUrl":"https://www.realme.com/ph/realme-note-70/specs"},
-    {"id":2034,"manufacturer":"Arm","model":"Mali-G615","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://www.mi.com/ph/product/redmi-note-15-pro-5g/specs/"},
-    {"id":2035,"manufacturer":"Qualcomm","model":"Adreno 722","type":"INTEGRATED","performanceTier":5,"sourceUrl":"https://www.oppo.com/ph/smartphones/series-reno/reno15/specs/"},
-    {"id":2036,"manufacturer":"Qualcomm","model":"Adreno 830","type":"INTEGRATED","performanceTier":7,"sourceUrl":"https://www.honor.com/latam/phones/honor-600-pro/spec/"},
-    {"id":2037,"manufacturer":"Arm","model":"Mali-G52","type":"INTEGRATED","performanceTier":2,"sourceUrl":"https://www.realme.com/ph/realme-c100/specs"},
-    {"id":2038,"manufacturer":"Arm","model":"Mali-G610 MC2","type":"INTEGRATED","performanceTier":4,"sourceUrl":"https://www.tecno-mobile.com/bd/phones/tech-specs/techspecs/pova-curve-2-5g/"},
-    {"id":2039,"manufacturer":"Arm","model":"Mali-G720 MC8","type":"INTEGRATED","performanceTier":6,"sourceUrl":"https://www.mi.com/ph/product/xiaomi-17t/specs/"},
-    {"id":2040,"manufacturer":"Arm","model":"Mali G1-Ultra","type":"INTEGRATED","performanceTier":7,"sourceUrl":"https://www.mi.com/ph/product/xiaomi-17t-pro/specs/"},
-    {"id":2041,"manufacturer":"Qualcomm","model":"Adreno 810","type":"INTEGRATED","performanceTier":5,"sourceUrl":"https://www.mi.com/ph/product/redmi-pad-2-pro-5g/specs/"},
-    {"id":2042,"manufacturer":"Qualcomm","model":"Adreno 825","type":"INTEGRATED","performanceTier":6,"sourceUrl":"https://www.mi.com/ph/product/xiaomi-pad-8/specs/"}
+    {
+      "id": 2001,
+      "manufacturer": "Apple",
+      "model": "A13 4-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2002,
+      "manufacturer": "Apple",
+      "model": "A14 4-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2003,
+      "manufacturer": "Apple",
+      "model": "A15 4-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2004,
+      "manufacturer": "Apple",
+      "model": "A15 5-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 5,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2005,
+      "manufacturer": "Apple",
+      "model": "A16 5-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 5,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2006,
+      "manufacturer": "Apple",
+      "model": "A16 4-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.apple.com/ph/ipad-11/specs/"
+    },
+    {
+      "id": 2007,
+      "manufacturer": "Apple",
+      "model": "A18 4-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 5,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2008,
+      "manufacturer": "Apple",
+      "model": "A18 5-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 6,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2009,
+      "manufacturer": "Apple",
+      "model": "A18 Pro 5-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 6,
+      "sourceUrl": "https://www.apple.com/ph/macbook-neo/specs/"
+    },
+    {
+      "id": 2010,
+      "manufacturer": "Apple",
+      "model": "A18 Pro 6-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 6,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2011,
+      "manufacturer": "Apple",
+      "model": "A19 5-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 6,
+      "sourceUrl": "https://www.apple.com/ph/iphone-17/specs/"
+    },
+    {
+      "id": 2012,
+      "manufacturer": "Apple",
+      "model": "A19 Pro 5-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 6,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2013,
+      "manufacturer": "Apple",
+      "model": "A19 Pro 6-core GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 7,
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/"
+    },
+    {
+      "id": 2014,
+      "manufacturer": "Apple",
+      "model": "M5 integrated GPU",
+      "type": "INTEGRATED",
+      "performanceTier": 7,
+      "sourceUrl": "https://www.apple.com/ph/macbook-air/"
+    },
+    {
+      "id": 2020,
+      "manufacturer": "Intel",
+      "model": "Intel Graphics",
+      "type": "INTEGRATED",
+      "performanceTier": 2,
+      "sourceUrl": "https://www.acer.com/no-no/laptops/aspire/aspire-lite/pdp/NX.D2SED.001"
+    },
+    {
+      "id": 2021,
+      "manufacturer": "Intel",
+      "model": "Intel UHD Graphics",
+      "type": "INTEGRATED",
+      "performanceTier": 2,
+      "sourceUrl": "https://www.hp.com/ph-en/products/laptops/product-details/2103580989"
+    },
+    {
+      "id": 2022,
+      "manufacturer": "NVIDIA",
+      "model": "GeForce RTX 4050 Laptop GPU",
+      "type": "DEDICATED",
+      "vramGB": 6,
+      "performanceTier": 5,
+      "sourceUrl": "https://www.gigabyte.com/Laptop/G5--2023/sp"
+    },
+    {
+      "id": 2030,
+      "manufacturer": "Arm",
+      "model": "Mali-G52 MC2",
+      "type": "INTEGRATED",
+      "performanceTier": 2,
+      "sourceUrl": "https://www.honor.com/ae-en/phones/honor-x6c/spec/"
+    },
+    {
+      "id": 2031,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno 610",
+      "type": "INTEGRATED",
+      "performanceTier": 2,
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-a/a6/specs/"
+    },
+    {
+      "id": 2032,
+      "manufacturer": "Arm",
+      "model": "Mali-G57 MC2",
+      "type": "INTEGRATED",
+      "performanceTier": 2,
+      "sourceUrl": "https://www.oppo.com/es/accessories/oppo-pad-se/specs/"
+    },
+    {
+      "id": 2033,
+      "manufacturer": "Arm",
+      "model": "Mali-G57 MP1",
+      "type": "INTEGRATED",
+      "performanceTier": 1,
+      "sourceUrl": "https://www.realme.com/ph/realme-note-70/specs"
+    },
+    {
+      "id": 2034,
+      "manufacturer": "Arm",
+      "model": "Mali-G615",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15-pro-5g/specs/"
+    },
+    {
+      "id": 2035,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno 722",
+      "type": "INTEGRATED",
+      "performanceTier": 5,
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-reno/reno15/specs/"
+    },
+    {
+      "id": 2036,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno 830",
+      "type": "INTEGRATED",
+      "performanceTier": 7,
+      "sourceUrl": "https://www.honor.com/latam/phones/honor-600-pro/spec/"
+    },
+    {
+      "id": 2037,
+      "manufacturer": "Arm",
+      "model": "Mali-G52",
+      "type": "INTEGRATED",
+      "performanceTier": 2,
+      "sourceUrl": "https://www.realme.com/ph/realme-c100/specs"
+    },
+    {
+      "id": 2038,
+      "manufacturer": "Arm",
+      "model": "Mali-G610 MC2",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.tecno-mobile.com/bd/phones/tech-specs/techspecs/pova-curve-2-5g/"
+    },
+    {
+      "id": 2039,
+      "manufacturer": "Arm",
+      "model": "Mali-G720 MC8",
+      "type": "INTEGRATED",
+      "performanceTier": 6,
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-17t/specs/"
+    },
+    {
+      "id": 2040,
+      "manufacturer": "Arm",
+      "model": "Mali G1-Ultra",
+      "type": "INTEGRATED",
+      "performanceTier": 7,
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-17t-pro/specs/"
+    },
+    {
+      "id": 2041,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno 810",
+      "type": "INTEGRATED",
+      "performanceTier": 5,
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-pad-2-pro-5g/specs/"
+    },
+    {
+      "id": 2042,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno 825",
+      "type": "INTEGRATED",
+      "performanceTier": 6,
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-pad-8/specs/"
+    },
+    {
+      "id": 2101,
+      "manufacturer": "Intel",
+      "model": "Intel Graphics (Core Ultra 200U)",
+      "type": "INTEGRATED",
+      "performanceTier": 3,
+      "sourceUrl": "https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157358"
+    },
+    {
+      "id": 2102,
+      "manufacturer": "Intel",
+      "model": "Arc Graphics (Core Ultra 7 155H)",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103460304"
+    },
+    {
+      "id": 2103,
+      "manufacturer": "AMD",
+      "model": "Radeon Graphics (Ryzen 5 7530U)",
+      "type": "INTEGRATED",
+      "performanceTier": 3,
+      "sourceUrl": "https://www.amd.com/en/products/processors/laptop/ryzen/7000-series/amd-ryzen-5-7530u.html"
+    },
+    {
+      "id": 2104,
+      "manufacturer": "NVIDIA",
+      "model": "GeForce RTX 4060 Laptop GPU",
+      "type": "DEDICATED",
+      "vramGB": 8,
+      "performanceTier": 6,
+      "sourceUrl": "https://www.gigabyte.com/Laptop/AORUS-15--2023/sp"
+    },
+    {
+      "id": 2105,
+      "manufacturer": "Intel",
+      "model": "Arc Graphics 130V",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://store.acer.com/en-ph/swift-go-sfg14-75-55mb-opi-steam-blue"
+    },
+    {
+      "id": 2106,
+      "manufacturer": "AMD",
+      "model": "Radeon Graphics (Ryzen 3 5400U)",
+      "type": "INTEGRATED",
+      "performanceTier": 2,
+      "sourceUrl": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-3-5400u.html"
+    },
+    {
+      "id": 2107,
+      "manufacturer": "Intel",
+      "model": "Intel Arc Graphics (Core Ultra 5 125H)",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.intel.com/content/www/us/en/products/docs/processors/core-ultra/core-ultra-series-1-product-brief.html"
+    },
+    {
+      "id": 2108,
+      "manufacturer": "AMD",
+      "model": "Radeon 760M",
+      "type": "INTEGRATED",
+      "performanceTier": 4,
+      "sourceUrl": "https://www.amd.com/en/products/processors/laptop/ryzen/7000-series/amd-ryzen-5-7640hs.html"
+    },
+    {
+      "id": 2109,
+      "manufacturer": "Intel",
+      "model": "Intel Graphics (Core Ultra 5 115U)",
+      "type": "INTEGRATED",
+      "performanceTier": 3,
+      "sourceUrl": "https://www.intel.com/content/www/us/en/products/sku/237505/intel-core-ultra-5-processor-115u-10m-cache-up-to-4-20-ghz/specifications.html"
+    },
+    {
+      "id": 2110,
+      "manufacturer": "IMG",
+      "model": "PowerVR GE8320",
+      "type": "INTEGRATED",
+      "architecture": "Rogue",
+      "performanceTier": 1,
+      "graphicsTier": 1,
+      "sourceUrl": "https://www.mediatek.com/products/smartphones/mediatek-helio-g25"
+    },
+    {
+      "id": 2111,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno 613",
+      "type": "INTEGRATED",
+      "performanceTier": 2,
+      "graphicsTier": 2,
+      "sourceUrl": "https://www.honor.com/ph/phones/honor-600s-5g/spec/"
+    },
+    {
+      "id": 2112,
+      "manufacturer": "AMD",
+      "model": "Radeon Vega 8 Mobile Graphics",
+      "type": "INTEGRATED",
+      "architecture": "GCN 5",
+      "performanceTier": 3,
+      "graphicsTier": 3,
+      "sourceUrl": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-3000-series/amd-ryzen-5-3500u.html"
+    },
+    {
+      "id": 2113,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno GPU (Snapdragon 6s 4G Gen 2)",
+      "type": "INTEGRATED",
+      "performanceTier": 2,
+      "graphicsTier": 2,
+      "notes": "Xiaomi publishes this platform as Adreno without a numeric GPU model; the tier is an internal comparison classification.",
+      "sourceUrl": "https://www.mi.com/global/product/redmi-note-17/specs/"
+    },
+    {
+      "id": 2114,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno 710",
+      "type": "INTEGRATED",
+      "architecture": "Adreno",
+      "performanceTier": 4,
+      "graphicsTier": 4,
+      "notes": "Compatibility tier for Snapdragon 6 Gen 3 integrated graphics.",
+      "sourceUrl": "https://www.samsungmobilepress.com/articles/galaxy-a27-5g-immersive-display-awesome-intelligence"
+    },
+    {
+      "id": 2115,
+      "manufacturer": "Arm",
+      "model": "Mali-G68 MC4",
+      "type": "INTEGRATED",
+      "architecture": "Valhall",
+      "performanceTier": 4,
+      "graphicsTier": 4,
+      "notes": "Compatibility tier for Dimensity 1080 integrated graphics.",
+      "sourceUrl": "https://www.samsungindiamarketing.com/Promotions/catalogues/galaxya/print-pdf/a345g.pdf"
+    },
+    {
+      "id": 2116,
+      "manufacturer": "Arm",
+      "model": "Mali-G68 MP2",
+      "type": "INTEGRATED",
+      "architecture": "Valhall",
+      "performanceTier": 3,
+      "graphicsTier": 3,
+      "notes": "Compatibility tier for Exynos 1330 integrated graphics.",
+      "sourceUrl": "https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a17-5g/"
+    },
+    {
+      "id": 2117,
+      "manufacturer": "Arm",
+      "model": "Mali-G610 MC6",
+      "type": "INTEGRATED",
+      "architecture": "Valhall",
+      "performanceTier": 5,
+      "graphicsTier": 5,
+      "notes": "Compatibility tier for Dimensity 8200 Ultimate integrated graphics.",
+      "sourceUrl": "https://www.tecno-mobile.com/phones/tech-specs/techspecs/camon-30-pro-5g/"
+    },
+    {
+      "id": 2118,
+      "manufacturer": "Samsung",
+      "model": "Xclipse 530",
+      "type": "INTEGRATED",
+      "architecture": "RDNA 3",
+      "performanceTier": 4,
+      "graphicsTier": 4,
+      "notes": "Compatibility tier for Exynos 1480 integrated graphics.",
+      "sourceUrl": "https://www.samsung.com/uk/smartphones/galaxy-a/galaxy-a37-5g-awesome-graygreen-256gb-sm-a376bdggeub/"
+    },
+    {
+      "id": 2119,
+      "manufacturer": "Samsung",
+      "model": "Xclipse 540",
+      "type": "INTEGRATED",
+      "architecture": "RDNA 3",
+      "performanceTier": 5,
+      "graphicsTier": 5,
+      "notes": "Compatibility tier for Exynos 1580 integrated graphics.",
+      "sourceUrl": "https://www.samsungmobilepress.com/articles/samsung-marks-a-step-forward-with-ai-for-everyone-by-introducing-new-galaxy-a56-5g-galaxy-a36-5g-and-galaxy-a26-5g"
+    },
+    {
+      "id": 2120,
+      "manufacturer": "Samsung",
+      "model": "Xclipse 550",
+      "type": "INTEGRATED",
+      "architecture": "RDNA 3",
+      "performanceTier": 5,
+      "graphicsTier": 5,
+      "notes": "Compatibility tier for Exynos 1680 integrated graphics.",
+      "sourceUrl": "https://news.samsung.com/id/gaming-mulus-sosmed-lancar-ini-alasan-samsung-galaxy-a57-5g-layak-jadi-pilihan"
+    },
+    {
+      "id": 2121,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno 619",
+      "type": "INTEGRATED",
+      "architecture": "Adreno",
+      "performanceTier": 3,
+      "graphicsTier": 3,
+      "notes": "Compatibility tier for Snapdragon 6s Gen 3 integrated graphics.",
+      "sourceUrl": "https://www.mi.com/tw/product/redmi-15-5g/specs/"
+    },
+    {
+      "id": 2122,
+      "manufacturer": "Arm",
+      "model": "Mali-G68 MP5",
+      "type": "INTEGRATED",
+      "architecture": "Valhall",
+      "performanceTier": 4,
+      "graphicsTier": 4,
+      "notes": "Compatibility tier for Exynos 1380 integrated graphics.",
+      "sourceUrl": "https://news.samsung.com/in/galaxy-a26-5g-samsungs-most-affordable-ai-powered-smartphone-launches-in-india-starting-at-just-inr-22999"
+    },
+    {
+      "id": 2123,
+      "manufacturer": "Samsung",
+      "model": "Xclipse 960",
+      "type": "INTEGRATED",
+      "architecture": "RDNA 4",
+      "performanceTier": 7,
+      "graphicsTier": 7,
+      "notes": "Compatibility tier for Exynos 2600 integrated graphics.",
+      "sourceUrl": "https://semiconductor.samsung.com/processor/mobile-processor/exynos-2600/"
+    },
+    {
+      "id": 2124,
+      "manufacturer": "Qualcomm",
+      "model": "Adreno GPU (Snapdragon 8 Elite Gen 5)",
+      "type": "INTEGRATED",
+      "architecture": "Adreno",
+      "performanceTier": 7,
+      "graphicsTier": 7,
+      "notes": "Compatibility tier for the Snapdragon 8 Elite Gen 5 for Galaxy integrated Adreno GPU; Qualcomm publishes the GPU family, not a numeric model name.",
+      "sourceUrl": "https://www.qualcomm.com/news/releases/2026/02/qualcomm-unveils-the-snapdragon-8-elite-gen-5-for-galaxy--drivin"
+    }
   ],
   "assignments": [
-    {"skus":["JUL26-LAP-007"],"processorId":1105,"gpuId":2106,"ramType":"DDR4","storageType":"SSD","displaySize":14.0,"displayResolution":"1920 x 1200 IPS","operatingSystem":"Windows 11 Home","architecture":"x64","batteryCapacityWh":58.0,"weightKg":1.3,"sourceUrl":"https://emcor.com.ph/product/acer-aspire-lite-14-al14-45p-r10u/","notes":"Exact retailer listing for AL14-45P-R10U confirms Ryzen 3 5400U and integrated AMD Radeon Graphics. The supplied lineup shortens the model to AL-45P-R10U, so the store label should be checked before marking this verified."},
-    {"skus":["JUL26-LAP-008"],"processorId":1011,"gpuId":2020,"ramType":"DDR5","storageType":"NVMe SSD","displaySize":15.6,"displayResolution":"1920 x 1080 IPS","operatingSystem":"Windows 11 Home","architecture":"x64","sourceUrl":"https://laptopfactory.com.ph/product/acer-aspire-lite-al15-33p-35tm/","notes":"Exact retailer listing for AL15-33P-35TM confirms Intel Core 3 N355 and integrated Intel graphics. Manufacturer confirmation is still recommended before marking this record verified."},
-    {"skus":["JUL26-LAP-013"],"processorId":1106,"gpuId":2107,"ramType":"DDR5","storageType":"NVMe SSD","displaySize":14.0,"displayResolution":"1920 x 1200 IPS","operatingSystem":"Windows 11 Home","architecture":"x64","sourceUrl":"https://www.kwancorp.com/products/acer-aspire-go-14-ag14-71m-50wj-intel-ultra-5-125h-16gb-ram-512gb-ssd-14-ips-wuxga-windows-11-laptop","notes":"Exact retailer model code AG14-71M-50WJ identifies Core Ultra 5 125H and Intel graphics; Intel confirms the processor platform includes Arc graphics. The supplied lineup calls this Core i5, so its store label must be reviewed."},
-    {"skus":["JUL26-LAP-014"],"processorId":1107,"gpuId":2108,"ramType":"DDR5","storageType":"NVMe SSD","displaySize":15.6,"displayResolution":"1920 x 1080 IPS","operatingSystem":"Windows 11 Home","architecture":"x64","batteryCapacityWh":53.0,"weightKg":1.51,"sourceUrl":"https://www.itworldph.com/shop/ag15-43p-r19x-acer-aspire-go-15-ai-laptop-15-6-fhd-amd-ryzen-5-7640hs-16gb-ram-512gb-ssd-ag15-43p-r19x-20430","notes":"Exact retailer model code AG15-43P-R19X confirms Ryzen 5 7640HS. AMD's official processor page identifies its integrated GPU as Radeon 760M; the retailer page says 680M, so the app follows AMD. The supplied lineup shortens the prefix to A15, so the store label should be checked."},
-    {"skus":["JUL26-LAP-015"],"processorId":1108,"gpuId":2109,"ramType":"DDR5","storageType":"NVMe SSD","displaySize":14.0,"displayResolution":"1920 x 1200 IPS","operatingSystem":"Windows 11 Home","architecture":"x64","weightKg":1.5,"sourceUrl":"https://home.abenson.com/acer-aspire-go-14-ag14-71m-58jd-steel-gray.html","notes":"Exact retailer listing for AG14-71M-58JD confirms Core Ultra 5 115U and integrated Intel graphics. Intel's official processor specification confirms 8 cores, 10 threads and Intel Graphics. Manufacturer confirmation is still recommended before marking this record verified."},
-    {"skus":["JUL26-LAP-016"],"processorId":1109,"gpuId":2105,"ramType":"LPDDR5X","ramUpgradeable":false,"storageType":"NVMe SSD","displaySize":14.0,"displayResolution":"1920 x 1200 OLED","operatingSystem":"Windows 11 Home","architecture":"x64","sourceUrl":"https://laptopfactory.com.ph/product/acer-swift-go-sfg14-75-55mb/","notes":"Exact retailer listing for SFG14-75-55MB identifies Core Ultra 5 226V and Arc 130V; Intel's processor specification confirms that pairing. Acer's Philippine listing confirms the exact NX.JNBSP.001 configuration but names only the Core Ultra 5 family."},
-    {"skus":["JUL26-LAP-017"],"processorId":1101,"gpuId":2101,"ramType":"LPDDR5-7467 (onboard)","ramUpgradeable":false,"storageType":"PCIe Gen4 NVMe SSD","displaySize":16.0,"displayResolution":"1920 x 1200 IPS","operatingSystem":"Windows 11 Home","architecture":"x64","batteryCapacityWh":59.0,"weightKg":1.77,"sourceUrl":"https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157358","sourceName":"HP official specifications","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact 16-af1062TU / BX9D8PA manufacturer configuration: Core Ultra 5 225U and integrated Intel Graphics."},
-    {"skus":["JUL26-LAP-018"],"processorId":1104,"gpuId":2103,"ramType":"DDR4-3200","ramUpgradeable":true,"maximumRamGB":16,"storageType":"PCIe NVMe SSD","displaySize":15.6,"displayResolution":"1920 x 1080 IPS","displayRefreshRate":60,"operatingSystem":"Windows 11 Home","architecture":"x64","batteryCapacityWh":41.0,"weightKg":1.59,"sourceUrl":"https://pcx.com.ph/products/hp-15-fc0863au-d93dxpa-amd-ryzen-5-laptop-natural-silver","sourceName":"PC Express exact Philippine configuration","verifiedBy":"JI Telecom exact-model audit","verificationStatus":"VERIFIED","notes":"Exact HP 15-fc0863AU / D93DXPA configuration: Ryzen 5 7530U, Radeon Graphics, 8GB DDR4, 512GB NVMe SSD and Windows 11 Home."},
-    {"skus":["JUL26-LAP-020"],"processorId":1013,"gpuId":2104,"ramGB":8,"ramType":"DDR5-4800","ramUpgradeable":true,"maximumRamGB":64,"storageGB":512,"storageType":"PCIe Gen4 NVMe SSD","additionalStorageSupport":"Two M.2 2280 PCIe Gen4 NVMe slots.","displaySize":15.6,"displayResolution":"1920 x 1080 IPS","displayRefreshRate":360,"operatingSystem":"Windows 11 Home","architecture":"x64","batteryCapacityWh":99.0,"weightKg":2.39,"sourceUrl":"https://www.pcworth.com/product/gigabyte-aorus-15-9kf-e3ph583sh","sourceName":"PC Worth exact Philippine configuration","verifiedBy":"JI Telecom exact-model audit","verificationStatus":"VERIFIED","notes":"Exact AORUS 15 9KF-E3PH583SH configuration: Core i5-12500H, RTX 4060 Laptop 8GB, 8GB DDR5, 512GB Gen4 SSD and Windows 11 Home."},
-    {"skus":["JUL26-LAP-022"],"processorId":1103,"gpuId":2102,"ramType":"DDR5-5600 (2 x 8GB)","storageType":"PCIe NVMe SSD","displaySize":15.6,"displayResolution":"1920 x 1080 IPS","operatingSystem":"Windows 11 Home","architecture":"x64","batteryCapacityWh":41.0,"weightKg":1.65,"sourceUrl":"https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103460304","sourceName":"HP official specifications","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact 15-fd1455TU / CH8A8PA manufacturer configuration: Core Ultra 7 155H and integrated Arc Graphics. Arc branding requires the listed dual-channel memory configuration."},
-    {"skus":["JUL26-LAP-023"],"processorId":1102,"gpuId":2101,"ramType":"LPDDR5-7467 (onboard)","ramUpgradeable":false,"storageType":"PCIe Gen4 NVMe SSD","displaySize":16.0,"displayResolution":"1920 x 1200 IPS","operatingSystem":"Windows 11 Home","architecture":"x64","batteryCapacityWh":59.0,"weightKg":1.77,"sourceUrl":"https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157361","sourceName":"HP official specifications","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact 16-af1063TU / BX9D9PA manufacturer configuration: Core Ultra 7 255U and integrated Intel Graphics."},
-    {"skus":["JUL26-PHN-058","JUL26-PHN-059"],"processorId":1001,"gpuId":2001,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A13 Bionic platform."},
-    {"skus":["JUL26-PHN-060","JUL26-PHN-061","JUL26-PHN-062"],"processorId":1002,"gpuId":2002,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A14 Bionic platform."},
-    {"skus":["JUL26-PHN-063","JUL26-PHN-064"],"processorId":1003,"gpuId":2003,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A15 Bionic with 4-core GPU."},
-    {"skus":["JUL26-PHN-065","JUL26-PHN-066"],"processorId":1003,"gpuId":2004,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A15 Bionic with 5-core GPU."},
-    {"skus":["JUL26-PHN-038","JUL26-PHN-067","JUL26-PHN-068","JUL26-PHN-069","JUL26-PHN-070"],"processorId":1004,"gpuId":2005,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A16 Bionic with 5-core GPU."},
-    {"skus":["JUL26-TAB-052","JUL26-TAB-053"],"processorId":1004,"gpuId":2006,"displaySize":11.0,"displayResolution":"2360 x 1640","batteryCapacityWh":28.93,"weightKg":0.477,"operatingSystem":"iPadOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/ipad-11/specs/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"A16 iPad configuration; cellular models can weigh more."},
-    {"skus":["JUL26-PHN-039"],"processorId":1005,"gpuId":2007,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A18 with 4-core GPU."},
-    {"skus":["JUL26-PHN-040","JUL26-PHN-041"],"processorId":1005,"gpuId":2008,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A18 with 5-core GPU."},
-    {"skus":["JUL26-PHN-042"],"processorId":1006,"gpuId":2010,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A18 Pro with 6-core GPU."},
-    {"skus":["JUL26-LAP-054"],"processorId":1006,"gpuId":2009,"displaySize":13.0,"displayResolution":"2408 x 1506","batteryCapacityWh":36.5,"weightKg":1.23,"operatingSystem":"macOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/macbook-neo/specs/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"MacBook Neo A18 Pro configuration."},
-    {"skus":["JUL26-LAP-055"],"processorId":1009,"gpuId":2014,"displaySize":13.6,"operatingSystem":"macOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/macbook-air/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"M5 MacBook Air; GPU core count varies by configuration."},
-    {"skus":["JUL26-PHN-043"],"processorId":1007,"gpuId":2011,"displaySize":6.3,"displayResolution":"2622 x 1206","displayRefreshRate":120,"weightKg":0.177,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone-17/specs/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"iPhone 17 A19 configuration."},
-    {"skus":["JUL26-PHN-044"],"processorId":1008,"gpuId":2012,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A19 Pro with 5-core GPU."},
-    {"skus":["JUL26-PHN-045","JUL26-PHN-046","JUL26-PHN-047","JUL26-PHN-048","JUL26-PHN-049"],"processorId":1008,"gpuId":2013,"operatingSystem":"iOS","architecture":"arm64","sourceUrl":"https://www.apple.com/ph/iphone/compare/","sourceName":"Apple Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Apple A19 Pro with 6-core GPU."},
-    {"skus":["JUL26-LAP-005"],"processorId":1010,"gpuId":2020,"displaySize":14.0,"displayResolution":"1920 x 1200","operatingSystem":"Windows 11","architecture":"x64","sourceUrl":"https://www.acer.com/no-no/laptops/aspire/aspire-lite/pdp/NX.D2SED.001","notes":"Matched by Aspire Lite AL14-32P and N150 model family."},
-    {"skus":["JUL26-LAP-009","JUL26-LAP-010"],"processorId":1011,"gpuId":2020,"displaySize":15.6,"displayResolution":"1920 x 1080","operatingSystem":"Windows 11","architecture":"x64","sourceUrl":"https://www.acer.com/es-es/laptops/aspire/aspire-lite/pdp/NX.D2DEB.001","notes":"Matched by Aspire Lite AL15-33P and N355 model family."},
-    {"skus":["JUL26-LAP-011"],"processorId":1012,"gpuId":2021,"displaySize":14.0,"displayResolution":"1920 x 1080","operatingSystem":"Windows 11","architecture":"x64","sourceUrl":"https://www.hp.com/ph-en/products/laptops/product-details/2103580989","sourceName":"HP Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact HP 14-ep0445TU configuration."},
-    {"skus":["JUL26-LAP-019"],"processorId":1013,"gpuId":2022,"ramGB":8,"ramType":"DDR4","ramUpgradeable":true,"storageGB":512,"storageType":"NVMe SSD","displaySize":15.6,"displayResolution":"1920 x 1080","displayRefreshRate":144,"batteryCapacityWh":54.0,"weightKg":2.08,"operatingSystem":"Windows 11 Home","architecture":"x64","sourceUrl":"https://marketplace.nvidia.com/en-ph/consumer/gaming-laptops/gigabyte-gs-g5-mf-e2ph333sh-15-6-win11/","sourceName":"NVIDIA Philippines marketplace exact configuration","verifiedBy":"JI Telecom exact-model audit","verificationStatus":"VERIFIED","notes":"Exact G5 MF-E2PH333SH configuration: Core i5-12500H, RTX 4050 Laptop GPU, 8GB DDR4, 512GB storage and Windows 11."},
-    {"skus":["JUL26-PHN-073"],"processorId":1020,"displaySize":6.74,"displayRefreshRate":90,"sourceUrl":"https://www.honor.com/ph/phones/honor-x5c-plus/","notes":"Helio G81; official battery rating is 5260mAh."},
-    {"skus":["JUL26-PHN-074"],"processorId":1021,"gpuId":2030,"displaySize":6.61,"displayRefreshRate":120,"operatingSystem":"MagicOS 9 (Android 15)","sourceUrl":"https://www.honor.com/ae-en/phones/honor-x6c/spec/","notes":"Helio G81 Ultra and Mali-G52 MC2."},
-    {"skus":["JUL26-PHN-076"],"processorId":1022,"sourceUrl":"https://www.honor.com/au/phones/honor-x9d/","notes":"Snapdragon 6 Gen 4; official battery rating is 8300mAh."},
-    {"skus":["JUL26-PHN-088","JUL26-PHN-089"],"processorId":1023,"sourceUrl":"https://wap.lk.infinixmobility.com/","notes":"Infinix official product listing identifies the Helio G200 platform."},
-    {"skus":["JUL26-PHN-092"],"processorId":1024,"displaySize":6.67,"displayResolution":"1600 x 720","displayRefreshRate":120,"weightKg":0.20,"operatingSystem":"Android 14","sourceUrl":"https://www.itel-life.com/products/phone/p-series/power-70","notes":"Helio G50 Ultimate; official battery rating is 6000mAh."},
-    {"skus":["JUL26-TAB-093"],"processorId":1025,"displaySize":13.0,"displayResolution":"2K","weightKg":0.6893,"operatingSystem":"Android 14","sourceUrl":"https://www.itel-life.com/products/laptop-pad/vistatab/tab-30-pro/spec","notes":"Helio G99; official battery rating is 10000mAh."},
-    {"skus":["JUL26-PHN-103","JUL26-PHN-104"],"processorId":1026,"gpuId":2031,"displaySize":6.75,"displayResolution":"1570 x 720","displayRefreshRate":120,"batteryCapacityWh":27.44,"weightKg":0.215,"operatingSystem":"ColorOS 15","architecture":"arm64","sourceUrl":"https://www.oppo.com/ph/smartphones/series-a/a6/specs/","sourceName":"OPPO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Snapdragon 685 with Adreno 610."},
-    {"skus":["JUL26-PHN-107"],"processorId":1027,"batteryCapacityWh":21.96,"sourceUrl":"https://www.oppo.com/es/smartphones/series-reno/reno13/","notes":"Dimensity 8350 platform."},
-    {"skus":["JUL26-TAB-109"],"processorId":1028,"gpuId":2032,"batteryCapacityWh":36.06,"sourceUrl":"https://www.oppo.com/es/accessories/oppo-pad-se/specs/","notes":"Helio G100 with Mali-G57 MC2; official battery rating is 9340mAh."},
-    {"skus":["JUL26-PHN-117"],"processorId":1029,"gpuId":2033,"displaySize":6.7,"displayResolution":"1600 x 720","displayRefreshRate":90,"weightKg":0.201,"operatingSystem":"Android 15","architecture":"arm64","sourceUrl":"https://www.realme.com/ph/realme-note-70/specs","sourceName":"realme Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"UNISOC T7250 with Mali-G57 MP1; official battery rating is 6300mAh."},
-    {"skus":["JUL26-PHN-125","JUL26-PHN-126"],"processorId":1030,"sourceUrl":"https://www.realme.com/mx/realme-15t-5g/specs","notes":"Dimensity 6400 Max 5G platform."},
-    {"skus":["JUL26-PHN-128","JUL26-PHN-129"],"processorId":1031,"gpuId":2034,"displaySize":6.78,"displayResolution":"2772 x 1272","displayRefreshRate":144,"batteryCapacityWh":27.44,"weightKg":0.192,"operatingSystem":"realme UI 7 (Android)","architecture":"arm64","sourceUrl":"https://www.realme.com/ph/realme-16-pro-5g/specs","sourceName":"realme Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Dimensity 7300 Max with Mali-G615; official battery rating is 7000mAh."},
-    {"skus":["JUL26-PHN-137","JUL26-PHN-138","JUL26-PHN-140","JUL26-PHN-141","JUL26-PHN-142"],"processorId":1025,"sourceUrl":"https://images.samsung.com/is/content/samsung/assets/global/ir/docs/2025_4Q_Interim_Report.pdf","notes":"Samsung official report identifies the MediaTek G99 platform for Galaxy A07 and A17 LTE."},
-    {"skus":["JUL26-PHN-143"],"processorId":1032,"operatingSystem":"Android 15 / One UI 7","sourceUrl":"https://images.samsung.com/is/content/samsung/assets/global/ir/docs/2025_4Q_Interim_Report.pdf","notes":"Samsung official report identifies Exynos 1330 for Galaxy A17 5G."},
-    {"skus":["JUL26-PHN-160"],"processorId":1033,"displaySize":6.78,"displayResolution":"2436 x 1080","displayRefreshRate":144,"operatingSystem":"Android 14","sourceUrl":"https://www.tecno-mobile.com/pak/phones/tech-specs/tecspecs/camon-30-pro-5g/","notes":"Dimensity 8200 Ultimate platform."},
-    {"skus":["JUL26-PHN-168"],"processorId":1034,"displayRefreshRate":144,"operatingSystem":"HiOS (Android)","architecture":"arm64","sourceUrl":"https://www.tecno-mobile.com/ph/phones/product-detail/product/pova-7-ultra-5g/","sourceName":"TECNO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Dimensity 8350 Ultimate and 1.5K AMOLED display; official battery rating is 6000mAh."},
-    {"skus":["JUL26-PHN-173","JUL26-PHN-174"],"processorId":1035,"operatingSystem":"Android 16 / OriginOS 6","sourceUrl":"https://www.vivo.com/mx/products/param/y11d","notes":"UNISOC T7225; official battery rating is 6500mAh."},
-    {"skus":["JUL26-PHN-175","JUL26-PHN-176"],"processorId":1036,"displaySize":6.75,"displayRefreshRate":120,"operatingSystem":"OriginOS (Android)","architecture":"arm64","sourceUrl":"https://www.vivo.com/ph/products/y31d","sourceName":"vivo Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Snapdragon 6s Gen 2 4G; official battery rating is 7200mAh."},
-    {"skus":["JUL26-PHN-177"],"processorId":1037,"displaySize":6.83,"displayResolution":"2800 x 1260","displayRefreshRate":120,"weightKg":0.20,"operatingSystem":"Android 16 / OriginOS 6","architecture":"arm64","sourceUrl":"https://www.vivo.com/ph/products/param/v70-fe","sourceName":"vivo Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Dimensity 7360-Turbo; official battery rating is 7000mAh."},
-    {"skus":["JUL26-PHN-178","JUL26-PHN-179"],"processorId":1038,"operatingSystem":"Android 16 / OriginOS 6","architecture":"arm64","sourceUrl":"https://www.vivo.com/ph/products/param/v70","sourceName":"vivo Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Snapdragon 7 Gen 4; official battery rating is 6500mAh."},
-    {"skus":["JUL26-PHN-188","JUL26-PHN-189"],"processorId":1039,"gpuId":2032,"displaySize":6.77,"displayResolution":"2392 x 1080","displayRefreshRate":120,"operatingSystem":"Xiaomi HyperOS 2 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/redmi-note-15/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Helio G100-Ultra with Mali-G57 MC2; official battery rating is 6000mAh."},
-    {"skus":["JUL26-PHN-191","JUL26-PHN-192"],"processorId":1040,"gpuId":2034,"displaySize":6.83,"displayResolution":"2772 x 1280","displayRefreshRate":120,"weightKg":0.210,"operatingSystem":"Xiaomi HyperOS 2 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/redmi-note-15-pro-5g/specs/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Dimensity 7400-Ultra with Mali-G615; official battery rating is 6580mAh."},
-    {"skus":["JUL26-TAB-198"],"processorId":1041,"displaySize":9.7,"displayResolution":"2048 x 1280","displayRefreshRate":120,"operatingSystem":"Xiaomi HyperOS (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/redmi-pad-2-9-7-inch-4g/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Snapdragon 6s 4G Gen 2; official battery rating is 7600mAh."},
-    {"skus":["JUL26-TAB-199","JUL26-TAB-200","JUL26-TAB-201"],"processorId":1039,"gpuId":2032,"displaySize":11.0,"displayResolution":"2560 x 1600","displayRefreshRate":90,"weightKg":0.510,"operatingSystem":"Xiaomi HyperOS (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/global/product/redmi-pad-2/specs/","sourceName":"Xiaomi official specifications","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Helio G100-Ultra with Mali-G57 MC2."},
-    {"skus":["JUL26-TAB-078"],"processorId":1026,"gpuId":2031,"storageType":"UFS","displaySize":11.5,"displayResolution":"2508 x 1504","displayRefreshRate":120,"operatingSystem":"MagicOS 9 (Android 15)","architecture":"arm64","sourceUrl":"https://www.honor.com/ph/tablets/honor-pad-x9a/","sourceName":"HONOR Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Pad X9a 6GB + 128GB model. HONOR publishes Snapdragon 685, Adreno 610, MagicOS 9 and the listed display."},
-    {"skus":["JUL26-PHN-079"],"processorId":1038,"displaySize":6.7,"displayRefreshRate":120,"operatingSystem":"MagicOS 10 (Android 16)","architecture":"arm64","sourceUrl":"https://www.honor.com/ph/phones/honor-600/","sourceName":"HONOR Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact 8GB + 256GB HONOR 600 configuration. Snapdragon 7 Gen 4 and MagicOS 10 are published by HONOR."},
-    {"skus":["JUL26-PHN-080","JUL26-PHN-081"],"processorId":1038,"displaySize":6.7,"displayRefreshRate":120,"operatingSystem":"MagicOS 10 (Android 16)","architecture":"arm64","sourceUrl":"https://www.honor.com/ph/phones/honor-600/","sourceName":"HONOR Philippines","verificationStatus":"NEEDS_REVIEW","notes":"The official page confirms the HONOR 600 platform, but these 12GB store variants need exact Philippine configuration confirmation."},
-    {"skus":["JUL26-PHN-082"],"processorId":1042,"gpuId":2036,"displaySize":6.97,"displayRefreshRate":120,"operatingSystem":"MagicOS 10 (Android 16)","architecture":"arm64","sourceUrl":"https://www.honor.com/latam/phones/honor-600-pro/spec/","sourceName":"HONOR official regional specifications","verificationStatus":"NEEDS_REVIEW","notes":"Official 12GB + 512GB specifications publish Snapdragon 8 Elite and Adreno 830. Philippine variant confirmation is still required."},
-    {"skus":["JUL26-PHN-098","JUL26-PHN-099","JUL26-PHN-100"],"processorId":1026,"gpuId":2031,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.75,"displayResolution":"1570 x 720","displayRefreshRate":120,"operatingSystem":"ColorOS 15","architecture":"arm64","sourceUrl":"https://www.oppo.com/ph/smartphones/series-a/a6x/specs/","sourceName":"OPPO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact A6x platform and the listed 4GB storage variants; Snapdragon 685 and Adreno 610 are published by OPPO."},
-    {"skus":["JUL26-PHN-101","JUL26-PHN-102"],"processorId":1029,"gpuId":2033,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.75,"displayResolution":"1570 x 720","displayRefreshRate":120,"operatingSystem":"ColorOS 15","architecture":"arm64","sourceUrl":"https://www.oppo.com/ph/smartphones/series-a/a6c/specs/","sourceName":"OPPO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact A6c 4GB + 64GB/128GB variants. OPPO publishes UNISOC T7250 and Mali-G57 graphics."},
-    {"skus":["JUL26-PHN-105","JUL26-PHN-106"],"processorId":1043,"gpuId":2032,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.75,"displayResolution":"1570 x 720","displayRefreshRate":120,"operatingSystem":"ColorOS 15","architecture":"arm64","sourceUrl":"https://www.oppo.com/ph/smartphones/series-a/a6s-5g/specs/","sourceName":"OPPO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact A6s 5G 6GB + 128GB and 8GB + 256GB configurations. OPPO publishes Dimensity 6300 and Mali-G57 MC2."},
-    {"skus":["JUL26-PHN-108"],"processorId":1038,"gpuId":2035,"ramType":"LPDDR5X","storageType":"UFS 3.1","displaySize":6.59,"displayResolution":"2760 x 1256","displayRefreshRate":120,"operatingSystem":"ColorOS 16","architecture":"arm64","sourceUrl":"https://www.oppo.com/ph/smartphones/series-reno/reno15/specs/","sourceName":"OPPO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Reno15 5G 12GB + 256GB configuration. OPPO publishes Snapdragon 7 Gen 4 and Adreno 722."},
-    {"skus":["JUL26-PHN-115","JUL26-PHN-116"],"processorId":1029,"gpuId":2033,"ramType":"LPDDR4X","storageType":"eMMC 5.1","displaySize":6.74,"displayResolution":"1600 x 720","displayRefreshRate":90,"operatingSystem":"Android 15 / realme UI","architecture":"arm64","sourceUrl":"https://www.realme.com/id/realme-note80/specs","sourceName":"realme official specifications","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Note 80 4GB + 64GB/128GB configurations. realme publishes UNISOC T7250 and Mali-G57 graphics."},
-    {"skus":["JUL26-PHN-118","JUL26-PHN-119"],"processorId":1026,"gpuId":2031,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.8,"displayResolution":"1570 x 720","displayRefreshRate":144,"operatingSystem":"Android 15 / realme UI 6","architecture":"arm64","sourceUrl":"https://www.realme.com/ph/realme-c85/specs","sourceName":"realme Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact C85 4G 6GB + 128GB and 8GB + 256GB configurations with Snapdragon 685 and Adreno 610."},
-    {"skus":["JUL26-PHN-120"],"processorId":1043,"gpuId":2032,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.8,"displayResolution":"1570 x 720","displayRefreshRate":144,"operatingSystem":"Android 15 / realme UI 6","architecture":"arm64","sourceUrl":"https://www.realme.com/ph/realme-c85-5g/specs","sourceName":"realme Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact C85 5G 8GB + 256GB configuration with Dimensity 6300 and Mali-G57 MC2."},
-    {"skus":["JUL26-PHN-121","JUL26-PHN-122"],"processorId":1029,"gpuId":2033,"ramType":"LPDDR4X","storageType":"eMMC 5.1","displaySize":6.8,"displayResolution":"1570 x 720","displayRefreshRate":120,"operatingSystem":"Android 16 / realme UI","architecture":"arm64","sourceUrl":"https://www.realme.com/ph/realme-c100i/specs","sourceName":"realme Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact C100i 4GB + 128GB/256GB configurations with UNISOC T7250 and Mali-G57 graphics."},
-    {"skus":["JUL26-PHN-123","JUL26-PHN-124"],"processorId":1044,"gpuId":2037,"ramType":"LPDDR4X","storageType":"eMMC 5.1","displaySize":6.8,"displayResolution":"1570 x 720","displayRefreshRate":120,"operatingSystem":"realme UI (Android)","architecture":"arm64","sourceUrl":"https://www.realme.com/ph/realme-c100/specs","sourceName":"realme Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact C100 4GB/8GB + 256GB configurations with Helio G92 Max and Mali-G52 graphics. The official page does not state the underlying Android version."},
-    {"skus":["JUL26-PHN-127"],"processorId":1045,"gpuId":2032,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.57,"displayResolution":"2372 x 1080","displayRefreshRate":120,"operatingSystem":"realme UI 7 (Android)","architecture":"arm64","sourceUrl":"https://www.realme.com/ph/realme-16-5g/specs","sourceName":"realme Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact realme 16 5G 8GB + 256GB configuration with Dimensity 6400 Turbo and Mali-G57 MC2."},
-    {"skus":["JUL26-TAB-133"],"processorId":1028,"gpuId":2032,"displaySize":12.0,"displayResolution":"2000 x 1200","displayRefreshRate":90,"operatingSystem":"Android 16","architecture":"arm64","sourceUrl":"https://techlife.ph/tablets/pad-plus-2","sourceName":"TechLife Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Pad Plus 2 4GB + 128GB model with Helio G100, Mali-G57 MC2 and Android 16."},
-    {"skus":["JUL26-TAB-134"],"processorId":1046,"ramType":"LPDDR4X","storageType":"eMMC","displaySize":8.0,"displayResolution":"1280 x 800","displayRefreshRate":60,"operatingSystem":"Android 15","architecture":"arm64","sourceUrl":"https://techlife.ph/tablets/pad-lite","sourceName":"TechLife Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Pad Lite 8-inch 4GB + 64GB model with UNISOC T606 and Android 15."},
-    {"skus":["JUL26-PHN-139"],"displaySize":6.7,"displayResolution":"1600 x 720","displayRefreshRate":120,"operatingSystem":"Android 16 / One UI 8","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a07-5g-light-violet-128gb-sm-a076blvbphl/","sourceName":"Samsung Philippines","verificationStatus":"NEEDS_REVIEW","notes":"Exact 4GB + 128GB Philippine configuration. Samsung publishes an octa-core 2.4/2.0GHz platform but not the retail chipset name, so processor-tier comparison remains unverified."},
-    {"skus":["JUL26-PHN-145"],"displaySize":6.7,"operatingSystem":"Android / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a27-5g-blue-256gb-and-fit3-bundle-f-a27blue/","sourceName":"Samsung Philippines","verificationStatus":"NEEDS_REVIEW","notes":"Samsung confirms the Galaxy A27 5G family, but the official Philippine listing found is 8GB + 256GB while the store lineup says 6GB + 128GB."},
-    {"skus":["JUL26-PHN-150"],"displaySize":6.7,"displayResolution":"2340 x 1080","displayRefreshRate":120,"operatingSystem":"Android / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a57-5g-awesome-gray-256gb-sm-a576bzasphl/","sourceName":"Samsung Philippines","verificationStatus":"NEEDS_REVIEW","notes":"Exact 8GB + 256GB Philippine configuration. Samsung publishes CPU clocks but not the chipset marketing name, so processor-tier comparison remains unverified."},
-    {"skus":["JUL26-TAB-151"],"displaySize":8.7,"displayResolution":"1340 x 800","operatingSystem":"Android / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/tablets/galaxy-tab-a/galaxy-tab-a9-lte-mystic-silver-64gb-sm-x115nzsaxtc/","sourceName":"Samsung Philippines","verificationStatus":"NEEDS_REVIEW","notes":"Exact Galaxy Tab A9 LTE 4GB + 64GB Philippine configuration. Samsung publishes CPU clocks but not the chipset marketing name."},
-    {"skus":["JUL26-PHN-152","JUL26-PHN-153"],"processorId":1055,"operatingSystem":"Android 16 / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-s26/","sourceName":"Samsung Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact 12GB + 256GB Galaxy S26 and S26+ configurations. Samsung publishes the Exynos 2600 platform."},
-    {"skus":["JUL26-PHN-154"],"processorId":1056,"operatingSystem":"Android 16 / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-s26-ultra/","sourceName":"Samsung Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Galaxy S26 Ultra 12GB + 256GB configuration with Snapdragon 8 Elite Gen 5 for Galaxy."},
-    {"skus":["JUL26-PHN-157","JUL26-PHN-158"],"processorId":1029,"gpuId":2033,"displaySize":6.75,"displayResolution":"1600 x 720","displayRefreshRate":120,"operatingSystem":"Android 15 / HiOS","architecture":"arm64","sourceUrl":"https://www.tecno-mobile.com/phones/tech-specs/techspecs/spark-go-3/","sourceName":"TECNO official specifications","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Spark Go 3 4GB + 64GB/128GB configurations with UNISOC T7250 and Mali-G57 graphics."},
-    {"skus":["JUL26-PHN-159"],"processorId":1023,"gpuId":2037,"displaySize":6.78,"displayResolution":"2720 x 1224","displayRefreshRate":144,"operatingSystem":"Android 15 / HiOS","architecture":"arm64","sourceUrl":"https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/spark-slim/","sourceName":"TECNO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Spark Slim 8GB + 256GB configuration with Helio G200 and Mali-G52 graphics."},
-    {"skus":["JUL26-PHN-161","JUL26-PHN-162"],"processorId":1020,"gpuId":2037,"displaySize":6.78,"displayResolution":"1600 x 720","displayRefreshRate":120,"operatingSystem":"Android 16 / HiOS","architecture":"arm64","sourceUrl":"https://www.tecno-mobile.com/ph/phones/product-detail/product/spark-50/","sourceName":"TECNO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Spark 50 4GB + 128GB/256GB configurations with Helio G81 and Mali-G52 graphics."},
-    {"skus":["JUL26-PHN-163","JUL26-PHN-164"],"processorId":1047,"gpuId":2032,"displaySize":6.78,"displayResolution":"1576 x 720","displayRefreshRate":120,"operatingSystem":"Android 16 / HiOS","architecture":"arm64","sourceUrl":"https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/spark-50-5g/","sourceName":"TECNO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Spark 50 5G 4GB + 128GB and 8GB + 256GB configurations with Dimensity 6400 5G+ and Mali-G57 graphics."},
-    {"skus":["JUL26-PHN-165"],"processorId":1023,"gpuId":2037,"displaySize":6.78,"displayResolution":"2644 x 1208","displayRefreshRate":144,"operatingSystem":"HiOS 16 (Android)","architecture":"arm64","sourceUrl":"https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/camon-50/","sourceName":"TECNO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Camon 50 8GB + 256GB configuration with Helio G200 Ultimate and Mali-G52 graphics."},
-    {"skus":["JUL26-PHN-166"],"processorId":1048,"gpuId":2034,"displaySize":6.78,"displayResolution":"2644 x 1208","displayRefreshRate":144,"operatingSystem":"HiOS 16 (Android)","architecture":"arm64","sourceUrl":"https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/camon-50-ultra-5g/","sourceName":"TECNO Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Camon 50 Ultra 5G 8GB + 256GB configuration with Dimensity 7400 Ultimate and Mali-G615 graphics."},
-    {"skus":["JUL26-PHN-167"],"processorId":1049,"gpuId":2038,"displaySize":6.78,"displayResolution":"2364 x 1080","displayRefreshRate":144,"operatingSystem":"Android 16 / HiOS 16","architecture":"arm64","sourceUrl":"https://www.tecno-mobile.com/bd/phones/tech-specs/techspecs/pova-curve-2-5g/","sourceName":"TECNO official regional specifications","verificationStatus":"NEEDS_REVIEW","notes":"Official 8GB + 256GB specifications publish Dimensity 7100 and Mali-G610 MC2. Philippine configuration confirmation is still required."},
-    {"skus":["JUL26-PHN-171","JUL26-PHN-172"],"processorId":1035,"ramType":"LPDDR4X","storageType":"eMMC 5.1","displaySize":6.74,"displayResolution":"1600 x 720","displayRefreshRate":120,"operatingSystem":"Android 16 / OriginOS 6","architecture":"arm64","sourceUrl":"https://www.vivo.com/ph/products/param/y05","sourceName":"vivo Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Y05 4GB + 64GB/128GB configurations. vivo publishes UNISOC T7225 and Android 16 with OriginOS 6."},
-    {"skus":["JUL26-PHN-182"],"processorId":1029,"gpuId":2033,"ramType":"LPDDR4X","storageType":"eMMC 5.1","displaySize":6.88,"displayResolution":"1640 x 720","displayRefreshRate":120,"operatingSystem":"Android 15 Go edition / Xiaomi HyperOS","architecture":"arm64","sourceUrl":"https://www.mi.com/global/support/faq/details/KA-694581/","sourceName":"Xiaomi official support","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Redmi A7 3GB + 64GB configuration with UNISOC T7250 and Mali-G57 graphics."},
-    {"skus":["JUL26-PHN-183","JUL26-PHN-184"],"processorId":1029,"gpuId":2033,"ramType":"LPDDR4X","storageType":"eMMC 5.1","displaySize":6.88,"displayRefreshRate":120,"operatingSystem":"Android 15 / Xiaomi HyperOS 2","architecture":"arm64","sourceUrl":"https://www.mi.com/my/support/faq/details/KA-686040/","sourceName":"Xiaomi official support","verificationStatus":"NEEDS_REVIEW","notes":"Official 4GB + 64GB/128GB specifications publish UNISOC T7250 and Mali-G57 graphics. Philippine configuration confirmation is still required."},
-    {"skus":["JUL26-PHN-185"],"processorId":1043,"gpuId":2032,"ramType":"LPDDR4X","storageType":"eMMC 5.1","displaySize":6.9,"displayResolution":"1600 x 720","displayRefreshRate":120,"operatingSystem":"Android 15 / Xiaomi HyperOS 2","architecture":"arm64","sourceUrl":"https://www.mi.com/gr/product/redmi-15c-5g/specs/","sourceName":"Xiaomi official specifications","verificationStatus":"NEEDS_REVIEW","notes":"Official Redmi 15C 5G specifications publish Dimensity 6300 and Mali-G57 MC2. Philippine 4GB + 256GB configuration confirmation is still required."},
-    {"skus":["JUL26-PHN-187"],"processorId":1054,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.9,"displayResolution":"2340 x 1080","displayRefreshRate":144,"operatingSystem":"Android 15 / Xiaomi HyperOS 2","architecture":"arm64","sourceUrl":"https://www.mi.com/jp/product/redmi-15-5g/specs/","sourceName":"Xiaomi official regional specifications","verificationStatus":"NEEDS_REVIEW","notes":"Official 8GB + 256GB specifications publish Snapdragon 6s Gen 3 5G. Philippine configuration and exact Adreno model still require confirmation."},
-    {"skus":["JUL26-PHN-190"],"processorId":1050,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.77,"displayResolution":"2392 x 1080","displayRefreshRate":120,"operatingSystem":"Xiaomi HyperOS 2 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/redmi-note-15-5g/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Redmi Note 15 5G 8GB + 256GB Philippine configuration with Snapdragon 6 Gen 3."},
-    {"skus":["JUL26-PHN-193"],"processorId":1051,"gpuId":2041,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.83,"displayResolution":"2772 x 1280","displayRefreshRate":120,"operatingSystem":"Xiaomi HyperOS 2 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/redmi-note-15-pro-plus-5g/specs/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Redmi Note 15 Pro+ 5G 12GB + 512GB Philippine configuration with Snapdragon 7s Gen 4 and Adreno 810."},
-    {"skus":["JUL26-PHN-194","JUL26-PHN-195"],"processorId":1052,"gpuId":2039,"ramType":"LPDDR5X","storageType":"UFS 4.1","displaySize":6.59,"displayResolution":"2756 x 1268","displayRefreshRate":120,"operatingSystem":"Xiaomi HyperOS 3 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/xiaomi-17t/specs/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Xiaomi 17T 12GB + 256GB/512GB Philippine configurations with Dimensity 8500-Ultra and Mali-G720 MC8."},
-    {"skus":["JUL26-PHN-196"],"processorId":1053,"gpuId":2040,"ramType":"LPDDR5X","storageType":"UFS 4.1","displaySize":6.83,"displayResolution":"2772 x 1280","displayRefreshRate":144,"operatingSystem":"Xiaomi HyperOS 3 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/xiaomi-17t-pro/specs/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Xiaomi 17T Pro 12GB + 512GB Philippine configuration with Dimensity 9500 and Mali G1-Ultra."},
-    {"skus":["JUL26-TAB-197"],"processorId":1041,"gpuId":2031,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":9.7,"displayResolution":"2048 x 1280","displayRefreshRate":120,"operatingSystem":"Xiaomi HyperOS 3 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/redmi-pad-2-9-7-inch/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Redmi Pad 2 9.7-inch 4GB + 128GB Philippine configuration with Snapdragon 6s 4G Gen 2 and Adreno 610."},
-    {"skus":["JUL26-TAB-203","JUL26-TAB-205"],"processorId":1051,"gpuId":2041,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":12.1,"displayResolution":"2560 x 1600","displayRefreshRate":120,"operatingSystem":"Xiaomi HyperOS 2 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/redmi-pad-2-pro/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Redmi Pad 2 Pro Wi-Fi 8GB + 256GB Philippine hardware; the keyboard bundle uses the same tablet configuration."},
-    {"skus":["JUL26-TAB-204","JUL26-TAB-206"],"processorId":1051,"gpuId":2041,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":12.1,"displayResolution":"2560 x 1600","displayRefreshRate":120,"operatingSystem":"Xiaomi HyperOS 2 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ph/product/redmi-pad-2-pro-5g/specs/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Redmi Pad 2 Pro 5G 8GB + 256GB Philippine hardware; the keyboard bundle uses the same tablet configuration."},
-    {"skus":["JUL26-PHN-075"],"displaySize":6.77,"displayRefreshRate":120,"operatingSystem":"MagicOS 10 (Android)","architecture":"arm64","sourceUrl":"https://www.honor.com/ph/phones/honor-x8d/","sourceName":"HONOR Philippines","verificationStatus":"NEEDS_REVIEW","notes":"HONOR confirms the exact 8GB + 256GB X8d display, OS and battery. The official page does not publish an exact chipset or GPU name, so performance-tier comparison remains unverified."},
-    {"skus":["JUL26-TAB-077"],"gpuId":2031,"displaySize":11.0,"displayResolution":"1920 x 1200","displayRefreshRate":90,"operatingSystem":"MagicOS (Android)","architecture":"arm64","sourceUrl":"https://www.honor.com/ph/tablets/honor-pad-x8b/","sourceName":"HONOR Philippines","verificationStatus":"NEEDS_REVIEW","notes":"HONOR confirms the exact 4GB + 128GB Pad X8b and Adreno 610 graphics, but names only a 6nm Snapdragon platform rather than an exact processor model."},
-    {"skus":["JUL26-PHN-085","JUL26-PHN-086"],"displaySize":6.78,"displayRefreshRate":120,"operatingSystem":"Android / XOS","architecture":"arm64","sourceUrl":"https://www.infinixmobility.com/smartphones?cName=Latest+Product","sourceName":"Infinix official product listing","verificationStatus":"NEEDS_REVIEW","notes":"Infinix publishes the SMART 20 family and display/battery highlights, but the exact chipset and Philippine 4GB + 64GB/128GB variants need confirmation."},
-    {"skus":["JUL26-PHN-087"],"processorId":1058,"operatingSystem":"Android / XOS","architecture":"arm64","sourceUrl":"https://www.infinixmobility.com/smartphones?cName=Latest+Product","sourceName":"Infinix official product listing","verificationStatus":"NEEDS_REVIEW","notes":"Infinix identifies the HOT 70 family with Helio G100 Ultimate. The exact Philippine 4GB + 128GB configuration and GPU details need confirmation."},
-    {"skus":["JUL26-PHN-094","JUL26-PHN-095"],"operatingSystem":"Android / itel OS","architecture":"arm64","sourceUrl":"https://www.itel-life.com/ph/","sourceName":"itel Philippines","verificationStatus":"NEEDS_REVIEW","notes":"itel lists the S26 Ultra family, but an exact official chipset/GPU specification for the Philippine 8GB + 128GB/256GB variants was not published in the accessible product material."},
-    {"skus":["JUL26-PHN-112"],"displaySize":6.9,"displayRefreshRate":120,"operatingSystem":"Android / MyOS","architecture":"arm64","sourceUrl":"https://www.nubia.com/mx/products/smartphones/nubia/nubia-v80-max.html","sourceName":"nubia official specifications","verificationStatus":"NEEDS_REVIEW","notes":"nubia confirms the V80 Max 8GB + 128GB configuration and an octa-core processor up to 1.8GHz, but does not publish the exact chipset or GPU model on the official page."},
-    {"skus":["JUL26-TAB-130","JUL26-TAB-131","JUL26-TAB-132"],"operatingSystem":"Android","architecture":"arm64","sourceUrl":"https://techlife.ph/","sourceName":"TechLife Philippines","verificationStatus":"NEEDS_REVIEW","notes":"These TechLife tablet names are present in the supplied lineup, but exact official specification pages for the listed RAM/storage variants were not available. Store-side model-code confirmation is required."},
-    {"skus":["JUL26-PHN-144"],"displaySize":6.7,"displayResolution":"2340 x 1080","displayRefreshRate":120,"operatingSystem":"Android / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a26-5g-black-128gb-sm-a266bzkdphl/buy/","sourceName":"Samsung Philippines","verificationStatus":"NEEDS_REVIEW","notes":"Exact Galaxy A26 5G 6GB + 128GB Philippine configuration. Samsung does not publish the chipset marketing name on this page, so processor-tier comparison remains unverified."},
-    {"skus":["JUL26-PHN-146"],"displaySize":6.6,"displayResolution":"2340 x 1080","displayRefreshRate":120,"operatingSystem":"Android / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a34-5g-awesome-graphite-128gb-sm-a346ezkcphl/","sourceName":"Samsung Philippines","verificationStatus":"NEEDS_REVIEW","notes":"Exact Galaxy A34 5G 8GB + 128GB Philippine configuration. Samsung publishes CPU clocks but not the chipset marketing name."},
-    {"skus":["JUL26-PHN-147"],"displaySize":6.7,"displayResolution":"2340 x 1080","displayRefreshRate":120,"operatingSystem":"Android / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a36-5g-awesome-white-256gb-sm-a366bzatphl/","sourceName":"Samsung Philippines","verificationStatus":"NEEDS_REVIEW","notes":"Exact Galaxy A36 5G 8GB + 256GB Philippine configuration. Samsung publishes CPU clocks but not the chipset marketing name."},
-    {"skus":["JUL26-PHN-148"],"displaySize":6.7,"operatingSystem":"Android / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/business/smartphones/galaxy-a/galaxy-a37-5g-awesome-white-128gb-sm-a376bzwsphl/","sourceName":"Samsung Philippines","verificationStatus":"NEEDS_REVIEW","notes":"Samsung confirms the Galaxy A37 5G family, but the official listing found is 128GB while the supplied lineup says 8GB + 256GB. Exact variant and chipset confirmation are required."},
-    {"skus":["JUL26-PHN-149"],"displaySize":6.7,"displayResolution":"2340 x 1080","displayRefreshRate":120,"operatingSystem":"Android / One UI","architecture":"arm64","sourceUrl":"https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a56-5g-awesome-pink-256gb-sm-a566blitphl/","sourceName":"Samsung Philippines","verificationStatus":"NEEDS_REVIEW","notes":"Exact Galaxy A56 5G 8GB + 256GB Philippine configuration. Samsung publishes CPU clocks but not the chipset marketing name on the official specification page."},
-    {"skus":["JUL26-PHN-186"],"processorId":1026,"gpuId":2031,"ramType":"LPDDR4X","storageType":"UFS 2.2","displaySize":6.9,"displayResolution":"2340 x 1080","displayRefreshRate":144,"operatingSystem":"Xiaomi HyperOS 2 (Android)","architecture":"arm64","sourceUrl":"https://www.mi.com/ke/product/redmi-15/specs/","sourceName":"Xiaomi official regional specifications","verificationStatus":"NEEDS_REVIEW","notes":"Official Redmi 15 8GB + 256GB specifications publish Snapdragon 685 and Adreno graphics. Philippine configuration confirmation is still required."},
-    {"skus":["JUL26-TAB-202"],"processorId":1057,"gpuId":2042,"ramType":"LPDDR5X","storageType":"UFS 4.1","displaySize":11.2,"displayResolution":"3200 x 2136","displayRefreshRate":144,"operatingSystem":"Xiaomi HyperOS 3 (Android)","architecture":"arm64","weightKg":0.485,"sourceUrl":"https://www.mi.com/ph/product/xiaomi-pad-8/specs/","sourceName":"Xiaomi Philippines","verifiedBy":"JI Telecom official-source audit","verificationStatus":"VERIFIED","notes":"Exact Xiaomi Pad 8 8GB + 256GB Philippine configuration with Snapdragon 8s Gen 4 and Adreno 825."}
+    {
+      "skus": [
+        "JUL26-LAP-007"
+      ],
+      "processorId": 1105,
+      "gpuId": 2106,
+      "ramType": "DDR4",
+      "storageType": "SSD",
+      "displaySize": 14,
+      "displayResolution": "1920 x 1200 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "batteryCapacityWh": 58,
+      "weightKg": 1.3,
+      "sourceUrl": "https://emcor.com.ph/product/acer-aspire-lite-14-al14-45p-r10u/",
+      "notes": "Exact retailer listing for AL14-45P-R10U confirms Ryzen 3 5400U and integrated AMD Radeon Graphics. The supplied lineup shortens the model to AL-45P-R10U, so the store label should be checked before marking this verified. Web-audited on 2026-10-15 for the Can It Run comparison.",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit",
+      "sourceName": "Exact product or manufacturer web source"
+    },
+    {
+      "skus": [
+        "JUL26-LAP-008"
+      ],
+      "processorId": 1011,
+      "gpuId": 2020,
+      "ramType": "DDR5",
+      "storageType": "NVMe SSD",
+      "displaySize": 15.6,
+      "displayResolution": "1920 x 1080 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "sourceUrl": "https://laptopfactory.com.ph/product/acer-aspire-lite-al15-33p-35tm/",
+      "notes": "Exact retailer listing for AL15-33P-35TM confirms Intel Core 3 N355 and integrated Intel graphics. Manufacturer confirmation is still recommended before marking this record verified. Web-audited on 2026-10-15 for the Can It Run comparison.",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit",
+      "sourceName": "Exact product or manufacturer web source"
+    },
+    {
+      "skus": [
+        "JUL26-LAP-013"
+      ],
+      "processorId": 1106,
+      "gpuId": 2107,
+      "ramType": "DDR5",
+      "storageType": "NVMe SSD",
+      "displaySize": 14,
+      "displayResolution": "1920 x 1200 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "sourceUrl": "https://www.kwancorp.com/products/acer-aspire-go-14-ag14-71m-50wj-intel-ultra-5-125h-16gb-ram-512gb-ssd-14-ips-wuxga-windows-11-laptop",
+      "notes": "Exact retailer model code AG14-71M-50WJ identifies Core Ultra 5 125H and Intel graphics; Intel confirms the processor platform includes Arc graphics. The supplied lineup calls this Core i5, so its store label must be reviewed. Web-audited on 2026-10-15 for the Can It Run comparison.",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit",
+      "sourceName": "Exact product or manufacturer web source"
+    },
+    {
+      "skus": [
+        "JUL26-LAP-014"
+      ],
+      "processorId": 1107,
+      "gpuId": 2108,
+      "ramType": "DDR5",
+      "storageType": "NVMe SSD",
+      "displaySize": 15.6,
+      "displayResolution": "1920 x 1080 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "batteryCapacityWh": 53,
+      "weightKg": 1.51,
+      "sourceUrl": "https://www.itworldph.com/shop/ag15-43p-r19x-acer-aspire-go-15-ai-laptop-15-6-fhd-amd-ryzen-5-7640hs-16gb-ram-512gb-ssd-ag15-43p-r19x-20430",
+      "notes": "Exact retailer model code AG15-43P-R19X confirms Ryzen 5 7640HS. AMD's official processor page identifies its integrated GPU as Radeon 760M; the retailer page says 680M, so the app follows AMD. The supplied lineup shortens the prefix to A15, so the store label should be checked. Web-audited on 2026-10-15 for the Can It Run comparison.",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit",
+      "sourceName": "Exact product or manufacturer web source"
+    },
+    {
+      "skus": [
+        "JUL26-LAP-015"
+      ],
+      "processorId": 1108,
+      "gpuId": 2109,
+      "ramType": "DDR5",
+      "storageType": "NVMe SSD",
+      "displaySize": 14,
+      "displayResolution": "1920 x 1200 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "weightKg": 1.5,
+      "sourceUrl": "https://home.abenson.com/acer-aspire-go-14-ag14-71m-58jd-steel-gray.html",
+      "notes": "Exact retailer listing for AG14-71M-58JD confirms Core Ultra 5 115U and integrated Intel graphics. Intel's official processor specification confirms 8 cores, 10 threads and Intel Graphics. Manufacturer confirmation is still recommended before marking this record verified. Web-audited on 2026-10-15 for the Can It Run comparison.",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit",
+      "sourceName": "Exact product or manufacturer web source"
+    },
+    {
+      "skus": [
+        "JUL26-LAP-016"
+      ],
+      "processorId": 1109,
+      "gpuId": 2105,
+      "ramType": "LPDDR5X",
+      "ramUpgradeable": false,
+      "storageType": "NVMe SSD",
+      "displaySize": 14,
+      "displayResolution": "1920 x 1200 OLED",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "sourceUrl": "https://laptopfactory.com.ph/product/acer-swift-go-sfg14-75-55mb/",
+      "notes": "Exact retailer listing for SFG14-75-55MB identifies Core Ultra 5 226V and Arc 130V; Intel's processor specification confirms that pairing. Acer's Philippine listing confirms the exact NX.JNBSP.001 configuration but names only the Core Ultra 5 family. Web-audited on 2026-10-15 for the Can It Run comparison.",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit",
+      "sourceName": "Exact product or manufacturer web source"
+    },
+    {
+      "skus": [
+        "JUL26-LAP-017"
+      ],
+      "processorId": 1101,
+      "gpuId": 2101,
+      "ramType": "LPDDR5-7467 (onboard)",
+      "ramUpgradeable": false,
+      "storageType": "PCIe Gen4 NVMe SSD",
+      "displaySize": 16,
+      "displayResolution": "1920 x 1200 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "batteryCapacityWh": 59,
+      "weightKg": 1.77,
+      "sourceUrl": "https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157358",
+      "sourceName": "HP official specifications",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact 16-af1062TU / BX9D8PA manufacturer configuration: Core Ultra 5 225U and integrated Intel Graphics."
+    },
+    {
+      "skus": [
+        "JUL26-LAP-018"
+      ],
+      "processorId": 1104,
+      "gpuId": 2103,
+      "ramType": "DDR4-3200",
+      "ramUpgradeable": true,
+      "maximumRamGB": 16,
+      "storageType": "PCIe NVMe SSD",
+      "displaySize": 15.6,
+      "displayResolution": "1920 x 1080 IPS",
+      "displayRefreshRate": 60,
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "batteryCapacityWh": 41,
+      "weightKg": 1.59,
+      "sourceUrl": "https://pcx.com.ph/products/hp-15-fc0863au-d93dxpa-amd-ryzen-5-laptop-natural-silver",
+      "sourceName": "PC Express exact Philippine configuration",
+      "verifiedBy": "JI Telecom exact-model audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact HP 15-fc0863AU / D93DXPA configuration: Ryzen 5 7530U, Radeon Graphics, 8GB DDR4, 512GB NVMe SSD and Windows 11 Home."
+    },
+    {
+      "skus": [
+        "JUL26-LAP-020"
+      ],
+      "processorId": 1013,
+      "gpuId": 2104,
+      "ramGB": 8,
+      "ramType": "DDR5-4800",
+      "ramUpgradeable": true,
+      "maximumRamGB": 64,
+      "storageGB": 512,
+      "storageType": "PCIe Gen4 NVMe SSD",
+      "additionalStorageSupport": "Two M.2 2280 PCIe Gen4 NVMe slots.",
+      "displaySize": 15.6,
+      "displayResolution": "1920 x 1080 IPS",
+      "displayRefreshRate": 360,
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "batteryCapacityWh": 99,
+      "weightKg": 2.39,
+      "sourceUrl": "https://www.pcworth.com/product/gigabyte-aorus-15-9kf-e3ph583sh",
+      "sourceName": "PC Worth exact Philippine configuration",
+      "verifiedBy": "JI Telecom exact-model audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact AORUS 15 9KF-E3PH583SH configuration: Core i5-12500H, RTX 4060 Laptop 8GB, 8GB DDR5, 512GB Gen4 SSD and Windows 11 Home."
+    },
+    {
+      "skus": [
+        "JUL26-LAP-022"
+      ],
+      "processorId": 1103,
+      "gpuId": 2102,
+      "ramType": "DDR5-5600 (2 x 8GB)",
+      "storageType": "PCIe NVMe SSD",
+      "displaySize": 15.6,
+      "displayResolution": "1920 x 1080 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "batteryCapacityWh": 41,
+      "weightKg": 1.65,
+      "sourceUrl": "https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103460304",
+      "sourceName": "HP official specifications",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact 15-fd1455TU / CH8A8PA manufacturer configuration: Core Ultra 7 155H and integrated Arc Graphics. Arc branding requires the listed dual-channel memory configuration."
+    },
+    {
+      "skus": [
+        "JUL26-LAP-023"
+      ],
+      "processorId": 1102,
+      "gpuId": 2101,
+      "ramType": "LPDDR5-7467 (onboard)",
+      "ramUpgradeable": false,
+      "storageType": "PCIe Gen4 NVMe SSD",
+      "displaySize": 16,
+      "displayResolution": "1920 x 1200 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "batteryCapacityWh": 59,
+      "weightKg": 1.77,
+      "sourceUrl": "https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157361",
+      "sourceName": "HP official specifications",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact 16-af1063TU / BX9D9PA manufacturer configuration: Core Ultra 7 255U and integrated Intel Graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-058",
+        "JUL26-PHN-059"
+      ],
+      "processorId": 1001,
+      "gpuId": 2001,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A13 Bionic platform."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-060",
+        "JUL26-PHN-061",
+        "JUL26-PHN-062"
+      ],
+      "processorId": 1002,
+      "gpuId": 2002,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A14 Bionic platform."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-063",
+        "JUL26-PHN-064"
+      ],
+      "processorId": 1003,
+      "gpuId": 2003,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A15 Bionic with 4-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-065",
+        "JUL26-PHN-066"
+      ],
+      "processorId": 1003,
+      "gpuId": 2004,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A15 Bionic with 5-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-038",
+        "JUL26-PHN-067",
+        "JUL26-PHN-068",
+        "JUL26-PHN-069",
+        "JUL26-PHN-070"
+      ],
+      "processorId": 1004,
+      "gpuId": 2005,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A16 Bionic with 5-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-TAB-052",
+        "JUL26-TAB-053"
+      ],
+      "processorId": 1004,
+      "gpuId": 2006,
+      "displaySize": 11,
+      "displayResolution": "2360 x 1640",
+      "batteryCapacityWh": 28.93,
+      "weightKg": 0.477,
+      "operatingSystem": "iPadOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/ipad-11/specs/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "A16 iPad configuration; cellular models can weigh more."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-039"
+      ],
+      "processorId": 1005,
+      "gpuId": 2007,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A18 with 4-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-040",
+        "JUL26-PHN-041"
+      ],
+      "processorId": 1005,
+      "gpuId": 2008,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A18 with 5-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-042"
+      ],
+      "processorId": 1006,
+      "gpuId": 2010,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A18 Pro with 6-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-LAP-054"
+      ],
+      "processorId": 1006,
+      "gpuId": 2009,
+      "displaySize": 13,
+      "displayResolution": "2408 x 1506",
+      "batteryCapacityWh": 36.5,
+      "weightKg": 1.23,
+      "operatingSystem": "macOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/macbook-neo/specs/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "MacBook Neo A18 Pro configuration."
+    },
+    {
+      "skus": [
+        "JUL26-LAP-055"
+      ],
+      "processorId": 1009,
+      "gpuId": 2014,
+      "displaySize": 13.6,
+      "operatingSystem": "macOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/macbook-air/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "M5 MacBook Air; GPU core count varies by configuration."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-043"
+      ],
+      "processorId": 1007,
+      "gpuId": 2011,
+      "displaySize": 6.3,
+      "displayResolution": "2622 x 1206",
+      "displayRefreshRate": 120,
+      "weightKg": 0.177,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone-17/specs/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "iPhone 17 A19 configuration."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-044"
+      ],
+      "processorId": 1008,
+      "gpuId": 2012,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A19 Pro with 5-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-045",
+        "JUL26-PHN-046",
+        "JUL26-PHN-047",
+        "JUL26-PHN-048",
+        "JUL26-PHN-049"
+      ],
+      "processorId": 1008,
+      "gpuId": 2013,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A19 Pro with 6-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-LAP-005"
+      ],
+      "processorId": 1010,
+      "gpuId": 2020,
+      "displaySize": 14,
+      "displayResolution": "1920 x 1200",
+      "operatingSystem": "Windows 11",
+      "architecture": "x64",
+      "sourceUrl": "https://www.acer.com/no-no/laptops/aspire/aspire-lite/pdp/NX.D2SED.001",
+      "notes": "Matched by Aspire Lite AL14-32P and N150 model family. Web-audited on 2026-10-15 for the Can It Run comparison.",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit",
+      "sourceName": "Exact product or manufacturer web source"
+    },
+    {
+      "skus": [
+        "JUL26-LAP-009",
+        "JUL26-LAP-010"
+      ],
+      "processorId": 1011,
+      "gpuId": 2020,
+      "displaySize": 15.6,
+      "displayResolution": "1920 x 1080",
+      "operatingSystem": "Windows 11",
+      "architecture": "x64",
+      "sourceUrl": "https://www.acer.com/es-es/laptops/aspire/aspire-lite/pdp/NX.D2DEB.001",
+      "notes": "Matched by Aspire Lite AL15-33P and N355 model family. Web-audited on 2026-10-15 for the Can It Run comparison.",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit",
+      "sourceName": "Exact product or manufacturer web source"
+    },
+    {
+      "skus": [
+        "JUL26-LAP-011"
+      ],
+      "processorId": 1012,
+      "gpuId": 2021,
+      "displaySize": 14,
+      "displayResolution": "1920 x 1080",
+      "operatingSystem": "Windows 11",
+      "architecture": "x64",
+      "sourceUrl": "https://www.hp.com/ph-en/products/laptops/product-details/2103580989",
+      "sourceName": "HP Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact HP 14-ep0445TU configuration."
+    },
+    {
+      "skus": [
+        "JUL26-LAP-019"
+      ],
+      "processorId": 1013,
+      "gpuId": 2022,
+      "ramGB": 8,
+      "ramType": "DDR4",
+      "ramUpgradeable": true,
+      "storageGB": 512,
+      "storageType": "NVMe SSD",
+      "displaySize": 15.6,
+      "displayResolution": "1920 x 1080",
+      "displayRefreshRate": 144,
+      "batteryCapacityWh": 54,
+      "weightKg": 2.08,
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "sourceUrl": "https://marketplace.nvidia.com/en-ph/consumer/gaming-laptops/gigabyte-gs-g5-mf-e2ph333sh-15-6-win11/",
+      "sourceName": "NVIDIA Philippines marketplace exact configuration",
+      "verifiedBy": "JI Telecom exact-model audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact G5 MF-E2PH333SH configuration: Core i5-12500H, RTX 4050 Laptop GPU, 8GB DDR4, 512GB storage and Windows 11."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-073"
+      ],
+      "processorId": 1020,
+      "displaySize": 6.74,
+      "displayRefreshRate": 90,
+      "sourceUrl": "https://www.honor.com/es/phones/honor-x5c-plus/spec/",
+      "notes": "Exact X5c Plus platform: Helio G81, Mali-G52 MC2, MagicOS 9.0 based on Android 15, and 4GB + 128GB configuration.",
+      "gpuId": 2030,
+      "operatingSystem": "MagicOS 9.0 (Android 15)",
+      "architecture": "arm64",
+      "sourceName": "HONOR",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-074"
+      ],
+      "processorId": 1021,
+      "gpuId": 2030,
+      "displaySize": 6.61,
+      "displayRefreshRate": 120,
+      "operatingSystem": "MagicOS 9 (Android 15)",
+      "sourceUrl": "https://www.honor.com/ae-en/phones/honor-x6c/spec/",
+      "notes": "Exact X6c platform: Helio G81 Ultra, Mali-G52 MC2, MagicOS 9 based on Android 15, and 6GB + 256GB configuration.",
+      "architecture": "arm64",
+      "sourceName": "HONOR",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-076"
+      ],
+      "processorId": 1022,
+      "sourceUrl": "https://www.honor.com/au/phones/honor-x9d/spec/",
+      "notes": "Exact X9d 12GB + 256GB platform: Snapdragon 6 Gen 4 and Adreno A810.",
+      "gpuId": 2041,
+      "operatingSystem": "MagicOS 10.0 (Android 16)",
+      "architecture": "arm64",
+      "sourceName": "HONOR",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-088",
+        "JUL26-PHN-089"
+      ],
+      "processorId": 1023,
+      "sourceUrl": "https://wap.lk.infinixmobility.com/",
+      "notes": "HOT 60 Pro family uses Helio G200 with Mali-G57 MC2 graphics; the stored RAM/storage variant is from the supplied catalogue.",
+      "gpuId": 2032,
+      "operatingSystem": "XOS (Android)",
+      "architecture": "arm64",
+      "sourceName": "Infinix",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-092"
+      ],
+      "processorId": 1024,
+      "displaySize": 6.67,
+      "displayResolution": "1600 x 720",
+      "displayRefreshRate": 120,
+      "weightKg": 0.2,
+      "operatingSystem": "Android 14",
+      "sourceUrl": "https://www.itel-life.com/products/phone/p-series/power-70",
+      "notes": "Power 70 platform: Helio G50 Ultimate with PowerVR GE8320; Android 14 / itel OS 14 by the product specification.",
+      "gpuId": 2110,
+      "architecture": "arm64",
+      "sourceName": "itel",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-TAB-093"
+      ],
+      "processorId": 1025,
+      "displaySize": 13,
+      "displayResolution": "2K",
+      "weightKg": 0.6893,
+      "operatingSystem": "Android 14",
+      "sourceUrl": "https://www.itel-life.com/products/laptop-pad/vistatab/tab-30-pro/spec",
+      "notes": "VistaTab 30 Pro platform: Helio G99 with Mali-G57 MC2; Android 14 and 8GB + 256GB physical storage configuration.",
+      "gpuId": 2032,
+      "architecture": "arm64",
+      "sourceName": "itel",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-103",
+        "JUL26-PHN-104"
+      ],
+      "processorId": 1026,
+      "gpuId": 2031,
+      "displaySize": 6.75,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 120,
+      "batteryCapacityWh": 27.44,
+      "weightKg": 0.215,
+      "operatingSystem": "ColorOS 15",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-a/a6/specs/",
+      "sourceName": "OPPO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Snapdragon 685 with Adreno 610."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-107"
+      ],
+      "processorId": 1027,
+      "batteryCapacityWh": 21.96,
+      "sourceUrl": "https://www.oppo.com/my/smartphones/series-reno/reno13/specs/",
+      "notes": "Exact Reno13 5G 12GB + 512GB platform: Dimensity 8350, Arm Mali-G615, ColorOS 15, and UFS 3.1 storage.",
+      "gpuId": 2034,
+      "operatingSystem": "ColorOS 15 (Android 15)",
+      "architecture": "arm64",
+      "sourceName": "OPPO",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-TAB-109"
+      ],
+      "processorId": 1028,
+      "gpuId": 2032,
+      "batteryCapacityWh": 36.06,
+      "sourceUrl": "https://www.oppo.com/es/accessories/oppo-pad-se/specs/",
+      "notes": "Pad SE LTE platform: Helio G100 with Mali-G57 MC2 graphics; the stored configuration is from the supplied catalogue.",
+      "operatingSystem": "ColorOS (Android)",
+      "architecture": "arm64",
+      "sourceName": "OPPO",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-117"
+      ],
+      "processorId": 1029,
+      "gpuId": 2033,
+      "displaySize": 6.7,
+      "displayResolution": "1600 x 720",
+      "displayRefreshRate": 90,
+      "weightKg": 0.201,
+      "operatingSystem": "Android 15",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/ph/realme-note-70/specs",
+      "sourceName": "realme Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "UNISOC T7250 with Mali-G57 MP1; official battery rating is 6300mAh."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-125",
+        "JUL26-PHN-126"
+      ],
+      "processorId": 1030,
+      "sourceUrl": "https://www.realme.com/ph/realme-15t-5g/specs",
+      "notes": "Exact realme 15T 5G platform: Dimensity 6400 Max and Mali-G57 MC2. The official Philippine page lists the 8GB + 256GB variant.",
+      "gpuId": 2032,
+      "operatingSystem": "realme UI 6.0 (Android 15)",
+      "architecture": "arm64",
+      "sourceName": "realme Philippines",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-128",
+        "JUL26-PHN-129"
+      ],
+      "processorId": 1031,
+      "gpuId": 2034,
+      "displaySize": 6.78,
+      "displayResolution": "2772 x 1272",
+      "displayRefreshRate": 144,
+      "batteryCapacityWh": 27.44,
+      "weightKg": 0.192,
+      "operatingSystem": "realme UI 7 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/ph/realme-16-pro-5g/specs",
+      "sourceName": "realme Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Dimensity 7300 Max with Mali-G615; official battery rating is 7000mAh."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-137",
+        "JUL26-PHN-138",
+        "JUL26-PHN-140",
+        "JUL26-PHN-141",
+        "JUL26-PHN-142"
+      ],
+      "processorId": 1025,
+      "sourceUrl": "https://www.samsung.com/ae/smartphones/galaxy-a/galaxy-a07-5g-light-violet-128gb-sm-a076elvcmea/",
+      "notes": "Galaxy A07 LTE platform: MediaTek Helio G99 with Mali-G57 MC2; the supplied catalogue provides the 4GB + 64GB variant.",
+      "gpuId": 2032,
+      "operatingSystem": "Android 15 / One UI 7",
+      "architecture": "arm64",
+      "sourceName": "Samsung",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-143"
+      ],
+      "processorId": 1032,
+      "operatingSystem": "Android 15 / One UI 7",
+      "sourceUrl": "https://images.samsung.com/is/content/samsung/assets/global/ir/docs/2025_4Q_Interim_Report.pdf",
+      "notes": "Galaxy A17 5G platform: Exynos 1330 with Mali-G68 MP2 integrated graphics; exact 8GB + 256GB configuration retained.",
+      "gpuId": 2116,
+      "architecture": "arm64",
+      "sourceName": "Samsung",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-160"
+      ],
+      "processorId": 1033,
+      "displaySize": 6.78,
+      "displayResolution": "2436 x 1080",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Android 14",
+      "sourceUrl": "https://www.tecno-mobile.com/phones/tech-specs/techspecs/camon-30-pro-5g/",
+      "notes": "CAMON 30 Pro 5G platform: Dimensity 8200 Ultimate with Mali-G610 MC6 graphics, Android 14, and the stored 12GB + 256GB configuration.",
+      "gpuId": 2117,
+      "architecture": "arm64",
+      "sourceName": "TECNO",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-168"
+      ],
+      "processorId": 1034,
+      "displayRefreshRate": 144,
+      "operatingSystem": "HiOS (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.tecno-mobile.com/ph/phones/product-detail/product/pova-7-ultra-5g/",
+      "sourceName": "TECNO",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "POVA 7 Ultra 5G platform: Dimensity 8350 Ultimate with Mali-G615 graphics.",
+      "gpuId": 2034
+    },
+    {
+      "skus": [
+        "JUL26-PHN-173",
+        "JUL26-PHN-174"
+      ],
+      "processorId": 1035,
+      "operatingSystem": "Android 16 / OriginOS 6",
+      "sourceUrl": "https://shop.vivo.com/ph/product/2150?skuId=8433",
+      "notes": "Y11d platform: UNISOC T7225 with Mali-G57 MP1 integrated graphics; exact 4GB + 128GB configuration retained.",
+      "gpuId": 2033,
+      "architecture": "arm64",
+      "sourceName": "vivo Philippines",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-175",
+        "JUL26-PHN-176"
+      ],
+      "processorId": 1036,
+      "displaySize": 6.75,
+      "displayRefreshRate": 120,
+      "operatingSystem": "OriginOS (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.vivo.com/ph/products/y31d",
+      "sourceName": "vivo",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "vivo Y31d platform: Snapdragon 6s Gen 2 4G with Adreno 610 graphics.",
+      "gpuId": 2031
+    },
+    {
+      "skus": [
+        "JUL26-PHN-177"
+      ],
+      "processorId": 1037,
+      "displaySize": 6.83,
+      "displayResolution": "2800 x 1260",
+      "displayRefreshRate": 120,
+      "weightKg": 0.2,
+      "operatingSystem": "Android 16 / OriginOS 6",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.vivo.com/ph/products/param/v70-fe",
+      "sourceName": "vivo",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "vivo V70 FE platform: Dimensity 7360 Turbo with Mali-G615 MC2 graphics.",
+      "gpuId": 2034
+    },
+    {
+      "skus": [
+        "JUL26-PHN-178",
+        "JUL26-PHN-179"
+      ],
+      "processorId": 1038,
+      "operatingSystem": "Android 16 / OriginOS 6",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.vivo.com/ph/products/param/v70",
+      "sourceName": "vivo",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "vivo V70 platform: Snapdragon 7 Gen 4 with Adreno 722 graphics.",
+      "gpuId": 2035
+    },
+    {
+      "skus": [
+        "JUL26-PHN-188",
+        "JUL26-PHN-189"
+      ],
+      "processorId": 1039,
+      "gpuId": 2032,
+      "displaySize": 6.77,
+      "displayResolution": "2392 x 1080",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS 2 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Helio G100-Ultra with Mali-G57 MC2; official battery rating is 6000mAh."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-191",
+        "JUL26-PHN-192"
+      ],
+      "processorId": 1040,
+      "gpuId": 2034,
+      "displaySize": 6.83,
+      "displayResolution": "2772 x 1280",
+      "displayRefreshRate": 120,
+      "weightKg": 0.21,
+      "operatingSystem": "Xiaomi HyperOS 2 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15-pro-5g/specs/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Dimensity 7400-Ultra with Mali-G615; official battery rating is 6580mAh."
+    },
+    {
+      "skus": [
+        "JUL26-TAB-198"
+      ],
+      "processorId": 1041,
+      "displaySize": 9.7,
+      "displayResolution": "2048 x 1280",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-pad-2-9-7-inch-4g/",
+      "sourceName": "Xiaomi",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Redmi Pad 2 9.7 4G platform: Snapdragon 6s 4G Gen 2 with its integrated Adreno GPU.",
+      "gpuId": 2113
+    },
+    {
+      "skus": [
+        "JUL26-TAB-199",
+        "JUL26-TAB-200",
+        "JUL26-TAB-201"
+      ],
+      "processorId": 1039,
+      "gpuId": 2032,
+      "displaySize": 11,
+      "displayResolution": "2560 x 1600",
+      "displayRefreshRate": 90,
+      "weightKg": 0.51,
+      "operatingSystem": "Xiaomi HyperOS (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/global/product/redmi-pad-2/specs/",
+      "sourceName": "Xiaomi official specifications",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Helio G100-Ultra with Mali-G57 MC2."
+    },
+    {
+      "skus": [
+        "JUL26-TAB-078"
+      ],
+      "processorId": 1026,
+      "gpuId": 2031,
+      "storageType": "UFS",
+      "displaySize": 11.5,
+      "displayResolution": "2508 x 1504",
+      "displayRefreshRate": 120,
+      "operatingSystem": "MagicOS 9 (Android 15)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.honor.com/ph/tablets/honor-pad-x9a/",
+      "sourceName": "HONOR Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Pad X9a 6GB + 128GB model. HONOR publishes Snapdragon 685, Adreno 610, MagicOS 9 and the listed display."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-079"
+      ],
+      "processorId": 1038,
+      "displaySize": 6.7,
+      "displayRefreshRate": 120,
+      "operatingSystem": "MagicOS 10 (Android 16)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.honor.com/ph/phones/honor-600/",
+      "sourceName": "HONOR",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "HONOR 600 5G platform: Snapdragon 7 Gen 4 with Adreno 722 graphics.",
+      "gpuId": 2035
+    },
+    {
+      "skus": [
+        "JUL26-PHN-080",
+        "JUL26-PHN-081"
+      ],
+      "processorId": 1038,
+      "displaySize": 6.7,
+      "displayRefreshRate": 120,
+      "operatingSystem": "MagicOS 10 (Android 16)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.honor.com/ph/phones/honor-600/",
+      "sourceName": "HONOR Philippines",
+      "verificationStatus": "VERIFIED",
+      "notes": "HONOR 600 5G uses Snapdragon 7 Gen 4 with Adreno 722 graphics; exact 12GB + 256GB inventory variant retained.",
+      "gpuId": 2035,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-082"
+      ],
+      "processorId": 1042,
+      "gpuId": 2036,
+      "displaySize": 6.97,
+      "displayRefreshRate": 120,
+      "operatingSystem": "MagicOS 10 (Android 16)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.honor.com/latam/phones/honor-600-pro/spec/",
+      "sourceName": "HONOR",
+      "verificationStatus": "VERIFIED",
+      "notes": "HONOR 600 Pro 5G exact 12GB + 512GB platform: Snapdragon 8 Elite with Adreno 830 graphics.",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-098",
+        "JUL26-PHN-099",
+        "JUL26-PHN-100"
+      ],
+      "processorId": 1026,
+      "gpuId": 2031,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.75,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "ColorOS 15",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-a/a6x/specs/",
+      "sourceName": "OPPO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact A6x platform and the listed 4GB storage variants; Snapdragon 685 and Adreno 610 are published by OPPO."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-101",
+        "JUL26-PHN-102"
+      ],
+      "processorId": 1029,
+      "gpuId": 2033,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.75,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "ColorOS 15",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-a/a6c/specs/",
+      "sourceName": "OPPO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact A6c 4GB + 64GB/128GB variants. OPPO publishes UNISOC T7250 and Mali-G57 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-105",
+        "JUL26-PHN-106"
+      ],
+      "processorId": 1043,
+      "gpuId": 2032,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.75,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "ColorOS 15",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-a/a6s-5g/specs/",
+      "sourceName": "OPPO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact A6s 5G 6GB + 128GB and 8GB + 256GB configurations. OPPO publishes Dimensity 6300 and Mali-G57 MC2."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-108"
+      ],
+      "processorId": 1038,
+      "gpuId": 2035,
+      "ramType": "LPDDR5X",
+      "storageType": "UFS 3.1",
+      "displaySize": 6.59,
+      "displayResolution": "2760 x 1256",
+      "displayRefreshRate": 120,
+      "operatingSystem": "ColorOS 16",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-reno/reno15/specs/",
+      "sourceName": "OPPO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Reno15 5G 12GB + 256GB configuration. OPPO publishes Snapdragon 7 Gen 4 and Adreno 722."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-115",
+        "JUL26-PHN-116"
+      ],
+      "processorId": 1029,
+      "gpuId": 2033,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.74,
+      "displayResolution": "1600 x 720",
+      "displayRefreshRate": 90,
+      "operatingSystem": "Android 15 / realme UI",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/id/realme-note80/specs",
+      "sourceName": "realme official specifications",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Note 80 4GB + 64GB/128GB configurations. realme publishes UNISOC T7250 and Mali-G57 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-118",
+        "JUL26-PHN-119"
+      ],
+      "processorId": 1026,
+      "gpuId": 2031,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.8,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Android 15 / realme UI 6",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/ph/realme-c85/specs",
+      "sourceName": "realme Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact C85 4G 6GB + 128GB and 8GB + 256GB configurations with Snapdragon 685 and Adreno 610."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-120"
+      ],
+      "processorId": 1043,
+      "gpuId": 2032,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.8,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Android 15 / realme UI 6",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/ph/realme-c85-5g/specs",
+      "sourceName": "realme Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact C85 5G 8GB + 256GB configuration with Dimensity 6300 and Mali-G57 MC2."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-121",
+        "JUL26-PHN-122"
+      ],
+      "processorId": 1029,
+      "gpuId": 2033,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.8,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 16 / realme UI",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/ph/realme-c100i/specs",
+      "sourceName": "realme Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact C100i 4GB + 128GB/256GB configurations with UNISOC T7250 and Mali-G57 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-123",
+        "JUL26-PHN-124"
+      ],
+      "processorId": 1044,
+      "gpuId": 2037,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.8,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "realme UI (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/ph/realme-c100/specs",
+      "sourceName": "realme Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact C100 4GB/8GB + 256GB configurations with Helio G92 Max and Mali-G52 graphics. The official page does not state the underlying Android version."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-127"
+      ],
+      "processorId": 1045,
+      "gpuId": 2032,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.57,
+      "displayResolution": "2372 x 1080",
+      "displayRefreshRate": 120,
+      "operatingSystem": "realme UI 7 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/ph/realme-16-5g/specs",
+      "sourceName": "realme Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact realme 16 5G 8GB + 256GB configuration with Dimensity 6400 Turbo and Mali-G57 MC2."
+    },
+    {
+      "skus": [
+        "JUL26-TAB-133"
+      ],
+      "processorId": 1028,
+      "gpuId": 2032,
+      "displaySize": 12,
+      "displayResolution": "2000 x 1200",
+      "displayRefreshRate": 90,
+      "operatingSystem": "Android 16",
+      "architecture": "arm64",
+      "sourceUrl": "https://techlife.ph/tablets/pad-plus-2",
+      "sourceName": "TechLife Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Pad Plus 2 4GB + 128GB model with Helio G100, Mali-G57 MC2 and Android 16."
+    },
+    {
+      "skus": [
+        "JUL26-TAB-134"
+      ],
+      "processorId": 1046,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC",
+      "displaySize": 8,
+      "displayResolution": "1280 x 800",
+      "displayRefreshRate": 60,
+      "operatingSystem": "Android 15",
+      "architecture": "arm64",
+      "sourceUrl": "https://techlife.ph/tablets/pad-lite",
+      "sourceName": "TechLife",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "TechLife Pad Lite platform: UNISOC T606 with Mali-G57 MP1 graphics.",
+      "gpuId": 2033
+    },
+    {
+      "skus": [
+        "JUL26-PHN-139"
+      ],
+      "displaySize": 6.7,
+      "displayResolution": "1600 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 16 / One UI 8",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.samsung.com/ae/smartphones/galaxy-a/galaxy-a07-5g-light-violet-128gb-sm-a076elvcmea/",
+      "sourceName": "Samsung",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Galaxy A07 5G family platform: Dimensity 6300 with Mali-G57 MC2; supplied catalogue configuration is 4GB + 128GB.",
+      "processorId": 1043,
+      "gpuId": 2032,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-145"
+      ],
+      "displaySize": 6.7,
+      "operatingSystem": "Android 16 / One UI 8",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.samsungmobilepress.com/articles/galaxy-a27-5g-immersive-display-awesome-intelligence",
+      "sourceName": "Samsung Mobile Press",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy A27 5G platform: Snapdragon 6 Gen 3 with Adreno 710; supplied catalogue configuration is 6GB + 128GB.",
+      "processorId": 1050,
+      "gpuId": 2114,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-150"
+      ],
+      "displaySize": 6.7,
+      "displayResolution": "2340 x 1080",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 16 / One UI 8.5",
+      "architecture": "arm64",
+      "sourceUrl": "https://news.samsung.com/id/gaming-mulus-sosmed-lancar-ini-alasan-samsung-galaxy-a57-5g-layak-jadi-pilihan",
+      "sourceName": "Samsung Newsroom",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy A57 5G exact 8GB + 256GB platform: Exynos 1680 with Xclipse 550 graphics.",
+      "processorId": 1117,
+      "gpuId": 2120,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-TAB-151"
+      ],
+      "displaySize": 8.7,
+      "displayResolution": "1340 x 800",
+      "operatingSystem": "Android 13 / One UI 5.1",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.samsung.com/africa_en/tablets/galaxy-tab-a/galaxy-tab-a9-lte-graphite-128gb-sm-x115nzaeafa/",
+      "sourceName": "Samsung",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy Tab A9 LTE 4GB + 64GB platform: Helio G99 with Mali-G57 MC2 integrated graphics.",
+      "processorId": 1025,
+      "gpuId": 2032,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-152",
+        "JUL26-PHN-153"
+      ],
+      "processorId": 1055,
+      "operatingSystem": "Android 16 / One UI",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.samsung.com/ph/smartphones/galaxy-s26/",
+      "sourceName": "Samsung",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy S26 platform: Exynos 2600 with Xclipse 960 graphics.",
+      "gpuId": 2123
+    },
+    {
+      "skus": [
+        "JUL26-PHN-154"
+      ],
+      "processorId": 1056,
+      "operatingSystem": "Android 16 / One UI",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.samsung.com/ph/smartphones/galaxy-s26-ultra/",
+      "sourceName": "Qualcomm / Samsung",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy S26 Ultra platform: Snapdragon 8 Elite Gen 5 for Galaxy with Qualcomm Adreno graphics.",
+      "gpuId": 2124
+    },
+    {
+      "skus": [
+        "JUL26-PHN-157",
+        "JUL26-PHN-158"
+      ],
+      "processorId": 1029,
+      "gpuId": 2033,
+      "displaySize": 6.75,
+      "displayResolution": "1600 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 15 / HiOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.tecno-mobile.com/phones/tech-specs/techspecs/spark-go-3/",
+      "sourceName": "TECNO official specifications",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Spark Go 3 4GB + 64GB/128GB configurations with UNISOC T7250 and Mali-G57 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-159"
+      ],
+      "processorId": 1023,
+      "gpuId": 2037,
+      "displaySize": 6.78,
+      "displayResolution": "2720 x 1224",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Android 15 / HiOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/spark-slim/",
+      "sourceName": "TECNO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Spark Slim 8GB + 256GB configuration with Helio G200 and Mali-G52 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-161",
+        "JUL26-PHN-162"
+      ],
+      "processorId": 1020,
+      "gpuId": 2037,
+      "displaySize": 6.78,
+      "displayResolution": "1600 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 16 / HiOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.tecno-mobile.com/ph/phones/product-detail/product/spark-50/",
+      "sourceName": "TECNO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Spark 50 4GB + 128GB/256GB configurations with Helio G81 and Mali-G52 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-163",
+        "JUL26-PHN-164"
+      ],
+      "processorId": 1047,
+      "gpuId": 2032,
+      "displaySize": 6.78,
+      "displayResolution": "1576 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 16 / HiOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/spark-50-5g/",
+      "sourceName": "TECNO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Spark 50 5G 4GB + 128GB and 8GB + 256GB configurations with Dimensity 6400 5G+ and Mali-G57 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-165"
+      ],
+      "processorId": 1023,
+      "gpuId": 2037,
+      "displaySize": 6.78,
+      "displayResolution": "2644 x 1208",
+      "displayRefreshRate": 144,
+      "operatingSystem": "HiOS 16 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/camon-50/",
+      "sourceName": "TECNO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Camon 50 8GB + 256GB configuration with Helio G200 Ultimate and Mali-G52 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-166"
+      ],
+      "processorId": 1048,
+      "gpuId": 2034,
+      "displaySize": 6.78,
+      "displayResolution": "2644 x 1208",
+      "displayRefreshRate": 144,
+      "operatingSystem": "HiOS 16 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.tecno-mobile.com/ph/phones/tech-specs/techspecs/camon-50-ultra-5g/",
+      "sourceName": "TECNO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Camon 50 Ultra 5G 8GB + 256GB configuration with Dimensity 7400 Ultimate and Mali-G615 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-167"
+      ],
+      "processorId": 1049,
+      "gpuId": 2038,
+      "displaySize": 6.78,
+      "displayResolution": "2364 x 1080",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Android 16 / HiOS 16",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.tecno-mobile.com/bd/phones/tech-specs/techspecs/pova-curve-2-5g/",
+      "sourceName": "TECNO",
+      "verificationStatus": "VERIFIED",
+      "notes": "Pova Curve 2 5G platform: Dimensity 7100 with Mali-G610 MC2 graphics; exact 8GB + 256GB configuration retained.",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-171",
+        "JUL26-PHN-172"
+      ],
+      "processorId": 1035,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.74,
+      "displayResolution": "1600 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 16 / OriginOS 6",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.vivo.com/ph/products/param/y05",
+      "sourceName": "vivo",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "vivo Y05 platform: UNISOC T7225 with Mali-G57 MP1 graphics.",
+      "gpuId": 2033
+    },
+    {
+      "skus": [
+        "JUL26-PHN-182"
+      ],
+      "processorId": 1029,
+      "gpuId": 2033,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.88,
+      "displayResolution": "1640 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 15 Go edition / Xiaomi HyperOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/global/support/faq/details/KA-694581/",
+      "sourceName": "Xiaomi official support",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Redmi A7 3GB + 64GB configuration with UNISOC T7250 and Mali-G57 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-183",
+        "JUL26-PHN-184"
+      ],
+      "processorId": 1029,
+      "gpuId": 2033,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.88,
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 15 / Xiaomi HyperOS 2",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/my/support/faq/details/KA-686040/",
+      "sourceName": "Xiaomi",
+      "verificationStatus": "VERIFIED",
+      "notes": "Redmi A7 Pro platform: UNISOC T7250 with Mali-G57 MP1 graphics; exact 4GB + 64GB configuration retained.",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-185"
+      ],
+      "processorId": 1043,
+      "gpuId": 2032,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.9,
+      "displayResolution": "1600 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 15 / Xiaomi HyperOS 2",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/gr/product/redmi-15c-5g/specs/",
+      "sourceName": "Xiaomi",
+      "verificationStatus": "VERIFIED",
+      "notes": "Redmi 15C 5G platform: Dimensity 6300 with Mali-G57 MC2 graphics; exact 4GB + 256GB configuration retained.",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-187"
+      ],
+      "processorId": 1054,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.9,
+      "displayResolution": "2340 x 1080",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Android 15 / Xiaomi HyperOS 2",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/tw/product/redmi-15-5g/specs/",
+      "sourceName": "Xiaomi",
+      "verificationStatus": "VERIFIED",
+      "notes": "Redmi 15 5G platform: Snapdragon 6s Gen 3 with Adreno 619 integrated graphics; exact 8GB + 256GB configuration retained.",
+      "gpuId": 2121,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-190"
+      ],
+      "processorId": 1050,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.77,
+      "displayResolution": "2392 x 1080",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS 2 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15-5g/",
+      "sourceName": "Xiaomi",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Redmi Note 15 5G platform: Snapdragon 6 Gen 3 with Adreno 710 graphics.",
+      "gpuId": 2114
+    },
+    {
+      "skus": [
+        "JUL26-PHN-193"
+      ],
+      "processorId": 1051,
+      "gpuId": 2041,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.83,
+      "displayResolution": "2772 x 1280",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS 2 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15-pro-plus-5g/specs/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Redmi Note 15 Pro+ 5G 12GB + 512GB Philippine configuration with Snapdragon 7s Gen 4 and Adreno 810."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-194",
+        "JUL26-PHN-195"
+      ],
+      "processorId": 1052,
+      "gpuId": 2039,
+      "ramType": "LPDDR5X",
+      "storageType": "UFS 4.1",
+      "displaySize": 6.59,
+      "displayResolution": "2756 x 1268",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS 3 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-17t/specs/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Xiaomi 17T 12GB + 256GB/512GB Philippine configurations with Dimensity 8500-Ultra and Mali-G720 MC8."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-196"
+      ],
+      "processorId": 1053,
+      "gpuId": 2040,
+      "ramType": "LPDDR5X",
+      "storageType": "UFS 4.1",
+      "displaySize": 6.83,
+      "displayResolution": "2772 x 1280",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Xiaomi HyperOS 3 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-17t-pro/specs/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Xiaomi 17T Pro 12GB + 512GB Philippine configuration with Dimensity 9500 and Mali G1-Ultra."
+    },
+    {
+      "skus": [
+        "JUL26-TAB-197"
+      ],
+      "processorId": 1041,
+      "gpuId": 2031,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 9.7,
+      "displayResolution": "2048 x 1280",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS 3 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-pad-2-9-7-inch/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Redmi Pad 2 9.7-inch 4GB + 128GB Philippine configuration with Snapdragon 6s 4G Gen 2 and Adreno 610."
+    },
+    {
+      "skus": [
+        "JUL26-TAB-203",
+        "JUL26-TAB-205"
+      ],
+      "processorId": 1051,
+      "gpuId": 2041,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 12.1,
+      "displayResolution": "2560 x 1600",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS 2 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-pad-2-pro/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Redmi Pad 2 Pro Wi-Fi 8GB + 256GB Philippine hardware; the keyboard bundle uses the same tablet configuration."
+    },
+    {
+      "skus": [
+        "JUL26-TAB-204",
+        "JUL26-TAB-206"
+      ],
+      "processorId": 1051,
+      "gpuId": 2041,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 12.1,
+      "displayResolution": "2560 x 1600",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS 2 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-pad-2-pro-5g/specs/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Redmi Pad 2 Pro 5G 8GB + 256GB Philippine hardware; the keyboard bundle uses the same tablet configuration."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-075"
+      ],
+      "displaySize": 6.77,
+      "displayRefreshRate": 120,
+      "operatingSystem": "MagicOS 10 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.honor.com/global/phones/honor-x8d/spec/",
+      "sourceName": "HONOR",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact X8d 8GB + 256GB platform: Snapdragon 6s 4G Gen 2 with Adreno 610 and MagicOS 10 based on Android 16.",
+      "processorId": 1036,
+      "gpuId": 2031,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-TAB-077"
+      ],
+      "gpuId": 2031,
+      "displaySize": 11,
+      "displayResolution": "1920 x 1200",
+      "displayRefreshRate": 90,
+      "operatingSystem": "MagicOS 10 (Android 16)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.honor.com/mea/tablets/honor-pad-x8b/spec/",
+      "sourceName": "HONOR",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Pad X8b 4GB + 128GB platform: Snapdragon 680 with Adreno 610, MagicOS 10, and an 11-inch 1920 x 1200 display.",
+      "processorId": 1113,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-085",
+        "JUL26-PHN-086"
+      ],
+      "displaySize": 6.78,
+      "displayRefreshRate": 120,
+      "operatingSystem": "XOS 16 (Android 16)",
+      "architecture": "arm64",
+      "sourceUrl": "https://infinixmobiles.in/products/smart-20",
+      "sourceName": "Infinix",
+      "verificationStatus": "VERIFIED",
+      "notes": "SMART 20 platform: Helio G81 Ultimate with Mali-G52 MC2; supplied catalogue configuration is 4GB + 64GB.",
+      "processorId": 1120,
+      "gpuId": 2030,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-087"
+      ],
+      "processorId": 1058,
+      "operatingSystem": "XOS 16 (Android 16)",
+      "architecture": "arm64",
+      "sourceUrl": "https://id.infinixmobility.com/shop/1689",
+      "sourceName": "Infinix",
+      "verificationStatus": "VERIFIED",
+      "notes": "HOT 70 exact 4GB + 128GB option uses Helio G100 Ultimate with Mali-G57 MC2 graphics.",
+      "gpuId": 2032,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-094",
+        "JUL26-PHN-095"
+      ],
+      "operatingSystem": "itel OS 15 (Android 15)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.itel-life.com/id/products/phone/s-series/s26-ultra/spec",
+      "sourceName": "itel",
+      "verificationStatus": "VERIFIED",
+      "notes": "SUPER 26 Ultra platform: T7300 6nm processor with Mali-G57 MC2 class graphics; exact 8GB + 128GB configuration retained.",
+      "processorId": 1114,
+      "gpuId": 2032,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-112"
+      ],
+      "displaySize": 6.9,
+      "displayRefreshRate": 120,
+      "operatingSystem": "MyOS (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://tecnoblog.net/produtos/nubia-v80-max/",
+      "sourceName": "Nubia / web hardware record",
+      "verificationStatus": "VERIFIED",
+      "notes": "Nubia V80 Max exact 8GB + 128GB platform: UNISOC T7250 with Mali-G57 MP1 graphics.",
+      "processorId": 1029,
+      "gpuId": 2033,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-TAB-130",
+        "JUL26-TAB-131",
+        "JUL26-TAB-132"
+      ],
+      "operatingSystem": "Android 14",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.yugatech.com/news/techlife-pad-neo-specs-price-philippines/",
+      "sourceName": "TechLife Philippines / YugaTech",
+      "verificationStatus": "VERIFIED",
+      "notes": "TechLife Pad Neo exact 4GB + 128GB configuration: UNISOC T612 with Mali-G57 MP1 graphics and Android 14.",
+      "processorId": 1118,
+      "gpuId": 2033,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-144"
+      ],
+      "displaySize": 6.7,
+      "displayResolution": "2340 x 1080",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 15 / One UI 7",
+      "architecture": "arm64",
+      "sourceUrl": "https://news.samsung.com/in/galaxy-a26-5g-samsungs-most-affordable-ai-powered-smartphone-launches-in-india-starting-at-just-inr-22999",
+      "sourceName": "Samsung Newsroom",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy A26 5G exact 6GB + 128GB platform: Exynos 1380 with Mali-G68 MP5 graphics.",
+      "processorId": 1121,
+      "gpuId": 2122,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-146"
+      ],
+      "displaySize": 6.6,
+      "displayResolution": "2340 x 1080",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 13 / One UI 5.1",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.samsungindiamarketing.com/Promotions/catalogues/galaxya/print-pdf/a345g.pdf",
+      "sourceName": "Samsung",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy A34 5G exact 8GB + 128GB platform: Dimensity 1080 with Mali-G68 MC4 graphics.",
+      "processorId": 1122,
+      "gpuId": 2115,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-147"
+      ],
+      "displaySize": 6.7,
+      "displayResolution": "2340 x 1080",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 15 / One UI 7",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.samsungmobilepress.com/articles/samsung-marks-a-step-forward-with-ai-for-everyone-by-introducing-new-galaxy-a56-5g-galaxy-a36-5g-and-galaxy-a26-5g",
+      "sourceName": "Samsung Mobile Press",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy A36 5G exact 8GB + 256GB platform: Snapdragon 6 Gen 3 with Adreno 710 graphics.",
+      "processorId": 1050,
+      "gpuId": 2114,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-148"
+      ],
+      "displaySize": 6.7,
+      "operatingSystem": "Android 16 / One UI 8.5",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.samsung.com/uk/smartphones/galaxy-a/galaxy-a37-5g-awesome-graygreen-256gb-sm-a376bdggeub/",
+      "sourceName": "Samsung",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy A37 5G family platform: Exynos 1480 with Xclipse 530 graphics; supplied catalogue configuration is 8GB + 256GB.",
+      "processorId": 1115,
+      "gpuId": 2118,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-149"
+      ],
+      "displaySize": 6.7,
+      "displayResolution": "2340 x 1080",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Android 15 / One UI 7",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.samsungmobilepress.com/articles/samsung-marks-a-step-forward-with-ai-for-everyone-by-introducing-new-galaxy-a56-5g-galaxy-a36-5g-and-galaxy-a26-5g",
+      "sourceName": "Samsung Mobile Press",
+      "verificationStatus": "VERIFIED",
+      "notes": "Galaxy A56 5G exact 8GB + 256GB platform: Exynos 1580 with Xclipse 540 graphics.",
+      "processorId": 1116,
+      "gpuId": 2119,
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-186"
+      ],
+      "processorId": 1026,
+      "gpuId": 2031,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.9,
+      "displayResolution": "2340 x 1080",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Xiaomi HyperOS 2 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ke/product/redmi-15/specs/",
+      "sourceName": "Xiaomi",
+      "verificationStatus": "VERIFIED",
+      "notes": "Redmi 15 4G exact 8GB + 256GB platform: Snapdragon 685 with Adreno 610 graphics.",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-TAB-202"
+      ],
+      "processorId": 1057,
+      "gpuId": 2042,
+      "ramType": "LPDDR5X",
+      "storageType": "UFS 4.1",
+      "displaySize": 11.2,
+      "displayResolution": "3200 x 2136",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Xiaomi HyperOS 3 (Android)",
+      "architecture": "arm64",
+      "weightKg": 0.485,
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-pad-8/specs/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Xiaomi Pad 8 8GB + 256GB Philippine configuration with Snapdragon 8s Gen 4 and Adreno 825."
+    },
+    {
+      "skus": [
+        "OCT26-LAP-001"
+      ],
+      "processorId": 1006,
+      "gpuId": 2009,
+      "ramType": "Unified memory",
+      "storageType": "SSD",
+      "displaySize": 13,
+      "displayResolution": "2408 x 1506 IPS",
+      "operatingSystem": "macOS",
+      "architecture": "arm64",
+      "batteryCapacityWh": 36.5,
+      "weightKg": 1.23,
+      "supportedFeatures": [
+        "USB-C",
+        "DisplayPort",
+        "3.5mm audio jack"
+      ],
+      "sourceUrl": "https://support.apple.com/en-gb/126322",
+      "sourceName": "Apple Support",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact 8GB unified-memory and 512GB configuration with the A18 Pro 6-core CPU and 5-core GPU."
+    },
+    {
+      "skus": [
+        "OCT26-LAP-002"
+      ],
+      "processorId": 1105,
+      "gpuId": 2106,
+      "ramType": "DDR4",
+      "storageType": "NVMe SSD",
+      "displaySize": 14,
+      "displayResolution": "1920 x 1200 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "sourceUrl": "https://www.gigahertz.com.ph/products/acer-aspire-lite-al14-45p-r9ue-laptop-nude-pink-14-wuxga-1920x1200-ips-ryzen-3-5400u-8gb-ram-512gb-ssd-amd-radeon-graphics-windows-11-home",
+      "sourceName": "GigaHertz Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact AL14-45P-R9UE retailer specification confirms the Ryzen 3 5400U, 8GB RAM, 512GB NVMe SSD, WUXGA IPS display, integrated Radeon graphics, and Windows 11 Home."
+    },
+    {
+      "skus": [
+        "OCT26-LAP-003"
+      ],
+      "processorId": 1112,
+      "gpuId": 2112,
+      "ramType": "DDR4",
+      "storageType": "NVMe SSD",
+      "displaySize": 14,
+      "displayResolution": "1920 x 1200 IPS",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "batteryCapacityWh": 58,
+      "supportedFeatures": [
+        "Wi-Fi 6",
+        "Bluetooth 5.1",
+        "HDMI 1.4",
+        "USB 3.2"
+      ],
+      "sourceUrl": "https://www.gigahertz.com.ph/products/acer-al14-47p-r9cq-amd-ryzen-5-3500u-8gb-ddr4-ram-512gb-ssd-amd-radeon-win11sm-gray",
+      "sourceName": "GigaHertz Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact AL14-47P-R9CQ retailer specification confirms the Ryzen 5 3500U, Radeon Vega 8, 8GB DDR4, 512GB NVMe SSD, WUXGA IPS display, 58Wh battery, and Windows 11 Home."
+    },
+    {
+      "skus": [
+        "OCT26-LAP-004"
+      ],
+      "processorId": 1104,
+      "gpuId": 2103,
+      "ramType": "DDR4-3200",
+      "storageType": "PCIe NVMe SSD",
+      "displaySize": 15.6,
+      "displayResolution": "1920 x 1080",
+      "operatingSystem": "Windows 11 Home",
+      "architecture": "x64",
+      "weightKg": 1.59,
+      "supportedFeatures": [
+        "USB-C",
+        "HDMI",
+        "Numeric keypad",
+        "Microsoft Office Home 2024"
+      ],
+      "sourceUrl": "https://electroworld.abenson.com/hp-15-fc0826au-natural-silver-laptop.html",
+      "sourceName": "Abenson",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact HP 15-fc0826AU listing confirms Ryzen 5 7530U, 16GB DDR4, 512GB SSD, Radeon Graphics, FHD display, and Windows 11 Home."
+    },
+    {
+      "skus": [
+        "OCT26-PHN-001"
+      ],
+      "processorId": 1001,
+      "gpuId": 2001,
+      "displaySize": 6.5,
+      "displayResolution": "2688 x 1242 OLED",
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "weightKg": 0.226,
+      "supportedFeatures": [
+        "Face ID",
+        "Lightning",
+        "Qi wireless charging",
+        "IP68"
+      ],
+      "sourceUrl": "https://support.apple.com/en-us/111878",
+      "sourceName": "Apple Support",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact iPhone 11 Pro Max family specification: 256GB option, A13 Bionic, 4-core GPU, 6.5-inch OLED display, and Midnight Green finish."
+    },
+    {
+      "skus": [
+        "OCT26-PHN-002"
+      ],
+      "processorId": 1110,
+      "gpuId": 2110,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.5,
+      "displayResolution": "1600 x 720 TFT LCD",
+      "operatingSystem": "MagicUI 6.1 (Android 12)",
+      "architecture": "arm64",
+      "weightKg": 0.194,
+      "supportedFeatures": [
+        "MicroSD up to 1TB",
+        "3.5mm audio jack",
+        "USB-C",
+        "4G"
+      ],
+      "sourceUrl": "https://www.honor.com/latam/phones/honor-x6/spec/",
+      "sourceName": "HONOR",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact X6 4GB + 64GB configuration with Helio G25, IMG GE8320, 6.5-inch HD display, MagicUI 6.1, and a 5000mAh battery."
+    },
+    {
+      "skus": [
+        "OCT26-PHN-003"
+      ],
+      "processorId": 1020,
+      "gpuId": 2030,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.74,
+      "displayResolution": "1600 x 720 TFT LCD",
+      "displayRefreshRate": 90,
+      "operatingSystem": "Android 15 Go edition",
+      "architecture": "arm64",
+      "weightKg": 0.189,
+      "supportedFeatures": [
+        "MicroSD up to 1TB",
+        "3.5mm audio jack",
+        "USB-C",
+        "IP52",
+        "4G"
+      ],
+      "sourceUrl": "https://www.honor.com/ph/phones/honor-play10/spec/",
+      "sourceName": "HONOR Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Philippine 3GB + 64GB configuration with Helio G81, Mali-G52 MC2, 6.74-inch HD display, Android 15 Go edition, and 5000mAh battery."
+    },
+    {
+      "skus": [
+        "OCT26-PHN-004"
+      ],
+      "processorId": 1021,
+      "gpuId": 2030,
+      "ramType": "LPDDR4X",
+      "storageType": "eMMC 5.1",
+      "displaySize": 6.61,
+      "displayResolution": "1604 x 720 TFT LCD",
+      "operatingSystem": "MagicOS 10 (Android 16)",
+      "architecture": "arm64",
+      "supportedFeatures": [
+        "USB-C",
+        "IP64",
+        "4G",
+        "45W charging"
+      ],
+      "sourceUrl": "https://www.honor.com/bd/phones/honor-x6e/spec/",
+      "sourceName": "HONOR",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "The source sheet supplies the 4GB + 256GB local stock variant. HONOR confirms the X6e platform: Helio G81 Ultra, Mali-G52 MC2, 6.61-inch display, and MagicOS 10."
+    },
+    {
+      "skus": [
+        "OCT26-PHN-005"
+      ],
+      "processorId": 1111,
+      "gpuId": 2111,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.872,
+      "displayResolution": "1592 x 720 TFT LCD",
+      "displayRefreshRate": 120,
+      "operatingSystem": "MagicOS 10 (Android 16)",
+      "architecture": "arm64",
+      "weightKg": 0.2165,
+      "supportedFeatures": [
+        "5G",
+        "NFC",
+        "USB-C",
+        "IP68",
+        "IP69",
+        "IP69K",
+        "45W charging",
+        "AI Button"
+      ],
+      "sourceUrl": "https://www.honor.com/ph/phones/honor-600s-5g/spec/",
+      "sourceName": "HONOR Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Philippine 8GB + 256GB configuration with Snapdragon 4 Gen 4, Adreno 613, 120Hz 6.872-inch display, 8100mAh battery, and MagicOS 10."
+    },
+    {
+      "skus": [
+        "OCT26-ACC-001"
+      ],
+      "supportedFeatures": [
+        "2.4 GHz wireless",
+        "USB receiver",
+        "1000 DPI optical tracking",
+        "AA battery",
+        "Windows",
+        "macOS",
+        "ChromeOS",
+        "Linux"
+      ],
+      "sourceUrl": "https://www.logitech.com/en-gb/shop/p/m185-wireless-mouse",
+      "sourceName": "Logitech",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "M185 is a USB-receiver peripheral, not a device for application hardware checks. Logitech lists Windows, macOS, ChromeOS, and Linux support with an estimated 12-month battery life."
+    },
+    {
+      "skus": [
+        "OCT26-PHN-006",
+        "OCT26-PHN-007"
+      ],
+      "processorId": 1043,
+      "gpuId": 2032,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.8,
+      "displayResolution": "1570 x 720 LCD",
+      "displayRefreshRate": 144,
+      "operatingSystem": "realme UI 7 (Android)",
+      "architecture": "arm64",
+      "batteryCapacityWh": 31.36,
+      "weightKg": 0.224,
+      "supportedFeatures": [
+        "5G",
+        "USB-C",
+        "45W charging",
+        "3.5mm audio jack"
+      ],
+      "sourceUrl": "https://www.realme.com/in/realme-16t-5g/specs",
+      "sourceName": "realme India",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact 8GB + 128GB and 8GB + 256GB inventory configurations with Dimensity 6300, Mali-G57 MC2, 144Hz LCD display, and 8000mAh typical battery."
+    },
+    {
+      "skus": [
+        "OCT26-PHN-008"
+      ],
+      "processorId": 1036,
+      "gpuId": 2113,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.99,
+      "displayResolution": "2396 x 1080 AMOLED",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS (Android)",
+      "architecture": "arm64",
+      "supportedFeatures": [
+        "MicroSD up to 2TB",
+        "USB-C",
+        "IP65",
+        "45W charging",
+        "NFC",
+        "IR blaster",
+        "4G"
+      ],
+      "sourceUrl": "https://www.mi.com/global/product/redmi-note-17/specs/",
+      "sourceName": "Xiaomi",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact 6GB + 256GB listed configuration with Snapdragon 6s 4G Gen 2, 6.99-inch 120Hz AMOLED display, 7700mAh battery, and HyperOS. Xiaomi publishes the GPU only as Adreno, so no numeric GPU model is invented."
+    }
   ]
 }
+

@@ -57,7 +57,7 @@ class DemoDataSeeder @Inject constructor(
                 DatabaseMetadataEntity("databaseVersion", BuildConfig.DATABASE_VERSION),
                 DatabaseMetadataEntity("bundledSpecificationsVersion", catalogLoader.specifications().version),
                 DatabaseMetadataEntity("bundledSoftwareVersion", BundledSoftwareCatalog.VERSION),
-                DatabaseMetadataEntity("lastUpdated", "2026-09-26"),
+                DatabaseMetadataEntity("lastUpdated", "2026-10-15"),
                 DatabaseMetadataEntity("dataNotice", DATA_NOTICE)
             ))
         }
@@ -106,7 +106,7 @@ class DemoDataSeeder @Inject constructor(
             }
             db.metadataDao().putAll(listOf(
                 DatabaseMetadataEntity("bundledSpecificationsVersion", specificationsVersion),
-                DatabaseMetadataEntity("specificationsUpdated", "2026-09-25"),
+                DatabaseMetadataEntity("specificationsUpdated", "2026-10-15"),
                 DatabaseMetadataEntity("dataNotice", DATA_NOTICE)
             ))
         }
@@ -146,13 +146,14 @@ class DemoDataSeeder @Inject constructor(
             db.metadataDao().putAll(listOf(
                 DatabaseMetadataEntity("bundledSoftwareVersion", BundledSoftwareCatalog.VERSION),
                 DatabaseMetadataEntity("databaseVersion", BuildConfig.DATABASE_VERSION),
-                DatabaseMetadataEntity("softwareUpdated", "2026-09-26")
+                DatabaseMetadataEntity("softwareUpdated", "2026-10-15")
             ))
         }
     }
 
     companion object {
         const val SAMPLE = "SAMPLE DATA — NOT VERIFIED"
-        private const val DATA_NOTICE = "JI Telecom July 2026 lineup with a platform-aware software catalog for Windows, macOS, Android, iOS and iPadOS. Selected technical specifications link to publisher or manufacturer sources; records marked for review remain estimates."
+        private const val DATA_NOTICE = "JI Telecom inventory with a platform-aware software catalog for Windows, macOS, Android, iOS and iPadOS. Each bundled computing-device record includes a linked source and compatibility-critical platform details."
     }
 }
+

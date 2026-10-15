@@ -174,6 +174,25 @@ class CompatibilityEngine @Inject constructor(
     private val explanationBuilder: CompatibilityExplanationBuilder
 ) {
     fun evaluate(product: ProductSpec, software: SoftwareSpec, requirements: List<RequirementSet>): CompatibilityResult {
+        if (!product.category.canRunSoftware()) {
+            val category = product.category.name.lowercase().replace('_', ' ')
+            return CompatibilityResult(
+                productId = product.id,
+                softwareId = software.id,
+                status = CompatibilityStatus.NOT_AVAILABLE,
+                components = listOf(
+                    ComponentCompatibilityResult(
+                        component = "Device type",
+                        actual = category,
+                        minimum = "Computing device",
+                        status = ComponentStatus.NOT_AVAILABLE,
+                        explanation = "This $category product is not a device that runs apps."
+                    )
+                ),
+                explanation = "${product.displayName} is a $category product, so it cannot run ${software.name}.",
+                dataStatus = VerificationStatus.VERIFIED
+            )
+        }
         val operatingSystem = product.operatingSystemForCompatibility()
         val platformCompatibility = platformCompatibility(software.platform, operatingSystem)
         if (platformCompatibility == PlatformCompatibility.NOT_SUPPORTED) {
@@ -236,6 +255,18 @@ class CompatibilityEngine @Inject constructor(
         explanation = reason,
         dataStatus = dataStatus
     )
+}
+
+private fun ProductCategory.canRunSoftware() = when (this) {
+    ProductCategory.LAPTOP,
+    ProductCategory.SMARTPHONE,
+    ProductCategory.TABLET,
+    ProductCategory.DESKTOP,
+    ProductCategory.SMART_TV,
+    ProductCategory.GAMING_CONSOLE -> true
+    ProductCategory.MONITOR,
+    ProductCategory.PRINTER,
+    ProductCategory.ACCESSORIES -> false
 }
 
 private fun requirementsForPlatform(requirements: List<RequirementSet>, operatingSystem: String?): List<RequirementSet> {
@@ -330,3 +361,4 @@ private fun architectureValues(value: String): Set<String> {
         if (Regex("\\b(armv7|armeabi|arm32)\\b").containsMatchIn(normalized)) add("arm32")
     }
 }
+

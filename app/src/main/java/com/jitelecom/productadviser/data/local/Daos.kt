@@ -12,7 +12,7 @@ interface ProductDao {
     @Transaction
     @Query("""
         SELECT * FROM products p WHERE p.archived = 0 AND (
-            :query = '' OR lower(p.brand || ' ' || p.model || ' ' || p.sku || ' ' || p.category || ' ' || p.price || ' ' || ifnull(p.ramGB,'') || 'GB ' || ifnull(p.storageGB,'') || 'GB') LIKE '%' || lower(:query) || '%'
+            :query = '' OR lower(p.brand || ' ' || p.model || ' ' || ifnull(p.modelFamily,'') || ' ' || ifnull(p.variant,'') || ' ' || p.sku || ' ' || p.category || ' ' || p.price || ' ' || ifnull(p.ramGB,'') || 'GB ' || ifnull(p.storageGB,'') || 'GB ' || ifnull(p.notes,'')) LIKE '%' || lower(:query) || '%'
             OR p.processorId IN (SELECT id FROM processors WHERE lower(manufacturer || ' ' || family || ' ' || model) LIKE '%' || lower(:query) || '%')
             OR p.gpuId IN (SELECT id FROM gpus WHERE lower(manufacturer || ' ' || model) LIKE '%' || lower(:query) || '%')
         ) ORDER BY brand, model
@@ -95,3 +95,4 @@ interface AnalyticsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertAll(values: List<AnalyticsEntity>)
     @Query("DELETE FROM local_analytics") suspend fun deleteAll()
 }
+

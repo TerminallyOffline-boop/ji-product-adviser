@@ -72,6 +72,27 @@ class BundledSpecificationMergeTest {
         assertThat(result.verifiedBy).isEqualTo("JI Telecom official-source audit")
     }
 
+    @Test fun verifiedBundleReplacesGenericPlatformDetailsOnARecordPendingReview() {
+        val verified = bundled.copy(
+            operatingSystem = "Android 15 / One UI 7",
+            architecture = "arm64",
+            sourceName = "Samsung official specifications",
+            verifiedBy = "JI Telecom web-source audit",
+            verificationStatus = VerificationStatus.VERIFIED
+        )
+        val pending = current.copy(
+            operatingSystem = "Android / One UI",
+            architecture = "arm64",
+            verificationStatus = VerificationStatus.NEEDS_REVIEW
+        )
+
+        val result = pending.withMissingBundledSpecifications(verified)
+
+        assertThat(result.operatingSystem).isEqualTo("Android 15 / One UI 7")
+        assertThat(result.architecture).isEqualTo("arm64")
+        assertThat(result.verificationStatus).isEqualTo(VerificationStatus.VERIFIED)
+    }
+
     @Test fun upgradesPreviouslyBundledVerifiedRecordWhenTheExactSourceImproves() {
         val previous = current.copy(
             ramGB = null,
@@ -97,3 +118,4 @@ class BundledSpecificationMergeTest {
         assertThat(result.sourceName).isEqualTo(exact.sourceName)
     }
 }
+
