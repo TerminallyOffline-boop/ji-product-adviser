@@ -2,6 +2,20 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.3.0 - 2026-10-15
+
+### Added
+
+- A tablet-first dashboard that guides staff into compatibility checking, recommendations, catalog browsing, and comparisons
+- Clearer saved-product, recently viewed, and catalog-summary sections on Home
+
+### Changed
+
+- Rebuilt the visual system with a modern JI Telecom color palette, stronger type hierarchy, softer card shapes, and improved contrast in light and dark mode
+- Refined tablet navigation rail and phone bottom navigation so the active destination is easier to spot
+- Redesigned product search, filter controls, product cards, product details, and technical-specification presentation for faster counter use
+- Kept product details focused on technical specifications and specification notes, without source-review panels
+
 ## 1.2.1 - 2026-09-26
 
 ### Fixed
@@ -187,3 +201,4 @@ This file records the major development milestones of JI Product Adviser. Dates 
 - Catalog price and availability data are snapshots, not live branch inventory.
 - Compatibility is an evidence-based guide and is not a performance guarantee.
 - New or changed specifications should retain their source and verification status.
+

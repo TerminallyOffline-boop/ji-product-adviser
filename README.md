@@ -2,7 +2,7 @@
 
 JI Product Adviser is a tablet-first Android staff tool for browsing the JI Telecom product lineup, checking whether a device can run selected software, and finding suitable products using clear, deterministic rules. It is designed to work offline and remains usable on phones.
 
-**Current documented release:** `1.1.1` (`versionCode 7`)
+**Current documented release:** `1.3.0` (`versionCode 11`)
 
 > The bundled product catalog comes from **Product-Line-up-x-July-2026.xlsx**. Prices and availability are a dated snapshot. Printers are intentionally excluded.
 
@@ -13,7 +13,7 @@ JI Product Adviser is a tablet-first Android staff tool for browsing the JI Tele
 - View enriched laptop CPU and GPU information
 - Check software compatibility with platform-aware Windows, macOS, Android, iPhone, and iPad rules
 - Distinguish minimum, recommended, unavailable-platform, and not-verified results
-- Show the calculated compatibility verdict separately from the reliability of its source data
+- Present clear compatibility verdicts and component-by-component reasons
 - Find best matches using budget, performance, capacity, preference, and software-fit scoring
 - Search, filter, sort, favorite, revisit, and compare products without losing navigation state
 - Explain when an app is unavailable for a platform separately from insufficient hardware
@@ -136,3 +136,4 @@ Exports contain catalog records and anonymous on-device usage counters only. No 
 ## Future integration
 
 `AiQueryParser`, `InventoryProvider`, and `AnalyticsSink` are domain-facing extension interfaces. A future ASK JIPOL parser may convert natural language into a `CustomerRequest`, but it must never create specifications or decide compatibility. API keys must be held outside the APK and the deterministic local engines remain authoritative.
+

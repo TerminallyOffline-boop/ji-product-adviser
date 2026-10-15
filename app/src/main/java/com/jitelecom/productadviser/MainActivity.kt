@@ -28,7 +28,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val appViewModel: AppViewModel = hiltViewModel()
             val settings by appViewModel.settings.collectAsState()
-            JITheme(settings.darkMode) { AdviserApp() }
+            JITheme(settings.darkMode) {
+                Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { AdviserApp() }
+            }
         }
     }
 }
@@ -60,25 +62,49 @@ fun AdviserApp(appViewModel: AppViewModel = hiltViewModel()) {
         }
         if (tablet) {
             Row(Modifier.fillMaxSize()) {
-                NavigationRail(containerColor = MaterialTheme.colorScheme.surface) {
-                    Spacer(Modifier.height(16.dp))
-                    Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.primaryContainer) {
-                        Icon(Icons.Default.Storefront, "JI Telecom", Modifier.padding(12.dp), tint=MaterialTheme.colorScheme.primary)
+                NavigationRail(
+                    modifier = Modifier.fillMaxHeight().width(116.dp),
+                    containerColor = MaterialTheme.colorScheme.surface
+                ) {
+                    Spacer(Modifier.height(20.dp))
+                    Surface(shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.primaryContainer) {
+                        Icon(Icons.Default.Storefront, "JI Telecom", Modifier.padding(13.dp), tint = MaterialTheme.colorScheme.primary)
                     }
-                    Spacer(Modifier.height(12.dp))
-                    Text("JI", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.height(10.dp))
+                    Text("JI", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    Text("ADVISER", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(Modifier.height(14.dp))
                     primaryDestinations.forEach { destination ->
-                        NavigationRailItem(selected=destinationSelected(baseRoute, destination.route), onClick={navigate(destination.route)}, icon={Icon(destination.icon, destination.label)}, label={Text(destination.label)})
+                        NavigationRailItem(
+                            selected = destinationSelected(baseRoute, destination.route),
+                            onClick = { navigate(destination.route) },
+                            icon = { Icon(destination.icon, destination.label) },
+                            label = { Text(destination.label) },
+                            colors = NavigationRailItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                            )
+                        )
                     }
                 }
                 AppNavHost(nav, online, Modifier.weight(1f))
             }
         } else {
             Scaffold(bottomBar = {
-                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                NavigationBar(containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 3.dp) {
                     primaryDestinations.forEach { destination ->
-                        NavigationBarItem(selected=destinationSelected(baseRoute, destination.route), onClick={navigate(destination.route)}, icon={Icon(destination.icon, destination.label)}, label={Text(destination.label)})
+                        NavigationBarItem(
+                            selected = destinationSelected(baseRoute, destination.route),
+                            onClick = { navigate(destination.route) },
+                            icon = { Icon(destination.icon, destination.label) },
+                            label = { Text(destination.label) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                            )
+                        )
                     }
                 }
             }) { padding -> AppNavHost(nav, online, Modifier.padding(padding)) }
@@ -121,3 +147,4 @@ internal fun destinationSelected(current: String, destination: String): Boolean 
     "more" -> current in setOf("more", "compare", "software", "database", "settings", "admin")
     else -> current == destination
 }
+
