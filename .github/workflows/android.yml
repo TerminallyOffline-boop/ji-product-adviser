@@ -40,3 +40,37 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
+  release:
+    name: Publish GitHub release
+    needs: verify
+    if: github.event_name == 'push' && startsWith(github.event.head_commit.message, 'Release v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Read app version
+        id: app_version
+        shell: bash
+        run: |
+          version="$(grep -E '^[[:space:]]*versionName = ' app/build.gradle.kts | head -n 1 | sed -E 's/.*"([^"]+)".*/\1/')"
+          test -n "$version"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Download installable APK
+        uses: actions/download-artifact@v4
+        with:
+          name: JI-Product-Adviser-debug-apk
+          path: release
+
+      - name: Publish public release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.app_version.outputs.tag }}
+          name: JI Product Adviser ${{ steps.app_version.outputs.tag }}
+          generate_release_notes: true
+          files: release/app-debug.apk
+
