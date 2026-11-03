@@ -81,8 +81,8 @@ class OperatingSystemEvaluator @Inject constructor() {
             return ComponentCompatibilityResult(
                 "Operating system", actual, min.supportedOperatingSystems.joinToString(" • "),
                 rec?.supportedOperatingSystems?.takeIf { it.isNotEmpty() }?.joinToString(" • "),
-                ComponentStatus.UNKNOWN,
-                "The operating-system family matches, but the stored device record does not include the version needed for this check."
+                ComponentStatus.MEETS_MINIMUM,
+                "The device and app use the same operating-system family. The inventory does not store the exact installed OS version, so it can run if the device is updated to the listed minimum: ${min.supportedOperatingSystems.joinToString(" • ")}."
             )
         }
         val compatible = minimumMatch == OperatingSystemCompatibility.MATCH
@@ -153,7 +153,15 @@ class CompatibilityExplanationBuilder @Inject constructor() {
             .map { it.component.lowercase() }
         return when (status) {
             CompatibilityStatus.MEETS_RECOMMENDED -> "Meets the stored published or reviewed recommended requirements. This is a specification comparison, not a guarantee of real-world performance or app availability."
-            CompatibilityStatus.MEETS_MINIMUM -> "Meets the stored published or reviewed minimum requirements${limited.take(3).takeIf { it.isNotEmpty() }?.joinToString(prefix = "; limitations may involve ") ?: ""}. This is a specification comparison and demanding workloads may still be limited."
+            CompatibilityStatus.MEETS_MINIMUM -> {
+                val osVersionCheck = components.firstOrNull { it.component == "Operating system" }
+                    ?.explanation?.contains("exact installed OS version", ignoreCase = true) == true
+                if (osVersionCheck) {
+                    "Can run when the device is on a supported OS version. Its platform family and stored minimum hardware requirements match; the exact installed OS version is not listed. Check for an OS update if needed."
+                } else {
+                    "Can run: the stored minimum requirements are met${limited.take(3).takeIf { it.isNotEmpty() }?.joinToString(prefix = "; below the recommended level for ") ?: ""}. More demanding workloads may run slower than on a recommended-level device."
+                }
+            }
             CompatibilityStatus.BELOW_MINIMUM -> "One or more components fall below the stored published or reviewed minimum requirements. This configuration is not recommended for this workload."
             CompatibilityStatus.NOT_AVAILABLE -> "This application is not offered for the device's operating-system platform. This is a platform availability limitation, not a hardware-performance failure."
             CompatibilityStatus.NOT_VERIFIED -> {

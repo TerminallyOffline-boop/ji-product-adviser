@@ -96,7 +96,7 @@ class RecommendationExplanationBuilder @Inject constructor() {
             if (product.weightKg != null && product.weightKg <= 1.7) add("Portable weight")
         }.ifEmpty { listOf("Fits the selected filters") }
         val limitations = buildList {
-            if (results.any { it.status == CompatibilityStatus.MEETS_MINIMUM }) add("Some selected software only meets minimum requirements")
+            if (results.any { it.status == CompatibilityStatus.MEETS_MINIMUM }) add("Selected software can run at minimum level; performance may be lower than recommended")
             if (results.any { it.status == CompatibilityStatus.BELOW_MINIMUM }) add("Below minimum for at least one selected application")
             if (results.any { it.status == CompatibilityStatus.NOT_AVAILABLE }) add("At least one selected application is unavailable on this platform")
             if (results.any { it.status == CompatibilityStatus.NOT_VERIFIED }) add("A required product or app specification is missing")

@@ -12,8 +12,9 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
         sourceName?.contains("Product-Line-up", ignoreCase = true) == true ||
         sourceUrl == bundled.sourceUrl
     if (!managedByBundledCatalog) return this
-    if (processorId != null && processorId != bundled.processorId) return this
-    if (gpuId != null && gpuId != bundled.gpuId) return this
+    val bundledSpecsVerified = bundled.verificationStatus == VerificationStatus.VERIFIED
+    if (!bundledSpecsVerified && processorId != null && processorId != bundled.processorId) return this
+    if (!bundledSpecsVerified && gpuId != null && gpuId != bundled.gpuId) return this
     val promoteExactPlatform = bundled.verificationStatus == VerificationStatus.VERIFIED &&
         verificationStatus != VerificationStatus.VERIFIED
 
@@ -23,8 +24,8 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
         else -> "$notes\n\n${bundled.notes}"
     }
     return copy(
-        processorId = processorId ?: bundled.processorId,
-        gpuId = gpuId ?: bundled.gpuId,
+        processorId = if (bundledSpecsVerified) bundled.processorId ?: processorId else processorId ?: bundled.processorId,
+        gpuId = if (bundledSpecsVerified) bundled.gpuId ?: gpuId else gpuId ?: bundled.gpuId,
         ramGB = ramGB ?: bundled.ramGB,
         ramType = ramType ?: bundled.ramType,
         ramUpgradeable = ramUpgradeable ?: bundled.ramUpgradeable,

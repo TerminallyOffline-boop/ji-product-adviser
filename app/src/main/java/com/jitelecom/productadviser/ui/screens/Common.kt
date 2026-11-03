@@ -48,7 +48,7 @@ fun OnlineBadge(online: Boolean) {
 fun StatusBadge(status: CompatibilityStatus) {
     val (label, color) = when (status) {
         CompatibilityStatus.MEETS_RECOMMENDED -> "MEETS RECOMMENDED" to Color(0xFF167A47)
-        CompatibilityStatus.MEETS_MINIMUM -> "MEETS MINIMUM" to Color(0xFFB36800)
+        CompatibilityStatus.MEETS_MINIMUM -> "CAN RUN • MINIMUM MET" to Color(0xFF167A47)
         CompatibilityStatus.BELOW_MINIMUM -> "BELOW MINIMUM" to Color(0xFFB3261E)
         CompatibilityStatus.NOT_AVAILABLE -> "NOT AVAILABLE" to Color(0xFF7A3E9D)
         CompatibilityStatus.NOT_VERIFIED -> "CANNOT CHECK — MISSING SPEC" to Color(0xFF616675)

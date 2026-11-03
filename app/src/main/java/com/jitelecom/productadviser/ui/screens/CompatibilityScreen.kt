@@ -370,7 +370,7 @@ private fun mainCompatibilityIssue(result:CompatibilityResult):ComponentCompatib
     result.components.firstOrNull{it.status==ComponentStatus.NOT_AVAILABLE}
         ?:result.components.firstOrNull{it.status==ComponentStatus.BELOW_MINIMUM}
         ?:result.components.firstOrNull{it.status==ComponentStatus.UNKNOWN}
-        ?:result.components.firstOrNull{it.status==ComponentStatus.MEETS_MINIMUM}
+        ?:result.components.firstOrNull{it.status==ComponentStatus.MEETS_MINIMUM && it.component != "Operating system"}
 
 @Composable
 private fun ComponentResultCard(result: ComponentCompatibilityResult, modifier: Modifier = Modifier) {
@@ -433,7 +433,7 @@ private fun statusIcon(status: CompatibilityStatus): ImageVector = when (status)
 
 private fun componentStatusLabel(status: ComponentStatus): String = when (status) {
     ComponentStatus.MEETS_RECOMMENDED -> "MEETS RECOMMENDED"
-    ComponentStatus.MEETS_MINIMUM -> "MEETS MINIMUM"
+    ComponentStatus.MEETS_MINIMUM -> "MINIMUM MET"
     ComponentStatus.BELOW_MINIMUM -> "BELOW MINIMUM"
     ComponentStatus.NOT_AVAILABLE -> "NOT AVAILABLE"
     ComponentStatus.UNKNOWN -> "NEEDS INFORMATION"
@@ -442,7 +442,7 @@ private fun componentStatusLabel(status: ComponentStatus): String = when (status
 
 private fun componentStatusColor(status: ComponentStatus) = when (status) {
     ComponentStatus.MEETS_RECOMMENDED -> Color(0xFF11845B)
-    ComponentStatus.MEETS_MINIMUM -> Color(0xFFB26800)
+    ComponentStatus.MEETS_MINIMUM -> Color(0xFF11845B)
     ComponentStatus.BELOW_MINIMUM -> Color(0xFFBA2D2D)
     ComponentStatus.NOT_AVAILABLE -> Color(0xFF7A3E9D)
     else -> Color(0xFF5E6472)
@@ -450,7 +450,7 @@ private fun componentStatusColor(status: ComponentStatus) = when (status) {
 
 private fun statusColor(status: CompatibilityStatus) = when (status) {
     CompatibilityStatus.MEETS_RECOMMENDED -> Color(0xFF11845B)
-    CompatibilityStatus.MEETS_MINIMUM -> Color(0xFFB26800)
+    CompatibilityStatus.MEETS_MINIMUM -> Color(0xFF11845B)
     CompatibilityStatus.BELOW_MINIMUM -> Color(0xFFBA2D2D)
     CompatibilityStatus.NOT_AVAILABLE -> Color(0xFF7A3E9D)
     CompatibilityStatus.NOT_VERIFIED -> Color(0xFF5E6472)

@@ -2,6 +2,15 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.4.4 - 2026-11-03
+
+### Fixed and improved
+
+- Show a clear “Can run • Minimum met” result when minimum requirements are satisfied
+- Treat a known compatible OS family with an unlisted installed version as a conditional minimum match, and state the version/update condition instead of letting it turn the whole result into “cannot verify”
+- Refresh verified CPU/GPU mappings for managed catalog products when the bundled specification version changes, so updated product specs reach existing installations
+- Explain that Apple does not publish RAM capacity in its official device specifications; do not invent memory values
+
 ## 1.4.3 - 2026-11-03
 
 ### Fixed and improved

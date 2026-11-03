@@ -198,6 +198,9 @@ class BundledCatalogLoader @Inject constructor(
                 product.notes,
                 product.processorLabel?.let { "Spreadsheet processor label: $it." },
                 specification?.notes,
+                (product.brand.equals("Apple", ignoreCase = true) && product.ramGB == null && specification?.ramGB == null)
+                    .takeIf { it }
+                    ?.let { "Apple does not publish RAM capacity in its official device specifications; RAM is left unspecified rather than guessed." },
                 specification?.let {
                     if (isOfficiallyVerified) {
                         "The compatibility-critical details were checked against the linked official specification."

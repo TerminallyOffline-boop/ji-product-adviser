@@ -66,7 +66,7 @@ data class BundledSoftwareDefinition(
 }
 
 object BundledSoftwareCatalog {
-    const val VERSION = "2026.09.26.1"
+    const val VERSION = "2026.11.03.1"
 
     private fun requirement(
         ram: Int? = null,
