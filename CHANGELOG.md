@@ -2,6 +2,15 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.4.3 - 2026-11-03
+
+### Fixed and improved
+
+- Made the optional recommendation quick request explicit, expanded supported budget/device/profile/app phrases, and show which filters were applied
+- Load the software catalog before parsing a quick request so app names are not missed during screen startup
+- Keep apps selectable in Can It Run when a product OS is missing, label platform status as unverified, and infer Apple OS families from Apple product records
+- Match iOS minimum-version requirements against iPadOS versions when the app is also listed for iPadOS
+
 ## 1.4.2 - 2026-11-03
 
 ### Improved

@@ -2,7 +2,7 @@
 
 JI Product Adviser is a tablet-first Android staff tool for browsing the JI Telecom product lineup, checking whether a device can run selected software, and finding suitable products using clear, deterministic rules. It is designed to work offline and remains usable on phones.
 
-**Current documented release:** `1.4.2` (`versionCode 15`)
+**Current documented release:** `1.4.3` (`versionCode 16`)
 
 > The bundled product catalog comes from **Product-Line-up-x-July-2026.xlsx**. Prices and availability are a dated snapshot. Printers are intentionally excluded.
 

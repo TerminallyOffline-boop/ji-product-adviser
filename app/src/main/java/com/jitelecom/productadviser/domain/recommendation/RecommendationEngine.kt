@@ -138,11 +138,66 @@ class RecommendationEngine @Inject constructor(
 
     fun parseLocalQuery(text: String, knownSoftware: List<SoftwareSpec>): ParsedQuery {
         val lower = text.lowercase()
-        val budget = Regex("(?:₱|php\\s*)?(\\d{1,3})(?:k|,000)").find(lower)?.groupValues?.get(1)?.toDoubleOrNull()?.times(1000)
-        val category = ProductCategory.entries.firstOrNull { lower.contains(it.name.lowercase().replace('_', ' ')) }
-        val profile = listOf("Architecture Student", "Engineering Student", "Programmer", "Graphic Designer", "Video Editor", "Gamer", "Student")
-            .firstOrNull { lower.contains(it.lowercase().removeSuffix(" student")) }
-        val softwareIds = knownSoftware.filter { lower.contains(it.name.lowercase()) }.map { it.id }.toSet()
+        fun containsPhrase(phrase: String) = Regex("(?<![a-z0-9])${Regex.escape(phrase)}(?![a-z0-9])").containsMatchIn(lower)
+        val budgetMatch = Regex("(?:₱|php\\s*)?((?:\\d{1,3}(?:,\\d{3})+)|(?:\\d+(?:\\.\\d+)?\\s*k)|(?:\\d{4,6}))", RegexOption.IGNORE_CASE)
+            .find(lower)
+        val rawBudget = budgetMatch?.groupValues?.get(1)?.trim()?.replace(",", "")
+        val parsedNumber = rawBudget?.removeSuffix("k")?.trim()?.toDoubleOrNull()
+        val usesThousands = rawBudget?.endsWith("k") == true
+        val explicitBudgetContext = "₱" in lower || "php" in lower || usesThousands || "," in (budgetMatch?.value ?: "") ||
+            listOf("budget", "max", "under", "below", "around", "up to", "less than").any { it in lower }
+        val deviceContext = listOf("laptop", "notebook", "macbook", "chromebook", "phone", "smartphone", "iphone", "tablet", "ipad", "desktop", "computer", "pc").any(::containsPhrase)
+        val hasBudgetContext = explicitBudgetContext || (rawBudget?.count(Char::isDigit) ?: 0) >= 4 && deviceContext
+        val budget = parsedNumber?.let { if (usesThousands) it * 1000 else it }
+            ?.takeIf { hasBudgetContext && it in 1_000.0..10_000_000.0 && !(it in 1900.0..2100.0 && !explicitBudgetContext) }
+
+        val category = when {
+            listOf("smartphone", "smart phone", "mobile phone", "iphone", "android phone", "phone").any(::containsPhrase) -> ProductCategory.SMARTPHONE
+            listOf("tablet", "ipad", "galaxy tab", "redmi pad").any(::containsPhrase) -> ProductCategory.TABLET
+            listOf("laptop", "notebook", "macbook", "chromebook", "windows laptop").any(::containsPhrase) -> ProductCategory.LAPTOP
+            listOf("desktop", "pc", "computer", "imac", "mac mini").any(::containsPhrase) -> ProductCategory.DESKTOP
+            else -> ProductCategory.entries.firstOrNull { lower.contains(it.name.lowercase().replace('_', ' ')) }
+        }
+        val profileAliases = listOf(
+            "Architecture Student" to listOf("architecture", "architect"),
+            "Engineering Student" to listOf("engineering", "engineer"),
+            "Programmer" to listOf("programmer", "programming", "developer", "coding", "code"),
+            "Graphic Designer" to listOf("graphic designer", "graphic design", "designer", "photoshop"),
+            "Video Editor" to listOf("video editor", "video editing", "edit videos"),
+            "Gamer" to listOf("gamer", "gaming", "games"),
+            "Content Creator" to listOf("content creator", "streamer", "streaming", "creator"),
+            "Business Owner" to listOf("business owner", "business", "entrepreneur"),
+            "Office Worker" to listOf("office worker", "office work"),
+            "Teacher" to listOf("teacher", "teaching"),
+            "Student" to listOf("student", "school", "college")
+        )
+        val profile = profileAliases.firstOrNull { (_, aliases) -> aliases.any { it in lower } }?.first
+        val queryWords = Regex("[a-z0-9]+(?:[+#][a-z0-9]+)?").findAll(lower).map { it.value }.toSet()
+        val ignoredAppWords = setOf("adobe", "microsoft", "mobile", "desktop", "current", "workplace", "studio", "pro", "app", "software")
+        val aliases = mapOf(
+            "photoshop" to listOf("photoshop", "adobe photoshop"),
+            "premiere" to listOf("premiere", "premiere pro"),
+            "autocad" to listOf("autocad", "auto cad"),
+            "365" to listOf("microsoft 365", "office 365"),
+            "vs code" to listOf("vs code", "vscode", "visual studio code"),
+            "davinci" to listOf("davinci", "resolve"),
+            "final cut" to listOf("final cut", "final cut pro"),
+            "obs" to listOf("obs", "obs studio"),
+            "chrome" to listOf("chrome", "google chrome"),
+            "capcut" to listOf("capcut", "cap cut"),
+            "zoom" to listOf("zoom", "zoom workplace"),
+            "roblox" to listOf("roblox"),
+            "valorant" to listOf("valorant")
+        )
+        val softwareIds = knownSoftware.filter { app ->
+            val appName = app.name.lowercase()
+            val nameWords = Regex("[a-z0-9]+(?:[+#][a-z0-9]+)?").findAll(appName)
+                .map { it.value }.filter { it !in ignoredAppWords && it.length >= 3 }.toList()
+            val aliasMatches = aliases.values.any { terms ->
+                terms.any { term -> term in lower && (appName.contains(term) || (term == "vs code" && "visual studio code" in appName) || (term == "auto cad" && "autocad" in appName)) }
+            }
+            aliasMatches || nameWords.any { it in queryWords }
+        }.map { it.id }.toSet()
         return ParsedQuery(budget, category, profile, softwareIds)
     }
 }
