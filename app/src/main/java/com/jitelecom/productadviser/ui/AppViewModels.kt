@@ -47,7 +47,8 @@ private data class ProductFacets(val category: ProductCategory?, val brand: Stri
 class ProductsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: ProductRepository,
-    private val analytics: AnalyticsDao
+    private val analytics: AnalyticsDao,
+    connectivity: ConnectivityObserver
 ) : ViewModel() {
     private val initialQuery = savedStateHandle.get<String>("query").orEmpty()
     val query = MutableStateFlow(initialQuery)
@@ -57,6 +58,7 @@ class ProductsViewModel @Inject constructor(
     val brand = MutableStateFlow<String?>(null)
     val availableOnly = MutableStateFlow(false)
     val sort = MutableStateFlow(ProductSort.NAME)
+    val online = connectivity.online.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
     private val catalogProducts = repository.observeProducts().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val brands = catalogProducts.map { rows -> rows.map { it.brand }.distinct().sorted() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -506,3 +508,4 @@ class SettingsViewModel @Inject constructor(private val preferences: AppPreferen
     fun remoteUrl(value: String) = viewModelScope.launch { runCatching{preferences.setRemoteUrl(value)}.onSuccess{_message.value="Remote manifest saved."}.onFailure{_message.value=it.message?:"Invalid manifest URL."} }
     fun aboveBudget(value: Int) = viewModelScope.launch { preferences.setAboveBudgetPercent(value) }
 }
+

@@ -1,5 +1,7 @@
 package com.jitelecom.productadviser.ui.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -21,9 +24,12 @@ import com.jitelecom.productadviser.domain.model.ProductSpec
 import com.jitelecom.productadviser.ui.ProductDetailViewModel
 import com.jitelecom.productadviser.ui.ProductSort
 import com.jitelecom.productadviser.ui.ProductsViewModel
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 @Composable
 fun ProductsScreen(onProduct: (Long) -> Unit, viewModel: ProductsViewModel = hiltViewModel()) {
+    val context = LocalContext.current
     val query by viewModel.query.collectAsState()
     val products by viewModel.products.collectAsState()
     val minPrice by viewModel.minimumPrice.collectAsState()
@@ -34,6 +40,7 @@ fun ProductsScreen(onProduct: (Long) -> Unit, viewModel: ProductsViewModel = hil
     val sort by viewModel.sort.collectAsState()
     val brands by viewModel.brands.collectAsState()
     val categories by viewModel.categories.collectAsState()
+    val online by viewModel.online.collectAsState()
     val filtered = minPrice.isNotBlank() || maxPrice.isNotBlank() || category != null || brand != null || availableOnly || sort != ProductSort.NAME
 
     LazyColumn(
@@ -42,7 +49,7 @@ fun ProductsScreen(onProduct: (Long) -> Unit, viewModel: ProductsViewModel = hil
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            ScreenHeader("Browse products", "Search the offline catalog by model, specs, brand or price.")
+            ScreenHeader("Browse products", "Search your inventory or look up current models online.")
         }
         item {
             ElevatedCard(shape = MaterialTheme.shapes.medium, elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp)) {
@@ -60,6 +67,63 @@ fun ProductsScreen(onProduct: (Long) -> Unit, viewModel: ProductsViewModel = hil
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                     keyboardActions = KeyboardActions(onSearch = { viewModel.submitSearch() })
                 )
+            }
+        }
+        item {
+            ElevatedCard(
+                shape = MaterialTheme.shapes.medium,
+                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+            ) {
+                Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Language, null, tint = MaterialTheme.colorScheme.primary)
+                        Spacer(Modifier.width(8.dp))
+                        Text("Find a current model", style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+                        OnlineBadge(online)
+                    }
+                    Text(
+                        if (online) "Search the web or phone specifications using your query above."
+                        else "Connect to Wi-Fi or mobile data to search current products online.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(
+                            onClick = {
+                                val url = Uri.parse("https://www.google.com/search").buildUpon()
+                                    .appendQueryParameter("q", "$query phone tablet laptop specifications")
+                                    .build()
+                                context.startActivity(Intent(Intent.ACTION_VIEW, url))
+                            },
+                            enabled = online && query.isNotBlank(),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(Icons.Default.Public, null)
+                            Spacer(Modifier.width(6.dp))
+                            Text("Search web")
+                        }
+                        OutlinedButton(
+                            onClick = {
+                                val url = Uri.parse("https://www.gsmarena.com/results.php3").buildUpon()
+                                    .appendQueryParameter("sQuickSearch", "yes")
+                                    .appendQueryParameter("sName", query)
+                                    .build()
+                                context.startActivity(Intent(Intent.ACTION_VIEW, url))
+                            },
+                            enabled = online && query.isNotBlank(),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(Icons.Default.PhoneAndroid, null)
+                            Spacer(Modifier.width(6.dp))
+                            Text("GSMArena")
+                        }
+                    }
+                    Text(
+                        "Online listings are reference information. Confirm actual stock and price before advising.",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
         item {
@@ -213,6 +277,7 @@ fun ProductDetailScreen(
 
 @Composable
 private fun ProductHero(product: ProductSpec) {
+    val ageDays = product.lastUpdated?.let { runCatching { ChronoUnit.DAYS.between(LocalDate.parse(it), LocalDate.now()) }.getOrNull() }
     ElevatedCard(
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
@@ -228,6 +293,20 @@ private fun ProductHero(product: ProductSpec) {
                 Text(product.displayName, style = MaterialTheme.typography.titleLarge)
                 product.sku.takeIf { it.isNotBlank() }?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 Text(peso(product.effectivePrice), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+                Text(
+                    when {
+                        ageDays == null -> "Specification update date unavailable"
+                        ageDays > 90 -> "Specifications last updated $ageDays days ago"
+                        else -> "Specifications updated ${product.lastUpdated}"
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (ageDays == null || ageDays > 90) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    "Catalog price and branch stock are not live; confirm before quoting.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }

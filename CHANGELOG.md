@@ -2,6 +2,21 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.4.0 - 2026-11-03
+
+### Added
+
+- Online product lookup shortcuts from search, with Google web search and GSMArena phone lookup when the device is connected
+- Product detail freshness labels based on each specification record's last-updated date
+- A clear reminder that catalog prices and branch stock are not live and need confirmation before quoting
+
+### Changed
+
+- Updated the inventory import action to identify JSON, ZIP, and supported CSV formats
+- Kept import preview, validation, pre-import local backup, and transactional rollback in the catalog update flow
+- Clarified that CSV import uses the app's import-template columns; private Google Sheets are not connected or synchronized
+- Refined the tablet-first UI and compatibility catalog from the prior release work
+
 ## 1.3.1 - 2026-10-15
 
 ### Fixed
