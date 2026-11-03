@@ -125,7 +125,7 @@ private fun CompatibilityHero(operatingSystem: String?, wide: Boolean) {
             Spacer(Modifier.width(16.dp))
             Column(Modifier.weight(1f)) {
                 Text("Can It Run?", color = Color.White, style = if (wide) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                Text("Choose a device and see only apps made for its platform.", color = Color.White.copy(alpha = .82f), style = MaterialTheme.typography.bodyMedium)
+                Text("Choose a device and check apps for its platform. Apps with unknown OS data stay selectable and are marked for review.", color = Color.White.copy(alpha = .82f), style = MaterialTheme.typography.bodyMedium)
             }
             if (wide && operatingSystem != null) {
                 Surface(color = Color.White.copy(alpha = .14f), shape = RoundedCornerShape(50.dp)) {
@@ -163,7 +163,7 @@ private fun SetupPanel(
 
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = .65f))
             StepLabel(2, "Choose an app")
-            if (selectedProduct != null) Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Show unavailable apps",fontWeight=FontWeight.SemiBold,style=MaterialTheme.typography.bodyMedium);Text("$availableCount of $totalSoftware apps match this platform",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)};Switch(showUnavailable,onShowUnavailable)}
+            if (selectedProduct != null) Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Show unavailable apps",fontWeight=FontWeight.SemiBold,style=MaterialTheme.typography.bodyMedium);Text("$availableCount of $totalSoftware are confirmed matches; unknown OS entries stay selectable",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)};Switch(showUnavailable,onShowUnavailable)}
             if (selectedProduct == null) {
                 Text("Select a device first so the app list can match its operating system.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else if (compatibleSoftware.isEmpty()) {

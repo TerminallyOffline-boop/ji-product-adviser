@@ -117,7 +117,7 @@ class CompatibilityViewModel @Inject constructor(
     private val _alternatives = MutableStateFlow<List<CompatibilityAlternative>>(emptyList()); val alternatives = _alternatives.asStateFlow()
     val compatibleSoftware = combine(software, this.products, selectedProduct, showUnavailableApps) { apps, allProducts, productId, showUnavailable ->
         val product = allProducts.firstOrNull { it.id == productId }
-        if (product == null || showUnavailable) apps else apps.filter { it.supportsOperatingSystem(product.operatingSystemForCompatibility()) }
+        if (product == null || showUnavailable) apps else apps.filter { it.canBeCheckedOn(product.operatingSystemForCompatibility()) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val availableSoftwareCount = combine(software, this.products, selectedProduct) { apps, allProducts, productId ->
         val product = allProducts.firstOrNull { it.id == productId }
@@ -129,7 +129,7 @@ class CompatibilityViewModel @Inject constructor(
         selectedProduct.value = id
         val product = products.value.firstOrNull { it.id == id }
         val selectedApp = software.value.firstOrNull { it.id == selectedSoftware.value }
-        if (product != null && selectedApp != null && !selectedApp.supportsOperatingSystem(product.operatingSystemForCompatibility())) {
+        if (product != null && selectedApp != null && !selectedApp.canBeCheckedOn(product.operatingSystemForCompatibility())) {
             selectedSoftware.value = null
         }
         _result.value = null
@@ -146,7 +146,7 @@ class CompatibilityViewModel @Inject constructor(
         if (!value) {
             val product = products.value.firstOrNull { it.id == selectedProduct.value }
             val app = software.value.firstOrNull { it.id == selectedSoftware.value }
-            if (product != null && app != null && !app.supportsOperatingSystem(product.operatingSystemForCompatibility())) selectedSoftware.value = null
+            if (product != null && app != null && !app.canBeCheckedOn(product.operatingSystemForCompatibility())) selectedSoftware.value = null
         }
         _result.value = null
         _alternatives.value = emptyList()
@@ -191,6 +191,7 @@ class RecommendationViewModel @Inject constructor(
     val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.Eagerly, AppSettings())
     private val _results = MutableStateFlow<List<RecommendationResult>>(emptyList()); val results = _results.asStateFlow()
     private val _message = MutableStateFlow<String?>(null); val message = _message.asStateFlow()
+    private val _quickRequestMessage = MutableStateFlow<String?>(null); val quickRequestMessage = _quickRequestMessage.asStateFlow()
     private val repository = catalog
     init {
         merge(
@@ -234,19 +235,36 @@ class RecommendationViewModel @Inject constructor(
         analytics.increment("customer_profile", profile.value)
         _results.value.forEach { analytics.increment("recommended_product", it.product.displayName) }
     }
-    fun parse(text: String) {
-        val parsed = engine.parseLocalQuery(text, software.value)
+    fun parse(text: String) = viewModelScope.launch {
+        if (text.isBlank()) {
+            _quickRequestMessage.value = "Type a request first, such as ‘₱30,000 laptop for AutoCAD’."
+            return@launch
+        }
+        val knownSoftware = repository.getSoftware()
+        val parsed = engine.parseLocalQuery(text, knownSoftware)
         parsed.budget?.let { budget.value = it.toInt().toString() }
         parsed.profile?.let { profile.value = it }
-        parsed.category?.let(::setCategory)
+        parsed.category?.let { category.value = it }
         if (parsed.softwareIds.isNotEmpty()) {
-            val allowed = software.value.filter { it.appliesTo(category.value) }.map { it.id }.toSet()
+            val allowed = knownSoftware.filter { it.appliesTo(category.value) }.map { it.id }.toSet()
             selectedSoftware.value = parsed.softwareIds intersect allowed
+        }
+        val applied = buildList {
+            parsed.budget?.let { add("budget ₱${it.toInt()}") }
+            parsed.category?.let { add(it.name.lowercase().replace('_', ' ')) }
+            parsed.profile?.let(::add)
+            parsed.softwareIds.mapNotNull { id -> knownSoftware.firstOrNull { it.id == id }?.displayName }.forEach { add(it) }
+        }
+        _quickRequestMessage.value = if (applied.isEmpty()) {
+            "I couldn’t recognize a budget, device type, customer profile, or app. You can still set those below."
+        } else {
+            "Applied: ${applied.joinToString(" • ")}. Review the fields below, then tap Find Best Matches."
         }
     }
     fun reset() {
         budget.value="35000"; profile.value="Architecture Student"; category.value=ProductCategory.LAPTOP
         selectedSoftware.value=emptySet(); priorities.value=setOf("Performance"); brand.value=""; aboveBudget.value=false
+        _quickRequestMessage.value = null
     }
 
     private fun SoftwareSpec.appliesTo(category: ProductCategory): Boolean {

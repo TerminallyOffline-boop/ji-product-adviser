@@ -31,10 +31,10 @@ fun platformFamilies(value: String?): Set<PlatformFamily> {
 }
 
 fun ProductSpec.operatingSystemForCompatibility(): String? = operatingSystem?.takeIf { it.isNotBlank() } ?: when (category) {
-    ProductCategory.SMARTPHONE -> if (brand.equals("Apple", true)) "iOS (inferred)" else "Android (inferred)"
-    ProductCategory.TABLET -> if (brand.equals("Apple", true)) "iPadOS (inferred)" else "Android (inferred)"
+    ProductCategory.SMARTPHONE -> if (brand.contains("apple", true)) "iOS (inferred)" else "Android (inferred)"
+    ProductCategory.TABLET -> if (brand.contains("apple", true)) "iPadOS (inferred)" else "Android (inferred)"
     ProductCategory.LAPTOP, ProductCategory.DESKTOP -> when {
-        brand.equals("Apple", true) -> "macOS (inferred)"
+        brand.contains("apple", true) -> "macOS (inferred)"
         model.contains("Chromebook", true) -> "ChromeOS (inferred)"
         else -> null
     }
@@ -53,21 +53,38 @@ fun platformCompatibility(appPlatform: String?, operatingSystem: String?): Platf
 fun SoftwareSpec.supportsOperatingSystem(operatingSystem: String?): Boolean =
     platformCompatibility(platform, operatingSystem) == PlatformCompatibility.SUPPORTED
 
+/** Keeps platform-compatible and OS-unknown apps selectable; only a known mismatch is hidden. */
+fun SoftwareSpec.canBeCheckedOn(operatingSystem: String?): Boolean =
+    platformCompatibility(platform, operatingSystem) != PlatformCompatibility.NOT_SUPPORTED
+
 fun operatingSystemCompatibility(actual: String, required: String): OperatingSystemCompatibility {
     val actualFamilies = platformFamilies(actual)
     val requiredFamilies = platformFamilies(required)
     if (actualFamilies.isNotEmpty() && requiredFamilies.isNotEmpty()) {
-        val sharedFamilies = actualFamilies.intersect(requiredFamilies)
+        val sharedFamilies = actualFamilies.intersect(requiredFamilies).ifEmpty {
+            // iOS app requirements are commonly published under iOS even when the same app
+            // supports iPadOS. Preserve family compatibility, while still checking a version
+            // when the requirement explicitly provides one.
+            if (PlatformFamily.IPADOS in actualFamilies && PlatformFamily.IOS in requiredFamilies) setOf(PlatformFamily.IOS) else emptySet()
+        }
         if (sharedFamilies.isEmpty()) return OperatingSystemCompatibility.NOT_SUPPORTED
         var needsVersion = false
         sharedFamilies.forEach { family ->
             val requiredVersion = operatingSystemVersion(required, family)
             if (requiredVersion == null) return OperatingSystemCompatibility.MATCH
             needsVersion = true
-            val actualVersion = operatingSystemVersion(actual, family) ?: return@forEach
+            val actualVersionFamily = when {
+                family == PlatformFamily.IOS && PlatformFamily.IPADOS in actualFamilies -> PlatformFamily.IPADOS
+                family == PlatformFamily.IPADOS && PlatformFamily.IOS in actualFamilies -> PlatformFamily.IOS
+                else -> family
+            }
+            val actualVersion = operatingSystemVersion(actual, actualVersionFamily) ?: return@forEach
             if (compareVersionParts(actualVersion, requiredVersion) >= 0) return OperatingSystemCompatibility.MATCH
         }
-        return if (needsVersion && sharedFamilies.none { operatingSystemVersion(actual, it) != null }) {
+        return if (needsVersion && sharedFamilies.none { family ->
+                val actualVersionFamily = if (family == PlatformFamily.IOS && PlatformFamily.IPADOS in actualFamilies) PlatformFamily.IPADOS else family
+                operatingSystemVersion(actual, actualVersionFamily) != null
+            }) {
             OperatingSystemCompatibility.UNKNOWN
         } else {
             OperatingSystemCompatibility.NOT_SUPPORTED
@@ -109,3 +126,4 @@ private fun compareVersionParts(actual: List<Int>, required: List<Int>): Int {
 
 fun platformLabel(value: String?): String = platformFamilies(value).joinToString(" / ") { it.displayName }
     .ifBlank { value?.substringBefore(" (")?.takeIf { it.isNotBlank() } ?: "Unknown OS" }
+
