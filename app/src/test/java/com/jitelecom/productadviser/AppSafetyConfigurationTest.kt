@@ -13,6 +13,12 @@ class AppSafetyConfigurationTest {
         assertThat(destinationSelected("recommend", "products")).isFalse()
     }
 
+    @Test fun queryArgumentsDoNotBreakTopLevelNavigationSelection() {
+        assertThat(navigationRoute("compatibility?productId={productId}")).isEqualTo("compatibility")
+        assertThat(navigationRoute("products?query={query}")).isEqualTo("products")
+        assertThat(navigationRoute(null)).isEmpty()
+    }
+
     @Test fun androidBackupRulesExcludeTheDataStorePreferencesFile() {
         val backup = locate("src/main/res/xml/backup_rules.xml").readText()
         val extraction = locate("src/main/res/xml/data_extraction_rules.xml").readText()
@@ -24,3 +30,4 @@ class AppSafetyConfigurationTest {
     private fun locate(relative: String): File = listOf(File(relative), File("app/$relative"))
         .firstOrNull(File::isFile) ?: error("Could not locate $relative")
 }
+
