@@ -16,12 +16,79 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlin.math.roundToInt
 import com.jitelecom.productadviser.domain.model.*
 import com.jitelecom.productadviser.ui.CompareViewModel
 import com.jitelecom.productadviser.ui.SoftwareViewModel
 
 @Composable
-fun CompareScreen(onProduct:(Long)->Unit,viewModel:CompareViewModel=hiltViewModel()){
+fun CompareScreen(onProduct:(Long)->Unit,viewModel:CompareViewModel=hiltViewModel()) {
+    val products by viewModel.products.collectAsState()
+    val selected by viewModel.selected.collectAsState()
+    val chosen=selected.mapNotNull{id->products.firstOrNull{it.id==id}}
+    val software by viewModel.software.collectAsState()
+    val softwareId by viewModel.selectedSoftware.collectAsState()
+    val compatibility by viewModel.compatibility.collectAsState()
+    val message by viewModel.message.collectAsState()
+    var query by remember{mutableStateOf("")}
+    var category by remember{mutableStateOf<ProductCategory?>(null)}
+    var differencesOnly by remember{mutableStateOf(true)}
+    var showingResults by remember(selected.size>=2){mutableStateOf(false)}
+    val categories=remember(products){products.map{it.category}.distinct().sortedBy{it.name}}
+    val filtered=remember(products,query,category,selected){products.filter{it.id !in selected&&(category==null||it.category==category)&&(query.isBlank()||it.displayName.contains(query,true)||it.sku.contains(query,true)||it.processor?.displayName?.contains(query,true)==true)}}
+
+    if(showingResults&&chosen.size>=2){
+        Column(Modifier.fillMaxSize().padding(horizontal=20.dp,vertical=14.dp),verticalArrangement=Arrangement.spacedBy(9.dp)){
+            ScreenHeader("Your comparison","${chosen.size} ${chosen.first().category.name.lowercase().replace('_',' ')} products")
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                OutlinedButton(onClick={showingResults=false},modifier=Modifier.weight(1f)){Icon(Icons.Default.Edit,null);Spacer(Modifier.width(5.dp));Text("Change devices")}
+                OutlinedButton(onClick={viewModel.clear();showingResults=false},modifier=Modifier.weight(1f)){Icon(Icons.Default.DeleteOutline,null);Spacer(Modifier.width(5.dp));Text("Start over")}
+            }
+            SearchableSelector("Software compatibility (optional)",software,software.firstOrNull{it.id==softwareId},{it.displayName},Modifier.fillMaxWidth()){viewModel.selectedSoftware.value=it?.id}
+            Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text("Show differences only",Modifier.weight(1f),style=MaterialTheme.typography.labelLarge);Switch(differencesOnly,{differencesOnly=it})}
+            LazyColumn(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(9.dp),contentPadding=PaddingValues(bottom=16.dp)){
+                item{ComparisonProductStrip(chosen,onProduct)}
+                item{NoticeCard("Percentages compare listed capacity, price, weight, and display values. CPU/GPU use stored performance tiers; tier differences are not real-world speed or benchmark claims.")}
+                items(compareMetrics(chosen),key={it.label}){metric->if(!differencesOnly||metric.values.map{it.value}.distinct().size>1)ComparisonMetricCard(metric)}
+                if(compatibility.isNotEmpty())item{CompatibilityComparisonCard(chosen,compatibility)}
+            }
+        }
+    }else{
+        Column(Modifier.fillMaxSize().padding(horizontal=20.dp,vertical=14.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
+            ScreenHeader("Compare Products","Choose devices, then open the comparison directly")
+            if(chosen.isNotEmpty()){
+                Text("Selected (${chosen.size}/4)",style=MaterialTheme.typography.labelLarge,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                LazyRow(horizontalArrangement=Arrangement.spacedBy(7.dp)){items(chosen,key={it.id}){p->InputChip(selected=true,onClick={viewModel.toggle(p.id)},label={Text(p.displayName,maxLines=1)},trailingIcon={Icon(Icons.Default.Close,null,Modifier.size(16.dp))})}}
+            }
+            OutlinedTextField(query,{query=it},label={Text("Search products")},leadingIcon={Icon(Icons.Default.Search,null)},trailingIcon={if(query.isNotBlank())IconButton(onClick={query=""}){Icon(Icons.Default.Clear,"Clear")}},singleLine=true,modifier=Modifier.fillMaxWidth())
+            LazyRow(horizontalArrangement=Arrangement.spacedBy(7.dp)){item{FilterChip(selected=category==null,onClick={category=null},label={Text("All")})};items(categories){type->FilterChip(selected=category==type,onClick={category=type},label={Text(type.name.lowercase().replace('_',' ').replaceFirstChar(Char::uppercase))})}}
+            message?.let{Text(it,color=MaterialTheme.colorScheme.error,style=MaterialTheme.typography.bodySmall)}
+            LazyColumn(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(7.dp),contentPadding=PaddingValues(bottom=8.dp)){
+                items(filtered,key={it.id}){p->
+                    val checked=p.id in selected
+                    OutlinedCard(onClick={viewModel.toggle(p.id)},colors=CardDefaults.outlinedCardColors(containerColor=if(checked)MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface)){
+                        Row(Modifier.fillMaxWidth().padding(horizontal=11.dp,vertical=8.dp),verticalAlignment=Alignment.CenterVertically){
+                            Checkbox(checked=checked,onCheckedChange={viewModel.toggle(p.id)})
+                            Column(Modifier.weight(1f)){Text(p.displayName,fontWeight=FontWeight.SemiBold,maxLines=1);Text("${peso(p.effectivePrice)} • ${p.processor?.model?:"CPU not listed"} • ${p.ramGB?.let{"$it GB RAM"}?:"RAM not listed"}",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant,maxLines=2)}
+                            if(checked)Icon(Icons.Default.CheckCircle,null,tint=MaterialTheme.colorScheme.primary)
+                        }
+                    }
+                }
+                if(filtered.isEmpty())item{EmptyState(Icons.Default.SearchOff,"No products found","Try another search or category.")}
+            }
+            Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surfaceContainerHigh)){
+                Row(Modifier.fillMaxWidth().padding(10.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                    Column(Modifier.weight(1f)){Text(if(chosen.size<2)"Select ${2-chosen.size} more" else "${chosen.size} ready to compare",fontWeight=FontWeight.SemiBold);Text("Tap a product to add or remove it",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+                    if(chosen.isNotEmpty())TextButton(onClick=viewModel::clear){Text("Clear")}
+                    Button(onClick={showingResults=true},enabled=chosen.size>=2){Icon(Icons.AutoMirrored.Filled.CompareArrows,null);Spacer(Modifier.width(5.dp));Text("Compare")}
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CompareScreenLegacy(onProduct:(Long)->Unit,viewModel:CompareViewModel=hiltViewModel()){
     val products by viewModel.products.collectAsState();val selected by viewModel.selected.collectAsState();val chosen=selected.mapNotNull{id->products.firstOrNull{it.id==id}}
     val software by viewModel.software.collectAsState();val softwareId by viewModel.selectedSoftware.collectAsState();val compatibility by viewModel.compatibility.collectAsState();val message by viewModel.message.collectAsState();var query by remember{mutableStateOf("")};var category by remember{mutableStateOf<ProductCategory?>(null)};var differencesOnly by remember{mutableStateOf(true)}
     val categories=remember(products){products.map{it.category}.distinct().sortedBy{it.name}}
@@ -66,6 +133,65 @@ private fun ComparisonTable(products:List<ProductSpec>,compatibility:Map<Long,Co
 }
 @Composable private fun CompareRow(label:String,values:List<String>,header:Boolean=false){Row(Modifier.padding(vertical=3.dp),verticalAlignment=Alignment.CenterVertically){Text(label,Modifier.width(115.dp),fontWeight=FontWeight.Bold);values.forEach{value->Surface(Modifier.width(190.dp).padding(horizontal=4.dp),color=if(header)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,shape=MaterialTheme.shapes.small){Text(value,Modifier.padding(10.dp),style=if(header)MaterialTheme.typography.labelLarge else MaterialTheme.typography.bodySmall,fontWeight=if(header)FontWeight.Bold else FontWeight.Normal)}}}}
 
+private data class CompareMetricValue(val productName:String,val value:Double?,val formatted:String)
+private data class CompareMetric(val label:String,val values:List<CompareMetricValue>,val higherIsBetter:Boolean,val tierBased:Boolean=false)
+
+private fun compareMetrics(products:List<ProductSpec>):List<CompareMetric> = listOf(
+    CompareMetric("CPU tier score",products.map{CompareMetricValue(it.displayName,it.processor?.performanceTier?.toDouble(),it.processor?.performanceTier?.let{"Tier $it / 7"}?:"Not listed")},true,true),
+    CompareMetric("Graphics tier score",products.map{CompareMetricValue(it.displayName,it.gpu?.performanceTier?.toDouble(),it.gpu?.performanceTier?.let{"Tier $it / 7"}?:"Not listed")},true,true),
+    CompareMetric("RAM",products.map{CompareMetricValue(it.displayName,it.ramGB?.toDouble(),it.ramGB?.let{"$it GB"}?:"Not listed")},true),
+    CompareMetric("Storage",products.map{CompareMetricValue(it.displayName,it.storageGB?.toDouble(),it.storageGB?.let{"$it GB"}?:"Not listed")},true),
+    CompareMetric("Display refresh",products.map{CompareMetricValue(it.displayName,it.displayRefreshRate?.toDouble(),it.displayRefreshRate?.let{"$it Hz"}?:"Not listed")},true),
+    CompareMetric("Battery",products.map{CompareMetricValue(it.displayName,it.batteryCapacityWh,it.batteryCapacityWh?.let{"${it} Wh"}?:"Not listed")},true),
+    CompareMetric("Price",products.map{CompareMetricValue(it.displayName,it.effectivePrice,peso(it.effectivePrice))},false),
+    CompareMetric("Weight",products.map{CompareMetricValue(it.displayName,it.weightKg,it.weightKg?.let{"${it} kg"}?:"Not listed")},false)
+)
+
+internal fun comparisonAdvantagePercent(best:Double,worst:Double,higherIsBetter:Boolean):Int?{
+    if(best<=0||worst<=0||best==worst)return null
+    val ratio=if(higherIsBetter)(best-worst)/worst else (worst-best)/worst
+    return (ratio*100).roundToInt().coerceAtLeast(0)
+}
+
+@Composable private fun ComparisonProductStrip(products:List<ProductSpec>,onProduct:(Long)->Unit){
+    LazyRow(horizontalArrangement=Arrangement.spacedBy(8.dp)){
+        items(products,key={it.id}){p->ElevatedCard(onClick={onProduct(p.id)},modifier=Modifier.width(220.dp)){Column(Modifier.padding(13.dp),verticalArrangement=Arrangement.spacedBy(5.dp)){Text(p.displayName,fontWeight=FontWeight.Bold,maxLines=2);Text(peso(p.effectivePrice),style=MaterialTheme.typography.titleMedium,color=MaterialTheme.colorScheme.primary);Text("${p.processor?.model?:"CPU not listed"} • ${p.ramGB?.let{"$it GB RAM"}?:"RAM unknown"}",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant);Text("View full details",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.primary)}}}
+    }
+}
+
+@Composable private fun ComparisonMetricCard(metric:CompareMetric){
+    val known=metric.values.mapNotNull{it.value}
+    val best=if(known.isEmpty())null else if(metric.higherIsBetter)known.maxOrNull() else known.minOrNull()
+    val worst=if(known.isEmpty())null else if(metric.higherIsBetter)known.minOrNull() else known.maxOrNull()
+    ElevatedCard{Column(Modifier.fillMaxWidth().padding(13.dp),verticalArrangement=Arrangement.spacedBy(7.dp)){
+        Row(verticalAlignment=Alignment.CenterVertically){
+            Text(metric.label,fontWeight=FontWeight.Bold,modifier=Modifier.weight(1f))
+            if(best!=null&&worst!=null&&best!=worst){
+                val percent=comparisonAdvantagePercent(best,worst,metric.higherIsBetter)
+                Text(if(metric.tierBased)"${percent}% higher tier score" else "$percent% ${if(metric.higherIsBetter)"difference" else "lower"}",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.primary,fontWeight=FontWeight.Bold)
+            }
+        }
+        metric.values.forEach{entry->
+            val isBest=entry.value!=null&&entry.value==best
+            val isWorst=entry.value!=null&&entry.value==worst
+            val advantage=if(isBest&&best!=null&&worst!=null&&best!=worst)comparisonAdvantagePercent(best,worst,metric.higherIsBetter)else null
+            Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
+                Text(entry.productName,Modifier.weight(1f),style=MaterialTheme.typography.bodySmall,maxLines=1)
+                Text(entry.formatted,style=MaterialTheme.typography.bodyMedium,fontWeight=if(isBest)FontWeight.Bold else FontWeight.Normal)
+                Spacer(Modifier.width(8.dp))
+                Text(when{entry.value==null->"";best==worst->"Tied";isBest->"+${advantage}%${if(metric.tierBased)" score" else ""}";isWorst->"Lowest";else->""},style=MaterialTheme.typography.labelSmall,color=if(isBest)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+    }}
+}
+
+@Composable private fun CompatibilityComparisonCard(products:List<ProductSpec>,compatibility:Map<Long,CompatibilityResult>){
+    ElevatedCard{Column(Modifier.fillMaxWidth().padding(13.dp),verticalArrangement=Arrangement.spacedBy(7.dp)){
+        Text("Selected software compatibility",fontWeight=FontWeight.Bold)
+        products.forEach{p->val status=compatibility[p.id]?.status?.name?.replace('_',' ')?:"NOT CHECKED";Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text(p.displayName,Modifier.weight(1f),style=MaterialTheme.typography.bodySmall);Text(status,style=MaterialTheme.typography.labelSmall,fontWeight=FontWeight.Bold,color=MaterialTheme.colorScheme.primary)}}
+    }}
+}
+
 @Composable
 fun SoftwareScreen(viewModel:SoftwareViewModel=hiltViewModel()){
     val software by viewModel.software.collectAsState();var query by remember{mutableStateOf("")};var category by remember{mutableStateOf<String?>(null)}
@@ -102,3 +228,4 @@ fun MoreScreen(onNavigate:(String)->Unit){
         items(menuItems){(info,route)->ElevatedCard(onClick={onNavigate(route)}){Row(Modifier.fillMaxWidth().padding(16.dp),verticalAlignment=Alignment.CenterVertically){Icon(info.third,null,tint=MaterialTheme.colorScheme.primary);Spacer(Modifier.width(14.dp));Column(Modifier.weight(1f)){Text(info.first,fontWeight=FontWeight.Bold);Text(info.second,style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)};Icon(Icons.Default.ChevronRight,null)}}}
     }
 }
+
