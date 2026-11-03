@@ -47,17 +47,20 @@ fun AdviserApp(appViewModel: AppViewModel = hiltViewModel()) {
     val nav = rememberNavController()
     val backStack by nav.currentBackStackEntryAsState()
     val route = backStack?.destination?.route.orEmpty()
-    val baseRoute = route.substringBefore('?')
+    val baseRoute = navigationRoute(route)
     val online by appViewModel.online.collectAsState()
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val tablet = maxWidth >= 600.dp
         val navigate: (String) -> Unit = { target ->
-            if (baseRoute != target) {
+            if (target in primaryDestinations.map(Destination::route) && baseRoute != target) {
                 nav.navigate(target) {
-                    popUpTo(nav.graph.findStartDestination().id) { saveState = true }
+                    // Main sections are peers. Always return to the graph root first so
+                    // switching tabs cannot leave a stale feature destination on top.
+                    popUpTo(nav.graph.findStartDestination().id) { saveState = false }
                     launchSingleTop = true
-                    restoreState = true
                 }
+            } else if (target !in primaryDestinations.map(Destination::route)) {
+                nav.navigate(target) { launchSingleTop = true }
             }
         }
         if (tablet) {
@@ -147,4 +150,6 @@ internal fun destinationSelected(current: String, destination: String): Boolean 
     "more" -> current in setOf("more", "compare", "software", "database", "settings", "admin")
     else -> current == destination
 }
+
+internal fun navigationRoute(route: String?): String = route.orEmpty().substringBefore('?')
 

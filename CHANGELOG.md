@@ -2,6 +2,14 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.4.1 - 2026-11-03
+
+### Fixed
+
+- Made primary navigation switches clear the active section stack before opening Home, Products, Can It Run, Recommend, or More, preventing a restored/stale feature page from intercepting tab changes
+- Kept secondary More destinations as single-top routes so repeat taps do not stack duplicate pages
+- Added route normalization coverage for query-parameter routes
+
 ## 1.4.0 - 2026-11-03
 
 ### Added
