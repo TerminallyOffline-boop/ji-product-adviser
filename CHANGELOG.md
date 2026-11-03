@@ -2,6 +2,15 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.4.2 - 2026-11-03
+
+### Improved
+
+- Reworked Compare Products into a device-picking step with selected-device chips and an always-visible Compare action, so staff no longer scroll past the entire catalog to reach results
+- Added a focused comparison view with quick device-detail links, optional software compatibility, and difference-only filtering
+- Added relative percentage comparisons for RAM, storage, display refresh, battery, price, and weight, plus CPU/GPU tier-score comparisons
+- Clearly labels CPU/GPU tier percentages as tier-score differences, not real-world speed or benchmark results
+
 ## 1.4.1 - 2026-11-03
 
 ### Fixed
