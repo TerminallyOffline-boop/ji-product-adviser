@@ -60,7 +60,7 @@ class BundledCatalogAssetTest {
         val processorIds = specifications.processors.map { it.id }.toSet()
         val gpuIds = specifications.gpus.map { it.id }.toSet()
 
-        assertThat(specifications.version).isEqualTo("2026.10.15.2")
+        assertThat(specifications.version).isEqualTo("2026.11.03.1")
         assertThat(assignedSkus).hasSize(174)
         assertThat(assignedSkus.distinct()).hasSize(assignedSkus.size)
         assertThat(catalogSkus).containsAtLeastElementsIn(assignedSkus)
