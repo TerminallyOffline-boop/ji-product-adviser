@@ -2,6 +2,15 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.4.5 - 2026-11-04
+
+### Improved
+
+- Reorganized Recommend around the essential choices: device type, budget, and main use
+- Moved brand, app compatibility, above-budget options, and scoring priorities into optional preferences
+- Made the top Find My Matches action apply a quick request and run the search immediately
+- Reset now clears stale recommendation results
+
 ## 1.4.4 - 2026-11-03
 
 ### Fixed and improved
@@ -265,4 +274,3 @@ This file records the major development milestones of JI Product Adviser. Dates 
 - Catalog price and availability data are snapshots, not live branch inventory.
 - Compatibility is an evidence-based guide and is not a performance guarantee.
 - New or changed specifications should retain their source and verification status.
-

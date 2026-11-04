@@ -19,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import javax.inject.Inject
 
 @HiltViewModel
@@ -193,11 +194,12 @@ class RecommendationViewModel @Inject constructor(
     private val _message = MutableStateFlow<String?>(null); val message = _message.asStateFlow()
     private val _quickRequestMessage = MutableStateFlow<String?>(null); val quickRequestMessage = _quickRequestMessage.asStateFlow()
     private val repository = catalog
+    @Volatile private var applyingQuickRequest = false
     init {
         merge(
             budget.drop(1).map { Unit }, profile.drop(1).map { Unit }, category.drop(1).map { Unit },
             selectedSoftware.drop(1).map { Unit }, priorities.drop(1).map { Unit }, brand.drop(1).map { Unit }, aboveBudget.drop(1).map { Unit }
-        ).onEach { _results.value=emptyList(); _message.value=null }.launchIn(viewModelScope)
+        ).onEach { if (!applyingQuickRequest) { _results.value=emptyList(); _message.value=null } }.launchIn(viewModelScope)
     }
     fun toggleSoftware(id: Long) { selectedSoftware.update { if (id in it) it - id else it + id } }
     fun setCategory(value: ProductCategory) {
@@ -206,33 +208,79 @@ class RecommendationViewModel @Inject constructor(
         selectedSoftware.update { it intersect allowed }
     }
     fun recommend() = viewModelScope.launch {
-        val amount = budget.value.replace(",", "").toDoubleOrNull()
+        runRecommendation(budget.value, category.value, profile.value, selectedSoftware.value)
+    }
+
+    /** Applies any details recognized in a one-line request, then immediately searches. */
+    fun recommendFromRequest(text: String) = viewModelScope.launch {
+        if (text.isBlank()) {
+            _quickRequestMessage.value = "Type a request first, or use the choices below."
+            _results.value = emptyList()
+            _message.value = null
+            return@launch
+        }
+        applyingQuickRequest = true
+        try {
+            val knownSoftware = repository.getSoftware()
+            val parsed = engine.parseLocalQuery(text, knownSoftware)
+            val targetCategory = parsed.category ?: category.value
+            val allowedSoftware = knownSoftware.filter { it.appliesTo(targetCategory) }.map { it.id }.toSet()
+            val targetSoftware = if (parsed.softwareIds.isNotEmpty()) parsed.softwareIds intersect allowedSoftware
+                else selectedSoftware.value intersect allowedSoftware
+            val targetBudget = parsed.budget?.toInt()?.toString() ?: budget.value
+            val targetProfile = parsed.profile ?: profile.value
+
+            budget.value = targetBudget
+            category.value = targetCategory
+            profile.value = targetProfile
+            selectedSoftware.value = targetSoftware
+            // Let the input-change collector invalidate the previous result before this search writes its result.
+            yield()
+            val applied = buildList {
+                parsed.budget?.let { add("₱${it.toInt()} budget") }
+                parsed.category?.let { add(it.name.lowercase().replace('_', ' ')) }
+                parsed.profile?.let(::add)
+                parsed.softwareIds.mapNotNull { id -> knownSoftware.firstOrNull { it.id == id }?.displayName }.forEach(::add)
+            }
+            _quickRequestMessage.value = if (applied.isEmpty()) {
+                "No details were recognized; searching with the selections below."
+            } else {
+                "Searching with ${applied.joinToString(" • ")}."
+            }
+            runRecommendation(targetBudget, targetCategory, targetProfile, targetSoftware)
+        } finally {
+            applyingQuickRequest = false
+        }
+    }
+
+    private suspend fun runRecommendation(budgetText: String, selectedCategory: ProductCategory, selectedProfile: String, selectedAppIds: Set<Long>) {
+        val amount = budgetText.replace(",", "").toDoubleOrNull()
         if (amount == null || amount <= 0) {
             _results.value = emptyList()
             _message.value = "Enter a valid maximum budget first."
-            return@launch
+            return
         }
         val availableProducts = productRepository.getProducts()
         if (availableProducts.isEmpty()) {
             _results.value = emptyList()
             _message.value = "No products are available in the local catalog yet."
-            return@launch
+            return
         }
-        val selectedApps = selectedSoftware.value intersect software.value.filter { it.appliesTo(category.value) }.map { it.id }.toSet()
+        val selectedApps = selectedAppIds intersect software.value.filter { it.appliesTo(selectedCategory) }.map { it.id }.toSet()
         val requirements = selectedApps.associateWith { repository.getRequirements(it) }
         val availableSoftware = repository.getSoftware().associateBy { it.id }
         val request = CustomerRequest(
-            profile.value, category.value, amount, selectedApps, priorities.value,
+            selectedProfile, selectedCategory, amount, selectedApps, priorities.value,
             brand.value.trim().takeIf(String::isNotBlank), aboveBudget.value, settings.value.allowAboveBudgetPercent
         )
         _results.value = engine.recommend(request, availableProducts, availableSoftware, requirements)
         _message.value = if (_results.value.isEmpty()) {
-            "No ${category.value.name.lowercase()} matches were found within this budget and brand filter."
+            "No ${selectedCategory.name.lowercase()} matches were found within this budget and brand filter."
         } else {
             "${_results.value.size} best match${if (_results.value.size == 1) "" else "es"} found."
         }
         analytics.increment("budget_range", "₱${(amount / 5000).toInt() * 5}k range")
-        analytics.increment("customer_profile", profile.value)
+        analytics.increment("customer_profile", selectedProfile)
         _results.value.forEach { analytics.increment("recommended_product", it.product.displayName) }
     }
     fun parse(text: String) = viewModelScope.launch {
@@ -264,6 +312,7 @@ class RecommendationViewModel @Inject constructor(
     fun reset() {
         budget.value="35000"; profile.value="Architecture Student"; category.value=ProductCategory.LAPTOP
         selectedSoftware.value=emptySet(); priorities.value=setOf("Performance"); brand.value=""; aboveBudget.value=false
+        _results.value=emptyList(); _message.value=null
         _quickRequestMessage.value = null
     }
 
@@ -526,4 +575,3 @@ class SettingsViewModel @Inject constructor(private val preferences: AppPreferen
     fun remoteUrl(value: String) = viewModelScope.launch { runCatching{preferences.setRemoteUrl(value)}.onSuccess{_message.value="Remote manifest saved."}.onFailure{_message.value=it.message?:"Invalid manifest URL."} }
     fun aboveBudget(value: Int) = viewModelScope.launch { preferences.setAboveBudgetPercent(value) }
 }
-

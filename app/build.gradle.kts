@@ -14,8 +14,8 @@ android {
         applicationId = "com.jitelecom.productadviser"
         minSdk = 28
         targetSdk = 36
-        versionCode = 17
-        versionName = "1.4.4"
+        versionCode = 18
+        versionName = "1.4.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -94,4 +94,3 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 }
-
