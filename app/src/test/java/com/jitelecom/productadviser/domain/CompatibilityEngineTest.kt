@@ -163,10 +163,11 @@ class CompatibilityEngineTest {
         assertThat(result.components.first{it.component=="Operating system"}.status).isEqualTo(ComponentStatus.BELOW_MINIMUM)
     }
 
-    @Test fun windowsWithoutVersionNeedsVerificationForWindows11Requirement(){
+    @Test fun windowsWithoutVersionMatchesWindowsFamilyWithVersionCaveat(){
         val result=engine.evaluate(product(os="Windows"),software,listOf(min(),rec()))
-        assertThat(result.status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)
-        assertThat(result.components.first{it.component=="Operating system"}.status).isEqualTo(ComponentStatus.UNKNOWN)
+        assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_MINIMUM)
+        assertThat(result.components.first{it.component=="Operating system"}.status).isEqualTo(ComponentStatus.MEETS_MINIMUM)
+        assertThat(result.components.first{it.component=="Operating system"}.explanation).contains("exact installed OS version")
     }
 
     @Test fun androidVersionComparisonIsNumeric(){
