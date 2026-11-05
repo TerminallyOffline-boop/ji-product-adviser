@@ -206,7 +206,7 @@ private fun ProductFilters(
             Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text("In-stock only", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-                    Text("Hide locally marked unavailable products", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Hide products with current unavailable or stale stock data", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Switch(checked = availableOnly, onCheckedChange = onAvailableOnly)
             }
@@ -277,7 +277,11 @@ fun ProductDetailScreen(
 
 @Composable
 private fun ProductHero(product: ProductSpec) {
-    val ageDays = product.lastUpdated?.let { runCatching { ChronoUnit.DAYS.between(LocalDate.parse(it), LocalDate.now()) }.getOrNull() }
+    val ageDays = product.lastUpdated?.let { value ->
+        runCatching { ChronoUnit.DAYS.between(LocalDate.parse(value), LocalDate.now()) }.getOrNull()
+            ?: runCatching { ChronoUnit.DAYS.between(java.time.YearMonth.parse(value).atEndOfMonth(), LocalDate.now()) }.getOrNull()
+    }
+    val stockStatus = product.currentAvailability()
     ElevatedCard(
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
@@ -303,10 +307,11 @@ private fun ProductHero(product: ProductSpec) {
                     color = if (ageDays == null || ageDays > 90) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    "Catalog price and branch stock are not live; confirm before quoting.",
+                    "Stock: ${stockStatus.name.lowercase().replace('_', ' ')}${product.availabilityUpdatedAt?.let { " • checked $it" } ?: " • no recent check"}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = if (stockStatus == com.jitelecom.productadviser.domain.model.AvailabilityStatus.UNKNOWN) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                Text("Catalog price is not live; confirm before quoting.", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }

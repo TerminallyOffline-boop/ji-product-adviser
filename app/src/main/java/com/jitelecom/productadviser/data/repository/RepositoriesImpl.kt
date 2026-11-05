@@ -43,7 +43,8 @@ fun ProductWithHardware.toDomain() = ProductSpec(
     operatingSystem = product.operatingSystem, architecture = product.architecture, batteryCapacityWh = product.batteryCapacityWh,
     weightKg = product.weightKg, supportedFeatures = product.supportedFeatures, notes = product.notes, sourceName = product.sourceName,
     sourceUrl = product.sourceUrl, verifiedDate = product.verifiedDate, lastUpdated = product.lastUpdated,
-    verifiedBy = product.verifiedBy, verificationStatus = product.verificationStatus, archived = product.archived
+    verifiedBy = product.verifiedBy, verificationStatus = product.verificationStatus, archived = product.archived,
+    availabilityUpdatedAt = product.availabilityUpdatedAt
 )
 
 fun ProcessorEntity.toDomain() = ProcessorSpec(id, manufacturer, family, model, generation, architecture, coreCount, threadCount, baseClockGhz, boostClockGhz, integratedGpu, performanceTier, workloadTier, notes, sourceUrl)
@@ -56,5 +57,5 @@ fun ProductSpec.toEntity() = ProductEntity(
     availabilityStatus, processor?.id, gpu?.id, ramGB, ramType, ramUpgradeable, maximumRamGB, storageGB, storageType,
     additionalStorageSupport, displaySize, displayResolution, displayRefreshRate, operatingSystem, architecture,
     batteryCapacityWh, weightKg, supportedFeatures, notes, sourceName, sourceUrl, verifiedDate, lastUpdated, verifiedBy,
-    verificationStatus, archived
+    verificationStatus, archived, availabilityUpdatedAt
 )

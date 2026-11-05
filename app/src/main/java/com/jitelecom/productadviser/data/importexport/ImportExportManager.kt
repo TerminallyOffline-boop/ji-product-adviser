@@ -15,7 +15,10 @@ import java.io.ByteArrayInputStream
 import java.io.File
 import java.security.MessageDigest
 import java.time.Instant
+import java.io.ByteArrayOutputStream
 import java.util.zip.ZipInputStream
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -24,6 +27,7 @@ class ImportExportManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val db: AppDatabase
 ) {
+    data class SafetyBackupInfo(val fileName: String, val lastModified: Long, val sizeBytes: Long)
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     private val packageAdapter = moshi.adapter(DatabasePackage::class.java).indent("  ")
 
@@ -50,6 +54,22 @@ class ImportExportManager @Inject constructor(
             ?.sortedByDescending(File::lastModified)?.drop(5)?.forEach(File::delete)
         return file
     }
+
+    fun listSafetyBackups(): List<SafetyBackupInfo> = safetyBackupDirectory().listFiles { candidate ->
+        candidate.isFile && candidate.name.matches(Regex("before_import_\\d+\\.json"))
+    }.orEmpty().sortedByDescending(File::lastModified).map { SafetyBackupInfo(it.name, it.lastModified(), it.length()) }
+
+    suspend fun restoreSafetyBackup(fileName: String): ImportResult {
+        require(fileName.matches(Regex("before_import_\\d+\\.json"))) { "Choose a valid local safety backup." }
+        val directory = safetyBackupDirectory().canonicalFile
+        val backup = File(directory, fileName).canonicalFile
+        require(backup.parentFile == directory && backup.isFile) { "The selected safety backup was not found." }
+        require(backup.length() <= MAX_IMPORT_BYTES) { "The safety backup is larger than 25 MB." }
+        val bytes = withContext(Dispatchers.IO) { backup.readBytes() }
+        return importPackage(bytes, backup.name)
+    }
+
+    private fun safetyBackupDirectory() = File(context.filesDir, "database_backups").apply { mkdirs() }
 
     fun preview(bytes: ByteArray, fileName: String): Pair<DatabasePackage?, ImportPreview> = try {
         val pkg = when {
@@ -118,7 +138,7 @@ class ImportExportManager @Inject constructor(
                 cpu == null || cpu !in processorIds -> { errors += ImportIssue(record, "Processor ID does not exist."); null }
                 gpu == null || gpu !in gpuIds -> { errors += ImportIssue(record, "GPU ID does not exist."); null }
                 category == null -> { errors += ImportIssue(record, "Category is invalid."); null }
-                else -> ProductEntity(sku=sku, brand=brand, model=model, category=category, price=price, processorId=cpu, gpuId=gpu, ramGB=ram, storageGB=storage)
+                else -> ProductEntity(sku=sku, brand=brand, model=model, category=category, price=price, processorId=cpu, gpuId=gpu, ramGB=ram, storageGB=storage, availabilityUpdatedAt=row["availabilityUpdatedAt"]?.trim()?.takeIf(String::isNotBlank))
             }
         }
         val duplicates = products.groupBy { it.sku.lowercase() }.filterValues { it.size > 1 }.keys
@@ -198,7 +218,32 @@ class ImportExportManager @Inject constructor(
         val entries = mutableMapOf<String, String>()
         ZipInputStream(ByteArrayInputStream(bytes)).use { zip ->
             var entry = zip.nextEntry
-            while (entry != null) { if (!entry.isDirectory) entries[entry.name.substringAfterLast('/')] = zip.bufferedReader().readText(); entry = zip.nextEntry }
+            var totalExpanded = 0L
+            var entryCount = 0
+            while (entry != null) {
+                if (!entry.isDirectory) {
+                    entryCount++
+                    require(entryCount <= MAX_ZIP_ENTRIES) { "The ZIP contains too many files." }
+                    val name = entry.name.substringAfterLast('/')
+                    require(name.isNotBlank() && name !in entries) { "The ZIP has an empty or duplicate file name." }
+                    val output = ByteArrayOutputStream()
+                    val chunk = ByteArray(8_192)
+                    var entryBytes = 0L
+                    while (true) {
+                        val count = zip.read(chunk)
+                        if (count < 0) break
+                        entryBytes += count
+                        totalExpanded += count
+                        require(entryBytes <= MAX_ZIP_ENTRY_BYTES && totalExpanded <= MAX_IMPORT_BYTES) {
+                            "The expanded ZIP contents are larger than the allowed import size."
+                        }
+                        output.write(chunk, 0, count)
+                    }
+                    entries[name] = output.toString(Charsets.UTF_8.name())
+                }
+                zip.closeEntry()
+                entry = zip.nextEntry
+            }
         }
         entries["database.json"]?.let { return requireNotNull(packageAdapter.fromJson(it)) }
         fun <T> list(name: String, clazz: Class<T>): List<T> {
@@ -210,13 +255,43 @@ class ImportExportManager @Inject constructor(
             list("products.json", ProductEntity::class.java), list("software.json", SoftwareEntity::class.java), list("requirements.json", RequirementEntity::class.java))
     }
 
-    private fun parseCsv(text: String): List<List<String>> = text.lineSequence().filter { it.isNotBlank() }.map { line ->
-        val values = mutableListOf<String>(); val current = StringBuilder(); var quoted = false; var i = 0
-        while (i < line.length) { val c=line[i]; when { c=='"' && quoted && i+1<line.length && line[i+1]=='"' -> { current.append('"'); i++ }; c=='"' -> quoted=!quoted; c==',' && !quoted -> { values+=current.toString(); current.clear() }; else -> current.append(c) }; i++ }
-        values += current.toString(); values
-    }.toList()
+    private fun parseCsv(text: String): List<List<String>> {
+        val rows = mutableListOf<List<String>>()
+        val row = mutableListOf<String>()
+        val field = StringBuilder()
+        var quoted = false
+        var quoteClosed = false
+        var index = 0
+        while (index < text.length) {
+            val character = text[index]
+            when {
+                character == '"' && quoted && text.getOrNull(index + 1) == '"' -> { field.append('"'); index++ }
+                character == '"' && quoted -> { quoted = false; quoteClosed = true }
+                character == '"' && !quoted && field.isEmpty() && !quoteClosed -> quoted = true
+                character == '"' -> throw IllegalArgumentException("CSV contains a quote in an unquoted field.")
+                character == ',' && !quoted -> { row += field.toString(); field.clear(); quoteClosed = false }
+                (character == '\n' || character == '\r') && !quoted -> {
+                    row += field.toString(); field.clear()
+                    if (row.any(String::isNotBlank)) rows += row.toList()
+                    row.clear()
+                    quoteClosed = false
+                    if (character == '\r' && text.getOrNull(index + 1) == '\n') index++
+                }
+                quoteClosed -> throw IllegalArgumentException("CSV contains unexpected text after a closing quote.")
+                else -> field.append(character)
+            }
+            index++
+        }
+        require(!quoted) { "CSV contains an unclosed quoted field." }
+        row += field.toString()
+        if (row.any(String::isNotBlank)) rows += row.toList()
+        return rows
+    }
 
     companion object {
+        private const val MAX_IMPORT_BYTES = 25L * 1024L * 1024L
+        private const val MAX_ZIP_ENTRY_BYTES = 20L * 1024L * 1024L
+        private const val MAX_ZIP_ENTRIES = 32
         fun sha256(bytes: ByteArray) = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
         private fun <T> duplicateValues(values: List<T>) = values.groupingBy { it }.eachCount().filterValues { it > 1 }.keys
         private fun compareVersions(a: String, b: String): Int { val av=a.split('.').mapNotNull(String::toIntOrNull); val bv=b.split('.').mapNotNull(String::toIntOrNull); for(i in 0 until maxOf(av.size,bv.size)){ val diff=(av.getOrElse(i){0})-(bv.getOrElse(i){0}); if(diff!=0)return diff }; return 0 }

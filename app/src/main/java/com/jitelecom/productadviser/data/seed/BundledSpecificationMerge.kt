@@ -46,7 +46,8 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
         sourceUrl = bundled.sourceUrl,
         verifiedDate = bundled.verifiedDate ?: verifiedDate,
         verifiedBy = bundled.verifiedBy ?: verifiedBy,
-        verificationStatus = bundled.verificationStatus
+        verificationStatus = bundled.verificationStatus,
+        availabilityUpdatedAt = availabilityUpdatedAt ?: bundled.availabilityUpdatedAt
     )
 }
 

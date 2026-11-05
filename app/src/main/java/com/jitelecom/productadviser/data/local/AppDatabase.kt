@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         ProductEntity::class, ProcessorEntity::class, GpuEntity::class, SoftwareEntity::class,
         RequirementEntity::class, WorkloadProfileEntity::class, AnalyticsEntity::class, DatabaseMetadataEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(DatabaseConverters::class)
@@ -32,6 +32,11 @@ abstract class AppDatabase : RoomDatabase() {
                     "CREATE UNIQUE INDEX IF NOT EXISTS index_requirements_softwareId_requirementType_platform " +
                         "ON requirements(softwareId, requirementType, platform)"
                 )
+            }
+        }
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE products ADD COLUMN availabilityUpdatedAt TEXT")
             }
         }
     }

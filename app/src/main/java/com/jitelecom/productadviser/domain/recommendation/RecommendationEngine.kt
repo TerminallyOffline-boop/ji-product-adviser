@@ -121,9 +121,11 @@ class RecommendationEngine @Inject constructor(
         weights: RecommendationWeights = RecommendationWeights(),
         limit: Int = 5
     ): List<RecommendationResult> = products.asSequence()
-        .filter { !it.archived && it.category == request.category && it.availabilityStatus != AvailabilityStatus.UNAVAILABLE }
+        .filter { !it.archived && it.category == request.category && it.currentAvailability() != AvailabilityStatus.UNAVAILABLE }
         .filter { it.effectivePrice <= budget.maxAllowed(request) }
         .filter { request.preferredBrand.isNullOrBlank() || it.brand.equals(request.preferredBrand, true) }
+        .filter { request.minimumRamGB == null || (it.ramGB ?: 0) >= request.minimumRamGB }
+        .filter { request.minimumStorageGB == null || (it.storageGB ?: 0) >= request.minimumStorageGB }
         .mapNotNull { product ->
             val compatibility = request.softwareIds.mapNotNull { id ->
                 software[id]?.let { id to compatibilityEngine.evaluate(product, it, requirements[id].orEmpty()) }
@@ -198,11 +200,21 @@ class RecommendationEngine @Inject constructor(
             }
             aliasMatches || nameWords.any { it in queryWords }
         }.map { it.id }.toSet()
-        return ParsedQuery(budget, category, profile, softwareIds)
+        val ram = Regex("(\\d{1,3})\\s*gb\\s*(?:ram|memory)", RegexOption.IGNORE_CASE).find(lower)?.groupValues?.get(1)?.toIntOrNull()
+        val storage = Regex("(\\d{1,5})\\s*(?:gb|tb)\\s*(?:storage|ssd|hdd|rom)?", RegexOption.IGNORE_CASE)
+            .findAll(lower).firstOrNull { it.value.contains("storage") || it.value.contains("ssd") || it.value.contains("hdd") || it.value.contains("rom") }
+            ?.let { match -> match.groupValues[1].toIntOrNull()?.let { if (match.value.contains("tb")) it * 1024 else it } }
+        val parsedTerms = listOfNotNull(ram?.let { "ram" }, storage?.let { "storage" })
+        val recognizedPhrases = listOf("oled", "amoled", "5g", "wifi 6", "wi-fi 6", "long battery", "lightweight")
+        val unapplied = recognizedPhrases.filter { it in lower && it !in parsedTerms }
+        return ParsedQuery(budget, category, profile, softwareIds, ram, storage, unapplied)
     }
 }
 
-data class ParsedQuery(val budget: Double?, val category: ProductCategory?, val profile: String?, val softwareIds: Set<Long>)
+data class ParsedQuery(
+    val budget: Double?, val category: ProductCategory?, val profile: String?, val softwareIds: Set<Long>,
+    val minimumRamGB: Int? = null, val minimumStorageGB: Int? = null, val unappliedConstraints: List<String> = emptyList()
+)
 
 interface AiQueryParser { suspend fun parse(query: String): CustomerRequest }
 interface InventoryProvider { suspend fun availability(productId: Long): AvailabilityStatus }

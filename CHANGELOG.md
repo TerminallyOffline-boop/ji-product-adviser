@@ -2,6 +2,18 @@
 
 This file records the major development milestones of JI Product Adviser. Dates use the Asia/Manila working date.
 
+## 1.5.0 - 2026-11-05
+
+### Improved
+
+- Kept Can It Run verdicts separate from source confidence, and surfaced source confidence beside the result
+- Marked two laptop mappings for review where the JI model label does not exactly match the cited retailer model code
+- Expired stock snapshots after 14 days unless a staff member records a fresh check date
+- Added an admin list and confirmation flow for restoring automatic safety backups
+- Added CSV stock-check dates and bounds for ZIP import expansion and CSV record parsing
+- Made recommendation defaults neutral and applied quick-request RAM/storage minimums while identifying unsupported display or feature requests
+- Replaced percentage claims for relative CPU/GPU tiers with raw tier differences
+
 ## 1.4.5 - 2026-11-04
 
 ### Improved

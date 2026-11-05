@@ -198,7 +198,7 @@ class CompatibilityEngine @Inject constructor(
                     )
                 ),
                 explanation = "${product.displayName} is a $category product, so it cannot run ${software.name}.",
-                dataStatus = VerificationStatus.VERIFIED
+                dataStatus = combineEvidenceStatus(product.verificationStatus, software.verificationStatus)
             )
         }
         val operatingSystem = product.operatingSystemForCompatibility()
@@ -219,7 +219,7 @@ class CompatibilityEngine @Inject constructor(
                     )
                 ),
                 explanation = "${software.name} is not available for $actualPlatform. Choose an app built for this platform or a different device.",
-                dataStatus = VerificationStatus.VERIFIED
+                dataStatus = combineEvidenceStatus(product.verificationStatus, software.verificationStatus)
             )
         }
         val applicableRequirements = requirementsForPlatform(requirements, operatingSystem)
@@ -237,7 +237,14 @@ class CompatibilityEngine @Inject constructor(
         val components = evaluator.evaluate(product, minimum, recommended)
         val hasUnresolvedData = platformCompatibility == PlatformCompatibility.UNKNOWN ||
             components.any { it.status == ComponentStatus.UNKNOWN }
-        val dataStatus = if (hasUnresolvedData) VerificationStatus.NEEDS_REVIEW else VerificationStatus.VERIFIED
+        val evidenceStatuses = buildList {
+            add(product.verificationStatus)
+            add(software.verificationStatus)
+            add(minimum.verificationStatus)
+            recommended?.let { add(it.verificationStatus) }
+            if (hasUnresolvedData) add(VerificationStatus.NEEDS_REVIEW)
+        }
+        val dataStatus = combineEvidenceStatus(evidenceStatuses)
         val status = when {
             components.any { it.status == ComponentStatus.BELOW_MINIMUM } -> CompatibilityStatus.BELOW_MINIMUM
             hasUnresolvedData -> CompatibilityStatus.NOT_VERIFIED
@@ -263,6 +270,15 @@ class CompatibilityEngine @Inject constructor(
         explanation = reason,
         dataStatus = dataStatus
     )
+}
+
+private fun combineEvidenceStatus(vararg statuses: VerificationStatus): VerificationStatus = combineEvidenceStatus(statuses.toList())
+
+private fun combineEvidenceStatus(statuses: List<VerificationStatus>): VerificationStatus = when {
+    VerificationStatus.OUTDATED in statuses -> VerificationStatus.OUTDATED
+    VerificationStatus.UNVERIFIED in statuses -> VerificationStatus.UNVERIFIED
+    VerificationStatus.NEEDS_REVIEW in statuses -> VerificationStatus.NEEDS_REVIEW
+    else -> VerificationStatus.VERIFIED
 }
 
 private fun ProductCategory.canRunSoftware() = when (this) {

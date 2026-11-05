@@ -19,7 +19,7 @@ import com.jitelecom.productadviser.domain.model.ProductCategory
 import com.jitelecom.productadviser.domain.model.RecommendationResult
 import com.jitelecom.productadviser.ui.RecommendationViewModel
 
-private val profiles = listOf("Student", "Teacher", "Office Worker", "Business Owner", "Engineering Student", "Architecture Student", "Programmer", "Graphic Designer", "Video Editor", "Gamer", "Content Creator")
+private val profiles = listOf("Any use", "Student", "Teacher", "Office Worker", "Business Owner", "Engineering Student", "Architecture Student", "Programmer", "Graphic Designer", "Video Editor", "Gamer", "Content Creator")
 private val deviceTypes = listOf(ProductCategory.LAPTOP, ProductCategory.SMARTPHONE, ProductCategory.TABLET)
 private val priorityChoices = listOf("Performance", "Battery", "Portability", "RAM / storage")
 
@@ -67,7 +67,7 @@ fun RecommendationScreen(onProduct: (Long) -> Unit, viewModel: RecommendationVie
                         modifier = Modifier.fillMaxWidth(),
                         label = { Text("Optional quick request") },
                         placeholder = { Text("₱30,000 laptop for architecture and AutoCAD") },
-                        supportingText = { Text("You can also leave this blank and use the choices below.") },
+                        supportingText = { Text("Can recognize budget, device, app, RAM and storage. Other feature requests will be shown as unapplied.") },
                         minLines = 1,
                         maxLines = 2,
                     )
@@ -101,13 +101,14 @@ fun RecommendationScreen(onProduct: (Long) -> Unit, viewModel: RecommendationVie
                     OutlinedTextField(
                         value = budget,
                         onValueChange = { viewModel.budget.value = it.filter { c -> c.isDigit() || c == '.' } },
-                        label = { Text("Maximum budget (₱)") },
+                        label = { Text("Maximum budget (₱, example)") },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         leadingIcon = { Icon(Icons.Default.Payments, null) },
                     )
                     Selector("Main use", profiles, profile, { it }) { viewModel.profile.value = it }
+                    Text("Optional: add “16 GB RAM” or “512 GB storage” to the quick request to set minimum hardware filters.",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }

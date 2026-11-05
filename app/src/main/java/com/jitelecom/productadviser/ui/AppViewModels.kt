@@ -74,7 +74,7 @@ class ProductsViewModel @Inject constructor(
                 .filter { prices.second == null || it.effectivePrice <= prices.second!! }
                 .filter { options.category == null || it.category == options.category }
                 .filter { options.brand == null || it.brand == options.brand }
-                .filter { !options.availableOnly || it.availabilityStatus in setOf(AvailabilityStatus.AVAILABLE, AvailabilityStatus.LIMITED, AvailabilityStatus.DISPLAY_UNIT) }
+                .filter { !options.availableOnly || it.currentAvailability() in setOf(AvailabilityStatus.AVAILABLE, AvailabilityStatus.LIMITED, AvailabilityStatus.DISPLAY_UNIT) }
                 .let { sequence -> when (options.sort) {
                     ProductSort.NAME -> sequence.sortedWith(compareBy<ProductSpec> { it.brand }.thenBy { it.model })
                     ProductSort.PRICE_LOW -> sequence.sortedBy(ProductSpec::effectivePrice)
@@ -159,7 +159,7 @@ class CompatibilityViewModel @Inject constructor(
         val requirements = repository.getRequirements(app.id)
         _result.value = engine.evaluate(product, app, requirements)
         _alternatives.value = products.value.asSequence()
-            .filter { candidate -> candidate.id != product.id && candidate.category == product.category && candidate.availabilityStatus in setOf(AvailabilityStatus.AVAILABLE, AvailabilityStatus.LIMITED, AvailabilityStatus.DISPLAY_UNIT) && app.supportsOperatingSystem(candidate.operatingSystemForCompatibility()) }
+            .filter { candidate -> candidate.id != product.id && candidate.category == product.category && candidate.currentAvailability() in setOf(AvailabilityStatus.AVAILABLE, AvailabilityStatus.LIMITED, AvailabilityStatus.DISPLAY_UNIT) && app.supportsOperatingSystem(candidate.operatingSystemForCompatibility()) }
             .map { candidate -> CompatibilityAlternative(candidate, engine.evaluate(candidate, app, requirements)) }
             .filter { it.result.status == CompatibilityStatus.MEETS_RECOMMENDED || it.result.status == CompatibilityStatus.MEETS_MINIMUM }
             .sortedWith(compareBy<CompatibilityAlternative> { if(it.result.status == CompatibilityStatus.MEETS_RECOMMENDED) 0 else 1 }.thenBy { it.product.effectivePrice })
@@ -180,7 +180,7 @@ class RecommendationViewModel @Inject constructor(
     val products = productRepository.observeProducts().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val software = catalog.observeSoftware().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val budget = MutableStateFlow("35000")
-    val profile = MutableStateFlow("Architecture Student")
+    val profile = MutableStateFlow("Any use")
     val category = MutableStateFlow(ProductCategory.LAPTOP)
     val selectedSoftware = MutableStateFlow<Set<Long>>(emptySet())
     val applicableSoftware = combine(software, category) { apps, selectedCategory ->
@@ -189,6 +189,8 @@ class RecommendationViewModel @Inject constructor(
     val priorities = MutableStateFlow<Set<String>>(setOf("Performance"))
     val brand = MutableStateFlow("")
     val aboveBudget = MutableStateFlow(false)
+    val minimumRamGB = MutableStateFlow<Int?>(null)
+    val minimumStorageGB = MutableStateFlow<Int?>(null)
     val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.Eagerly, AppSettings())
     private val _results = MutableStateFlow<List<RecommendationResult>>(emptyList()); val results = _results.asStateFlow()
     private val _message = MutableStateFlow<String?>(null); val message = _message.asStateFlow()
@@ -198,7 +200,8 @@ class RecommendationViewModel @Inject constructor(
     init {
         merge(
             budget.drop(1).map { Unit }, profile.drop(1).map { Unit }, category.drop(1).map { Unit },
-            selectedSoftware.drop(1).map { Unit }, priorities.drop(1).map { Unit }, brand.drop(1).map { Unit }, aboveBudget.drop(1).map { Unit }
+            selectedSoftware.drop(1).map { Unit }, priorities.drop(1).map { Unit }, brand.drop(1).map { Unit }, aboveBudget.drop(1).map { Unit },
+            minimumRamGB.drop(1).map { Unit }, minimumStorageGB.drop(1).map { Unit }
         ).onEach { if (!applyingQuickRequest) { _results.value=emptyList(); _message.value=null } }.launchIn(viewModelScope)
     }
     fun toggleSoftware(id: Long) { selectedSoftware.update { if (id in it) it - id else it + id } }
@@ -229,11 +232,15 @@ class RecommendationViewModel @Inject constructor(
                 else selectedSoftware.value intersect allowedSoftware
             val targetBudget = parsed.budget?.toInt()?.toString() ?: budget.value
             val targetProfile = parsed.profile ?: profile.value
+            val targetRam = parsed.minimumRamGB ?: minimumRamGB.value
+            val targetStorage = parsed.minimumStorageGB ?: minimumStorageGB.value
 
             budget.value = targetBudget
             category.value = targetCategory
             profile.value = targetProfile
             selectedSoftware.value = targetSoftware
+            minimumRamGB.value = targetRam
+            minimumStorageGB.value = targetStorage
             // Let the input-change collector invalidate the previous result before this search writes its result.
             yield()
             val applied = buildList {
@@ -241,6 +248,9 @@ class RecommendationViewModel @Inject constructor(
                 parsed.category?.let { add(it.name.lowercase().replace('_', ' ')) }
                 parsed.profile?.let(::add)
                 parsed.softwareIds.mapNotNull { id -> knownSoftware.firstOrNull { it.id == id }?.displayName }.forEach(::add)
+                parsed.minimumRamGB?.let { add("at least ${it}GB RAM") }
+                parsed.minimumStorageGB?.let { add("at least ${it}GB storage") }
+                parsed.unappliedConstraints.takeIf { it.isNotEmpty() }?.let { add("not applied: ${it.joinToString()}") }
             }
             _quickRequestMessage.value = if (applied.isEmpty()) {
                 "No details were recognized; searching with the selections below."
@@ -271,7 +281,8 @@ class RecommendationViewModel @Inject constructor(
         val availableSoftware = repository.getSoftware().associateBy { it.id }
         val request = CustomerRequest(
             selectedProfile, selectedCategory, amount, selectedApps, priorities.value,
-            brand.value.trim().takeIf(String::isNotBlank), aboveBudget.value, settings.value.allowAboveBudgetPercent
+            brand.value.trim().takeIf(String::isNotBlank), aboveBudget.value, settings.value.allowAboveBudgetPercent,
+            minimumRamGB.value, minimumStorageGB.value
         )
         _results.value = engine.recommend(request, availableProducts, availableSoftware, requirements)
         _message.value = if (_results.value.isEmpty()) {
@@ -310,8 +321,9 @@ class RecommendationViewModel @Inject constructor(
         }
     }
     fun reset() {
-        budget.value="35000"; profile.value="Architecture Student"; category.value=ProductCategory.LAPTOP
+        budget.value="35000"; profile.value="Any use"; category.value=ProductCategory.LAPTOP
         selectedSoftware.value=emptySet(); priorities.value=setOf("Performance"); brand.value=""; aboveBudget.value=false
+        minimumRamGB.value=null; minimumStorageGB.value=null
         _results.value=emptyList(); _message.value=null
         _quickRequestMessage.value = null
     }
@@ -369,6 +381,7 @@ data class AdminUiState(
     val unlocked: Boolean = false,
     val message: String? = null,
     val preview: ImportPreview? = null,
+    val safetyBackups: List<ImportExportManager.SafetyBackupInfo> = emptyList(),
     val isBusy: Boolean = false,
     val undoArchiveId: Long? = null
 )
@@ -438,8 +451,19 @@ class AdminViewModel @Inject constructor(
         val (bytes, name)=pending ?: return@launch
         _state.update { it.copy(isBusy=true,message="Importing database…") }
         runCatching { if(pendingIsCsv) importExport.get().importProductCsv(bytes) else importExport.get().importPackage(bytes,name) }
-            .onSuccess { result -> _state.update { it.copy(message=result.message,preview=result.preview,isBusy=false) } }
+            .onSuccess { result -> _state.update { it.copy(message=result.message,preview=result.preview,isBusy=false) }; refreshSafetyBackups() }
             .onFailure { error -> _state.update { it.copy(message=error.message ?: "Import failed. Existing data was not changed.",isBusy=false) } }
+    }
+    fun refreshSafetyBackups() = viewModelScope.launch(Dispatchers.IO) {
+        runCatching { importExport.get().listSafetyBackups() }
+            .onSuccess { backups -> _state.update { it.copy(safetyBackups=backups) } }
+            .onFailure { error -> message(error.message ?: "Could not list local safety backups.") }
+    }
+    fun restoreSafetyBackup(fileName: String) = viewModelScope.launch {
+        _state.update { it.copy(isBusy=true,message="Restoring safety backup…") }
+        runCatching { importExport.get().restoreSafetyBackup(fileName) }
+            .onSuccess { result -> _state.update { it.copy(message=result.message,preview=null,isBusy=false) }; refreshSafetyBackups() }
+            .onFailure { error -> _state.update { it.copy(message=error.message ?: "Could not restore the safety backup.",isBusy=false) } }
     }
     suspend fun exportBytes(): ByteArray? = runCatching { importExport.get().exportJson() }
         .onFailure { error -> message(error.message ?: "Could not create the backup file.") }

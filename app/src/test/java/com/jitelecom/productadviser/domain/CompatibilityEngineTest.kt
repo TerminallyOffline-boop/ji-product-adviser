@@ -24,10 +24,10 @@ class CompatibilityEngineTest {
     @Test fun unknownGpu(){assertThat(engine.evaluate(product(gpuValue=null),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
     @Test fun missingRequirementData(){assertThat(engine.evaluate(product(),software,emptyList()).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
     @Test fun missingProductData(){assertThat(engine.evaluate(product(ram=null),software,listOf(min(),rec())).status).isEqualTo(CompatibilityStatus.NOT_VERIFIED)}
-    @Test fun sourceAuditStatusDoesNotMakeACompleteCalculationInconclusive(){
+    @Test fun sourceAuditStatusIsReportedSeparatelyFromTheRunResult(){
         val result=engine.evaluate(product(verified=VerificationStatus.UNVERIFIED),software,listOf(min(),rec()))
         assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_RECOMMENDED)
-        assertThat(result.dataStatus).isEqualTo(VerificationStatus.VERIFIED)
+        assertThat(result.dataStatus).isEqualTo(VerificationStatus.UNVERIFIED)
     }
 
     @Test fun fullyVerifiedResultReportsVerifiedData(){
@@ -60,7 +60,7 @@ class CompatibilityEngineTest {
         )
         val result=engine.evaluate(phone,software.copy(id=2,platform="Android"),listOf(platformOnly))
         assertThat(result.status).isEqualTo(CompatibilityStatus.MEETS_MINIMUM)
-        assertThat(result.dataStatus).isEqualTo(VerificationStatus.VERIFIED)
+        assertThat(result.dataStatus).isEqualTo(VerificationStatus.NEEDS_REVIEW)
     }
 
     @Test fun accessoryIsClearlyNotAComputingDevice(){

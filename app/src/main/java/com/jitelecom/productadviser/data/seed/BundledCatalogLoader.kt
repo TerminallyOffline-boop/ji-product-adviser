@@ -214,7 +214,8 @@ class BundledCatalogLoader @Inject constructor(
             verifiedDate = specification?.let { specifications.verifiedDate },
             lastUpdated = product.lastUpdated,
             verifiedBy = specification?.verifiedBy?.takeIf { isOfficiallyVerified },
-            verificationStatus = specificationStatus
+            verificationStatus = specificationStatus,
+            availabilityUpdatedAt = product.lastUpdated
         )
     }
 

@@ -60,7 +60,7 @@ class BundledCatalogAssetTest {
         val processorIds = specifications.processors.map { it.id }.toSet()
         val gpuIds = specifications.gpus.map { it.id }.toSet()
 
-        assertThat(specifications.version).isEqualTo("2026.11.03.1")
+        assertThat(specifications.version).isEqualTo("2026.11.05.1")
         assertThat(assignedSkus).hasSize(174)
         assertThat(assignedSkus.distinct()).hasSize(assignedSkus.size)
         assertThat(catalogSkus).containsAtLeastElementsIn(assignedSkus)
@@ -68,9 +68,10 @@ class BundledCatalogAssetTest {
         assertThat(specifications.assignments.mapNotNull { it.gpuId }.all { it in gpuIds }).isTrue()
         assertThat(specifications.assignments.all { it.sourceUrl.startsWith("https://") }).isTrue()
         val verified = specifications.assignments.filter { it.verificationStatus == "VERIFIED" }
-        assertThat(verified.flatMap { it.skus }).hasSize(174)
+        assertThat(verified.flatMap { it.skus }).hasSize(172)
         assertThat(verified.all { !it.sourceName.isNullOrBlank() && !it.verifiedBy.isNullOrBlank() }).isTrue()
-        assertThat(specifications.assignments.all { it.verificationStatus == "VERIFIED" }).isTrue()
+        assertThat(specifications.assignments.filter { it.verificationStatus == "NEEDS_REVIEW" }.flatMap { it.skus })
+            .containsExactly("JUL26-LAP-007", "JUL26-LAP-014")
     }
 
     @Test

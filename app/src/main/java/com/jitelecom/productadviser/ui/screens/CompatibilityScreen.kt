@@ -323,6 +323,16 @@ private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, ap
                 StatusBadge(result.status)
             }
             Text(result.explanation, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                when (result.dataStatus) {
+                    VerificationStatus.VERIFIED -> "Evidence confidence: sources are marked verified."
+                    VerificationStatus.NEEDS_REVIEW -> "Evidence confidence: one or more sources need review. The run result is based on the listed specifications."
+                    VerificationStatus.UNVERIFIED -> "Evidence confidence: one or more sources have not been confirmed."
+                    VerificationStatus.OUTDATED -> "Evidence confidence: one or more sources may be outdated."
+                },
+                style = MaterialTheme.typography.labelMedium,
+                color = if (result.dataStatus == VerificationStatus.VERIFIED) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+            )
             mainIssue?.let { issue ->
                 val heading=when(issue.status){
                     ComponentStatus.NOT_AVAILABLE->"Main blocker"

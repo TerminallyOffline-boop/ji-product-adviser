@@ -5,6 +5,7 @@ import com.jitelecom.productadviser.domain.compatibility.*
 import com.jitelecom.productadviser.domain.model.*
 import com.jitelecom.productadviser.domain.recommendation.*
 import org.junit.Test
+import java.time.LocalDate
 
 class RecommendationEngineTest {
     private val compatibility = CompatibilityEngine(RequirementEvaluator(CpuEvaluator(),GpuEvaluator(),RamEvaluator(),StorageEvaluator(),OperatingSystemEvaluator()),CompatibilityExplanationBuilder())
@@ -23,6 +24,9 @@ class RecommendationEngineTest {
     @Test fun customAboveBudgetPercentIsApplied(){val products=listOf(product(1,35000.0));assertThat(run(CustomerRequest(budget=30000.0,showSlightlyAboveBudget=true,aboveBudgetPercent=10),products)).isEmpty();assertThat(run(CustomerRequest(budget=30000.0,showSlightlyAboveBudget=true,aboveBudgetPercent=20),products)).isNotEmpty()}
     @Test fun missingSpecificationsArePenalized(){val complete=product(1,30000.0);val missing=product(2,30000.0,ram=null,cpuValue=null);val result=run(CustomerRequest(budget=40000.0,softwareIds=setOf(1)),listOf(missing,complete));assertThat(result.first().product.id).isEqualTo(1)}
     @Test fun requiredSoftwareBelowMinimumIsNotRecommended(){val weak=product(1,30000.0,ram=4);assertThat(run(CustomerRequest(budget=40000.0,softwareIds=setOf(1)),listOf(weak))).isEmpty()}
+    @Test fun requestedMinimumRamAndStorageAreHardFilters(){val lowRam=product(1,25000.0,ram=8);val tooLittleStorage=product(2,26000.0).copy(storageGB=256);val match=product(3,30000.0,ram=16);val request=CustomerRequest(budget=40000.0,minimumRamGB=16,minimumStorageGB=512);assertThat(run(request,listOf(lowRam,tooLittleStorage,match)).map{it.product.id}).containsExactly(3L)}
+    @Test fun localQueryParsesRamStorageAndFlagsUnappliedDisplayRequest(){val parsed=engine.parseLocalQuery("₱30,000 laptop with 16 GB RAM, 1 TB SSD and OLED",apps.values.toList());assertThat(parsed.budget).isEqualTo(30000.0);assertThat(parsed.minimumRamGB).isEqualTo(16);assertThat(parsed.minimumStorageGB).isEqualTo(1024);assertThat(parsed.unappliedConstraints).contains("oled")}
+    @Test fun stockAvailabilityExpiresUnlessRecentlyChecked(){val p=product(1,30000.0).copy(availabilityUpdatedAt="2026-10-31");assertThat(p.currentAvailability(LocalDate.parse("2026-11-05"))).isEqualTo(AvailabilityStatus.AVAILABLE);assertThat(p.currentAvailability(LocalDate.parse("2026-11-16"))).isEqualTo(AvailabilityStatus.UNKNOWN);assertThat(product(2,30000.0).copy(availabilityUpdatedAt="2026-07").currentAvailability(LocalDate.parse("2026-11-05"))).isEqualTo(AvailabilityStatus.UNKNOWN)}
     @Test fun selectedRamStoragePriorityChangesPreferenceScore(){val scorer=PreferenceScorer();val request=CustomerRequest(profile="Office Worker",budget=50000.0,priorities=setOf("RAM / storage"));assertThat(scorer.score(product(1,30000.0,ram=16),request)).isGreaterThan(scorer.score(product(2,30000.0,ram=8).copy(storageGB=256),request))}
     @Test fun demandingStudentProfileIsNotAlsoScoredAsEveryday(){val score=PreferenceScorer().score(product(1,30000.0),CustomerRequest(profile="Architecture Student",budget=50000.0));assertThat(score).isWithin(0.0001).of(0.53)}
 }

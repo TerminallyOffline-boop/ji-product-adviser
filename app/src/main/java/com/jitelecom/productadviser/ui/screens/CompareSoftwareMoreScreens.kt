@@ -167,19 +167,24 @@ internal fun comparisonAdvantagePercent(best:Double,worst:Double,higherIsBetter:
         Row(verticalAlignment=Alignment.CenterVertically){
             Text(metric.label,fontWeight=FontWeight.Bold,modifier=Modifier.weight(1f))
             if(best!=null&&worst!=null&&best!=worst){
-                val percent=comparisonAdvantagePercent(best,worst,metric.higherIsBetter)
-                Text(if(metric.tierBased)"${percent}% higher tier score" else "$percent% ${if(metric.higherIsBetter)"difference" else "lower"}",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.primary,fontWeight=FontWeight.Bold)
+                if(metric.tierBased){
+                    val spread=(best-worst).roundToInt()
+                    Text("$spread tier${if(spread==1)"" else "s"} apart",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.primary,fontWeight=FontWeight.Bold)
+                }else{
+                    val percent=comparisonAdvantagePercent(best,worst,metric.higherIsBetter)
+                    Text("$percent% ${if(metric.higherIsBetter)"difference" else "lower"}",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.primary,fontWeight=FontWeight.Bold)
+                }
             }
         }
         metric.values.forEach{entry->
             val isBest=entry.value!=null&&entry.value==best
             val isWorst=entry.value!=null&&entry.value==worst
-            val advantage=if(isBest&&best!=null&&worst!=null&&best!=worst)comparisonAdvantagePercent(best,worst,metric.higherIsBetter)else null
+            val advantage=if(isBest&&!metric.tierBased)comparisonAdvantagePercent(requireNotNull(best),requireNotNull(worst),metric.higherIsBetter)else null
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
                 Text(entry.productName,Modifier.weight(1f),style=MaterialTheme.typography.bodySmall,maxLines=1)
                 Text(entry.formatted,style=MaterialTheme.typography.bodyMedium,fontWeight=if(isBest)FontWeight.Bold else FontWeight.Normal)
                 Spacer(Modifier.width(8.dp))
-                Text(when{entry.value==null->"";best==worst->"Tied";isBest->"+${advantage}%${if(metric.tierBased)" score" else ""}";isWorst->"Lowest";else->""},style=MaterialTheme.typography.labelSmall,color=if(isBest)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(when{entry.value==null->"";best==worst->"Tied";isBest&&metric.tierBased->"Top tier";isBest->"+${advantage}%";isWorst->"Lowest";else->""},style=MaterialTheme.typography.labelSmall,color=if(isBest)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }}

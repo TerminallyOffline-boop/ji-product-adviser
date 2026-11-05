@@ -1,5 +1,9 @@
 package com.jitelecom.productadviser.domain.model
 
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.temporal.ChronoUnit
+
 enum class VerificationStatus { VERIFIED, NEEDS_REVIEW, UNVERIFIED, OUTDATED }
 enum class AvailabilityStatus { AVAILABLE, LIMITED, UNAVAILABLE, DISPLAY_UNIT, UNKNOWN }
 enum class ProductCategory { LAPTOP, SMARTPHONE, TABLET, DESKTOP, MONITOR, PRINTER, SMART_TV, GAMING_CONSOLE, ACCESSORIES }
@@ -77,10 +81,22 @@ data class ProductSpec(
     val lastUpdated: String? = null,
     val verifiedBy: String? = null,
     val verificationStatus: VerificationStatus = VerificationStatus.UNVERIFIED,
-    val archived: Boolean = false
+    val archived: Boolean = false,
+    /** Date or month when this availability status was checked (ISO yyyy-MM-dd or yyyy-MM). */
+    val availabilityUpdatedAt: String? = null
 ) {
     val displayName: String get() = "$brand $model"
     val effectivePrice: Double get() = promotionalPrice ?: price
+
+    fun currentAvailability(onDate: LocalDate = LocalDate.now(), maxAgeDays: Long = 14): AvailabilityStatus {
+        if (availabilityStatus == AvailabilityStatus.UNKNOWN) return AvailabilityStatus.UNKNOWN
+        val checkedDate = availabilityUpdatedAt?.let { value ->
+            runCatching { LocalDate.parse(value) }.getOrNull()
+                ?: runCatching { YearMonth.parse(value).atEndOfMonth() }.getOrNull()
+        } ?: return AvailabilityStatus.UNKNOWN
+        val age = ChronoUnit.DAYS.between(checkedDate, onDate)
+        return if (age < 0 || age > maxAgeDays) AvailabilityStatus.UNKNOWN else availabilityStatus
+    }
 }
 
 data class SoftwareSpec(
@@ -156,7 +172,9 @@ data class CustomerRequest(
     val priorities: Set<String> = emptySet(),
     val preferredBrand: String? = null,
     val showSlightlyAboveBudget: Boolean = false,
-    val aboveBudgetPercent: Int = 10
+    val aboveBudgetPercent: Int = 10,
+    val minimumRamGB: Int? = null,
+    val minimumStorageGB: Int? = null
 )
 
 data class RecommendationWeights(
