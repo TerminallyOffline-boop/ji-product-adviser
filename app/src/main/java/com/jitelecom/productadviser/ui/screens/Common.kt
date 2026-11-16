@@ -81,7 +81,7 @@ fun ProductCard(product: ProductSpec, onClick: () -> Unit, modifier: Modifier = 
                 Text(product.displayName, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(details, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
-                    "Stock ${product.currentAvailability().name.lowercase().replace('_', ' ')}",
+                    "Stock ${product.currentAvailability().name.lowercase().replace('_', ' ')}${product.inventoryQuantity?.let { " • $it units" }.orEmpty()}",
                     style = MaterialTheme.typography.labelSmall,
                     color = if (product.currentAvailability() == AvailabilityStatus.UNKNOWN) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                 )

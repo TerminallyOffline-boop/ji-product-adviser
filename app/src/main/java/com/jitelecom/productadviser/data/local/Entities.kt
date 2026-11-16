@@ -41,7 +41,7 @@ data class ProductEntity(
     val notes: String? = null, val sourceName: String? = null, val sourceUrl: String? = null, val verifiedDate: String? = null,
     val lastUpdated: String? = null, val verifiedBy: String? = null,
     val verificationStatus: VerificationStatus = VerificationStatus.UNVERIFIED, val archived: Boolean = false,
-    val availabilityUpdatedAt: String? = null
+    val availabilityUpdatedAt: String? = null, val inventoryQuantity: Int? = null
 )
 
 data class ProductWithHardware(

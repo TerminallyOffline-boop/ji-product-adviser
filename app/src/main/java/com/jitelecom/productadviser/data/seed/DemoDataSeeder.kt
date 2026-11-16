@@ -57,7 +57,7 @@ class DemoDataSeeder @Inject constructor(
                 DatabaseMetadataEntity("databaseVersion", BuildConfig.DATABASE_VERSION),
                 DatabaseMetadataEntity("bundledSpecificationsVersion", catalogLoader.specifications().version),
                 DatabaseMetadataEntity("bundledSoftwareVersion", BundledSoftwareCatalog.VERSION),
-                DatabaseMetadataEntity("lastUpdated", "2026-10-15"),
+                DatabaseMetadataEntity("lastUpdated", "2026-11-16"),
                 DatabaseMetadataEntity("dataNotice", DATA_NOTICE)
             ))
         }
@@ -94,6 +94,9 @@ class DemoDataSeeder @Inject constructor(
                 db.productDao().insertAll(mappedCatalog)
             } else {
                 val mappedBySku = mappedCatalog.associateBy { it.sku }
+                val currentSkus = existing.map { it.sku }.toSet()
+                val newCatalogProducts = mappedCatalog.filter { it.sku !in currentSkus }
+                if (newCatalogProducts.isNotEmpty()) db.productDao().insertAll(newCatalogProducts)
                 existing.forEach { current ->
                     val bundled = mappedBySku[current.sku] ?: return@forEach
                     val enriched = current.withMissingBundledSpecifications(bundled)
@@ -106,7 +109,7 @@ class DemoDataSeeder @Inject constructor(
             }
             db.metadataDao().putAll(listOf(
                 DatabaseMetadataEntity("bundledSpecificationsVersion", specificationsVersion),
-                DatabaseMetadataEntity("specificationsUpdated", "2026-10-15"),
+                DatabaseMetadataEntity("specificationsUpdated", "2026-11-16"),
                 DatabaseMetadataEntity("dataNotice", DATA_NOTICE)
             ))
         }
@@ -146,7 +149,7 @@ class DemoDataSeeder @Inject constructor(
             db.metadataDao().putAll(listOf(
                 DatabaseMetadataEntity("bundledSoftwareVersion", BundledSoftwareCatalog.VERSION),
                 DatabaseMetadataEntity("databaseVersion", BuildConfig.DATABASE_VERSION),
-                DatabaseMetadataEntity("softwareUpdated", "2026-10-15")
+                DatabaseMetadataEntity("softwareUpdated", "2026-11-16")
             ))
         }
     }

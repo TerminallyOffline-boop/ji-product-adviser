@@ -121,7 +121,7 @@ class RecommendationEngine @Inject constructor(
         weights: RecommendationWeights = RecommendationWeights(),
         limit: Int = 5
     ): List<RecommendationResult> = products.asSequence()
-        .filter { !it.archived && it.category == request.category && it.currentAvailability() != AvailabilityStatus.UNAVAILABLE }
+        .filter { !it.archived && it.category == request.category && it.currentAvailability() in setOf(AvailabilityStatus.AVAILABLE, AvailabilityStatus.LIMITED) }
         .filter { it.effectivePrice <= budget.maxAllowed(request) }
         .filter { request.preferredBrand.isNullOrBlank() || it.brand.equals(request.preferredBrand, true) }
         .filter { request.minimumRamGB == null || (it.ramGB ?: 0) >= request.minimumRamGB }

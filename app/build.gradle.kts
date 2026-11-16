@@ -14,12 +14,12 @@ android {
         applicationId = "com.jitelecom.productadviser"
         minSdk = 28
         targetSdk = 36
-        versionCode = 19
-        versionName = "1.5.0"
+        versionCode = 20
+        versionName = "1.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        buildConfigField("String", "DATABASE_VERSION", "\"2026.11.03.1\"")
+        buildConfigField("String", "DATABASE_VERSION", "\"2026.11.16.1\"")
     }
 
     buildTypes {

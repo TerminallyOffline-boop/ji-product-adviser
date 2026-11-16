@@ -6,15 +6,21 @@ import com.jitelecom.productadviser.domain.model.VerificationStatus
 /** Add missing published specs without replacing store-maintained prices or hardware. */
 internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEntity): ProductEntity {
     if (sku != bundled.sku || brand != bundled.brand || model != bundled.model || category != bundled.category) return this
-    if (archived || bundled.sourceUrl == null) return this
+    if (archived) return this
+    val inventoryRefreshed = if (bundled.inventoryQuantity != null) copy(
+        availabilityStatus = bundled.availabilityStatus,
+        availabilityUpdatedAt = bundled.availabilityUpdatedAt ?: availabilityUpdatedAt,
+        inventoryQuantity = bundled.inventoryQuantity
+    ) else this
+    if (bundled.sourceUrl == null) return inventoryRefreshed
     val managedByBundledCatalog = sourceUrl == null ||
         verifiedBy?.startsWith("JI Telecom", ignoreCase = true) == true ||
         sourceName?.contains("Product-Line-up", ignoreCase = true) == true ||
         sourceUrl == bundled.sourceUrl
-    if (!managedByBundledCatalog) return this
+    if (!managedByBundledCatalog) return inventoryRefreshed
     val bundledSpecsVerified = bundled.verificationStatus == VerificationStatus.VERIFIED
-    if (!bundledSpecsVerified && processorId != null && processorId != bundled.processorId) return this
-    if (!bundledSpecsVerified && gpuId != null && gpuId != bundled.gpuId) return this
+    if (!bundledSpecsVerified && processorId != null && processorId != bundled.processorId) return inventoryRefreshed
+    if (!bundledSpecsVerified && gpuId != null && gpuId != bundled.gpuId) return inventoryRefreshed
     val promoteExactPlatform = bundled.verificationStatus == VerificationStatus.VERIFIED &&
         verificationStatus != VerificationStatus.VERIFIED
 
@@ -47,7 +53,9 @@ internal fun ProductEntity.withMissingBundledSpecifications(bundled: ProductEnti
         verifiedDate = bundled.verifiedDate ?: verifiedDate,
         verifiedBy = bundled.verifiedBy ?: verifiedBy,
         verificationStatus = bundled.verificationStatus,
-        availabilityUpdatedAt = availabilityUpdatedAt ?: bundled.availabilityUpdatedAt
+        availabilityUpdatedAt = bundled.availabilityUpdatedAt ?: availabilityUpdatedAt,
+        inventoryQuantity = bundled.inventoryQuantity ?: inventoryQuantity,
+        availabilityStatus = if (bundled.inventoryQuantity != null) bundled.availabilityStatus else availabilityStatus
     )
 }
 

@@ -83,7 +83,8 @@ data class ProductSpec(
     val verificationStatus: VerificationStatus = VerificationStatus.UNVERIFIED,
     val archived: Boolean = false,
     /** Date or month when this availability status was checked (ISO yyyy-MM-dd or yyyy-MM). */
-    val availabilityUpdatedAt: String? = null
+    val availabilityUpdatedAt: String? = null,
+    val inventoryQuantity: Int? = null
 ) {
     val displayName: String get() = "$brand $model"
     val effectivePrice: Double get() = promotionalPrice ?: price

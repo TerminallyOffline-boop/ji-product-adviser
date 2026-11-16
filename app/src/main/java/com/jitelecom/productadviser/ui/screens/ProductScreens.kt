@@ -307,7 +307,7 @@ private fun ProductHero(product: ProductSpec) {
                     color = if (ageDays == null || ageDays > 90) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    "Stock: ${stockStatus.name.lowercase().replace('_', ' ')}${product.availabilityUpdatedAt?.let { " • checked $it" } ?: " • no recent check"}",
+                    "Stock: ${stockStatus.name.lowercase().replace('_', ' ')}${product.inventoryQuantity?.let { " • $it units" }.orEmpty()}${product.availabilityUpdatedAt?.let { " • checked $it" } ?: " • no recent check"}",
                     style = MaterialTheme.typography.labelSmall,
                     color = if (stockStatus == com.jitelecom.productadviser.domain.model.AvailabilityStatus.UNKNOWN) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                 )

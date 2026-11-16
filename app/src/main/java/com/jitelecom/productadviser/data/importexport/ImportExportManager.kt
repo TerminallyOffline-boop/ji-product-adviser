@@ -138,7 +138,7 @@ class ImportExportManager @Inject constructor(
                 cpu == null || cpu !in processorIds -> { errors += ImportIssue(record, "Processor ID does not exist."); null }
                 gpu == null || gpu !in gpuIds -> { errors += ImportIssue(record, "GPU ID does not exist."); null }
                 category == null -> { errors += ImportIssue(record, "Category is invalid."); null }
-                else -> ProductEntity(sku=sku, brand=brand, model=model, category=category, price=price, processorId=cpu, gpuId=gpu, ramGB=ram, storageGB=storage, availabilityUpdatedAt=row["availabilityUpdatedAt"]?.trim()?.takeIf(String::isNotBlank))
+                else -> ProductEntity(sku=sku, brand=brand, model=model, category=category, price=price, processorId=cpu, gpuId=gpu, ramGB=ram, storageGB=storage, availabilityUpdatedAt=row["availabilityUpdatedAt"]?.trim()?.takeIf(String::isNotBlank), inventoryQuantity=row["inventoryQuantity"]?.trim()?.toIntOrNull())
             }
         }
         val duplicates = products.groupBy { it.sku.lowercase() }.filterValues { it.size > 1 }.keys
