@@ -1124,6 +1124,19 @@
       "workloadTier": 1,
       "notes": "Feature-phone SoC; not comparable to modern smartphone application workloads.",
       "sourceUrl": "https://www.fonearena.com/blog/343352/dizo-star-300-dizo-star-500-price-india-specifications.html"
+    },
+    {
+      "id": 1132,
+      "manufacturer": "Intel",
+      "family": "Core i7",
+      "model": "Core i7-1260P",
+      "architecture": "x86-64",
+      "coreCount": 12,
+      "threadCount": 16,
+      "performanceTier": 4,
+      "workloadTier": 4,
+      "notes": "Performance tier is an internal comparison estimate; not a vendor benchmark rating.",
+      "sourceUrl": "https://www.acer.com/ph-en/laptops/swift/swift-5/pdp/NX.K0HSP.005"
     }
   ],
   "gpus": [
@@ -4987,12 +5000,12 @@
       "architecture": "x64",
       "batteryCapacityWh": 59,
       "weightKg": 1.77,
-      "sourceUrl": "https://www.hp.com/bd-en/products/laptops/product-details/product-specifications/2103157361",
+      "sourceUrl": "https://www.hp.com/lk-en/products/laptops/product-details/product-specifications/2103157361",
       "sourceName": "HP official specifications",
       "verifiedBy": "JI Telecom official-source audit",
       "verificationStatus": "VERIFIED",
-      "notes": "Exact 16-af1063TU / BX9D9PA manufacturer configuration: Core Ultra 7 255U and integrated Intel Graphics.",
-      "ramGB": null,
+      "notes": "Exact HP 16-af1063TU / BX9D9PA manufacturer configuration: Core Ultra 7 255U, integrated Intel Graphics, 32GB LPDDR5-7467, 1TB NVMe SSD, Windows 11 Home.",
+      "ramGB": 32,
       "storageGB": 1024
     },
     {
@@ -5697,15 +5710,15 @@
       ],
       "processorId": 1011,
       "gpuId": 2020,
-      "ramGB": null,
-      "storageGB": null,
+      "ramGB": 8,
+      "storageGB": 512,
       "operatingSystem": "Windows 11",
       "architecture": "x86_64",
-      "sourceUrl": "https://www.acer.com/au-en/laptops/aspire/aspire-lite/pdp/NX.D2DSA.001",
-      "sourceName": "Manufacturer specification page",
-      "verifiedBy": "Manufacturer specification page",
-      "verificationStatus": "NEEDS_REVIEW",
-      "notes": "Compatibility hardware and platform were researched from the linked model specification. RAM/storage capacity is taken from the inventory entry. Comparison tiers are internal estimates."
+      "sourceUrl": "https://laptopfactory.com.ph/product/acer-aspire-lite-al14-32p-392p/",
+      "sourceName": "Exact model retailer specification",
+      "verifiedBy": "JI Telecom exact-model web audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact AL14-32P-392P configuration: Intel Core 3 N355, 8GB RAM, 512GB NVMe SSD, Windows 11. Specs from exact-model listing; compatibility tier is an internal estimate."
     },
     {
       "skus": [
@@ -5727,17 +5740,17 @@
       "skus": [
         "INV26-LAP-33BA6FCB"
       ],
-      "processorId": 1131,
+      "processorId": 1132,
       "gpuId": 2132,
-      "ramGB": null,
-      "storageGB": null,
+      "ramGB": 16,
+      "storageGB": 512,
       "operatingSystem": "Windows 11",
       "architecture": "x86_64",
-      "sourceUrl": "https://www.acer.com/us-en/laptops/swift/swift-5/pdp/NX.K2XAA.001",
-      "sourceName": "Manufacturer specification page",
+      "sourceUrl": "https://www.acer.com/ph-en/laptops/swift/swift-5/pdp/NX.K0HSP.005",
+      "sourceName": "Acer Philippines official specification",
       "verifiedBy": "Manufacturer specification page",
-      "verificationStatus": "NEEDS_REVIEW",
-      "notes": "Compatibility hardware and platform were researched from the linked model specification. RAM/storage capacity is taken from the inventory entry. Comparison tiers are internal estimates."
+      "verificationStatus": "VERIFIED",
+      "notes": "Acer Philippines exact SF514-56T-77B9 configuration: Core i7-1260P, Iris Xe, 16GB LPDDR5, 512GB SSD, Windows 11 Pro. The inventory model label listed i7-1240P; corrected to the exact manufacturer model."
     },
     {
       "skus": [
@@ -5753,7 +5766,7 @@
       "sourceName": "Manufacturer specification page",
       "verifiedBy": "Manufacturer specification page",
       "verificationStatus": "NEEDS_REVIEW",
-      "notes": "Compatibility hardware and platform were researched from the linked model specification. RAM/storage capacity is taken from the inventory entry. Comparison tiers are internal estimates."
+      "notes": "CPU, GPU, operating system and architecture have model-level source coverage. The workbook does not identify the installed RAM and storage configuration for this unit, and the public model-family documentation lists multiple configurations. Keep those fields unknown until checked against the physical unit or its exact part number."
     },
     {
       "skus": [
@@ -5784,8 +5797,8 @@
       "sourceUrl": "https://www.dell.com/support/manuals/en-id/inspiron-15-3530-laptop/inspiron_3530_rpl_om/processor",
       "sourceName": "Manufacturer specification page",
       "verifiedBy": "Manufacturer specification page",
-      "verificationStatus": "VERIFIED",
-      "notes": "Compatibility hardware and platform were researched from the linked model specification. RAM/storage capacity is taken from the inventory entry. Comparison tiers are internal estimates."
+      "verificationStatus": "NEEDS_REVIEW",
+      "notes": "CPU, GPU, operating system and architecture have model-level source coverage. The workbook does not identify the installed RAM and storage configuration for this unit, and the public model-family documentation lists multiple configurations. Keep those fields unknown until checked against the physical unit or its exact part number."
     },
     {
       "skus": [
@@ -5809,15 +5822,15 @@
       ],
       "processorId": 1013,
       "gpuId": 2104,
-      "ramGB": null,
-      "storageGB": null,
+      "ramGB": 8,
+      "storageGB": 512,
       "operatingSystem": "Windows 11",
       "architecture": "x86_64",
-      "sourceUrl": "https://www.pcworth.com/product/gigabyte-aorus-15-9kf-e3ph583sh",
-      "sourceName": "Manufacturer specification page",
-      "verifiedBy": "Manufacturer specification page",
+      "sourceUrl": "https://bermorzone.com.ph/shop/laptop/aorus/gigabyte-aorus-15-9kf-e3ph583sh-15-6-fhd-1920-x-1080-360hz-i5-12500h-rtx-4060-8gb-ddr5-512gb-ssd-windows-11-home-limited-aorus-bag-gaming-laptop/",
+      "sourceName": "Bermor Techzone exact model specification",
+      "verifiedBy": "JI Telecom exact-model web audit",
       "verificationStatus": "VERIFIED",
-      "notes": "Compatibility hardware and platform were researched from the linked model specification. RAM/storage capacity is taken from the inventory entry. Comparison tiers are internal estimates."
+      "notes": "Exact AORUS 15 9KF-E3PH583SH configuration listing: Core i5-12500H, RTX 4060 Laptop GPU, 8GB DDR5, 512GB SSD, Windows 11. RAM/storage reflect this exact listed configuration."
     },
     {
       "skus": [
@@ -5825,15 +5838,15 @@
       ],
       "processorId": 1126,
       "gpuId": 2135,
-      "ramGB": null,
-      "storageGB": null,
+      "ramGB": 8,
+      "storageGB": 128,
       "operatingSystem": "ChromeOS",
       "architecture": "x86_64",
-      "sourceUrl": "https://psref.lenovo.com/syspool/Sys/PDF/IdeaPad/IdeaPad_Duet_3_10IGL5/IdeaPad_Duet_3_10IGL5_Spec.pdf",
-      "sourceName": "Manufacturer specification page",
+      "sourceUrl": "https://psref.lenovo.com/Detail/IdeaPad/IdeaPad_Duet_3_10IGL5?M=82AT0087TA",
+      "sourceName": "Lenovo PSREF exact configuration",
       "verifiedBy": "Manufacturer specification page",
-      "verificationStatus": "NEEDS_REVIEW",
-      "notes": "Compatibility hardware and platform were researched from the linked model specification. RAM/storage capacity is taken from the inventory entry. Comparison tiers are internal estimates."
+      "verificationStatus": "VERIFIED",
+      "notes": "Lenovo PSREF configuration 82AT0087TA: Pentium Silver N5030, UHD Graphics 605, 8GB soldered memory, 128GB eMMC. The stock line identifies the Pentium 10IGL5 family; confirm its machine-type code if the unit differs from this PSREF configuration."
     },
     {
       "skus": [
@@ -5857,15 +5870,15 @@
       ],
       "processorId": 1123,
       "gpuId": 2020,
-      "ramGB": null,
-      "storageGB": null,
+      "ramGB": 8,
+      "storageGB": 512,
       "operatingSystem": "Windows 11",
       "architecture": "x86_64",
-      "sourceUrl": "https://www.msi.com/Business-Productivity/Modern-14-C12X/Specification",
-      "sourceName": "Manufacturer specification page",
-      "verifiedBy": "Manufacturer specification page",
-      "verificationStatus": "NEEDS_REVIEW",
-      "notes": "Compatibility hardware and platform were researched from the linked model specification. RAM/storage capacity is taken from the inventory entry. Comparison tiers are internal estimates."
+      "sourceUrl": "https://ecommerce.datablitz.com.ph/products/msi-modern-14-c12m-620ph-laptop-urban-silver-14-fhd-i3-1215u-8gb-ram-512gb-ssd-intel-uhd-graphics-windows-11-home-msi-sleeve-bag-gp",
+      "sourceName": "DataBlitz exact model specification",
+      "verifiedBy": "JI Telecom exact-model web audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Modern 14 C12M-620PH listing: Core i3-1215U, integrated Intel UHD Graphics, 8GB RAM, 512GB SSD, Windows 11 Home."
     },
     {
       "skus": [

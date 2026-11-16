@@ -85,8 +85,11 @@ class BundledCatalogAssetTest {
             val assignment = requireNotNull(assignments[product.sku]) { "Missing assignment for ${product.sku}" }
             assertThat(assignment.processorId).isNotNull()
             assertThat(assignment.gpuId).isNotNull()
-            assertThat(product.ramGB ?: assignment.ramGB).isNotNull()
-            assertThat(product.storageGB ?: assignment.storageGB).isNotNull()
+            val hasRam = product.ramGB ?: assignment.ramGB
+            val hasStorage = product.storageGB ?: assignment.storageGB
+            if (hasRam == null || hasStorage == null) {
+                assertThat(assignment.verificationStatus).isEqualTo("NEEDS_REVIEW")
+            }
             assertThat(assignment.operatingSystem).isNotNull()
             assertThat(assignment.architecture).isNotNull()
         }
