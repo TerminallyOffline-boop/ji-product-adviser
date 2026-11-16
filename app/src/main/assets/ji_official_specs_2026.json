@@ -1,5 +1,5 @@
 {
-  "version": "2026.11.16.5",
+  "version": "2026.11.16.6",
   "verifiedDate": "2026-11-16",
   "processors": [
     {
@@ -1635,16 +1635,6 @@
       "sourceUrl": "https://www.asus.com/mx/mobile-handhelds/phones/all-series/zenfone-5q-zc600kl/techspec/"
     },
     {
-      "id": 2127,
-      "manufacturer": "Arm",
-      "model": "Mali-G68 MC4",
-      "type": "INTEGRATED",
-      "performanceTier": 4,
-      "graphicsTier": 4,
-      "notes": "Graphics tier is an internal comparison estimate; not a manufacturer score.",
-      "sourceUrl": null
-    },
-    {
       "id": 2128,
       "manufacturer": "IMG",
       "model": "IMG8322",
@@ -1663,16 +1653,6 @@
       "graphicsTier": 3,
       "notes": "Graphics tier is an internal comparison estimate; not a manufacturer score.",
       "sourceUrl": "https://www.mi.com/global/product/redmi-17-5g/specs/"
-    },
-    {
-      "id": 2130,
-      "manufacturer": "Qualcomm",
-      "model": "Adreno 710",
-      "type": "INTEGRATED",
-      "performanceTier": 4,
-      "graphicsTier": 4,
-      "notes": "Graphics tier is an internal comparison estimate; not a manufacturer score.",
-      "sourceUrl": "https://www.mi.com/pl/product/redmi-note-17-pro-5g/specs/"
     },
     {
       "id": 2131,
@@ -5357,7 +5337,7 @@
         "INV26-PHN-7BEE6A96"
       ],
       "processorId": 1064,
-      "gpuId": 2127,
+      "gpuId": 2115,
       "ramGB": 8,
       "storageGB": 256,
       "operatingSystem": "Android / XOS",
