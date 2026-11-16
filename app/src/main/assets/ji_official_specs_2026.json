@@ -5962,6 +5962,263 @@
       "verifiedBy": "Public product specification source",
       "verificationStatus": "NEEDS_REVIEW",
       "notes": "Published listing identifies Android 5.x Lollipop, a 1.3 GHz quad-core processor, 1 GB RAM and 8 GB internal storage. It does not identify the exact chipset or GPU, so CPU/GPU-intensive app compatibility remains unverified."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-067",
+        "JUL26-PHN-068",
+        "JUL26-PHN-069",
+        "JUL26-PHN-070"
+      ],
+      "processorId": 1004,
+      "gpuId": 2005,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A16 Bionic with 5-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-041"
+      ],
+      "processorId": 1005,
+      "gpuId": 2008,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A18 with 5-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-046",
+        "JUL26-PHN-049"
+      ],
+      "processorId": 1008,
+      "gpuId": 2013,
+      "operatingSystem": "iOS",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.apple.com/ph/iphone/compare/",
+      "sourceName": "Apple Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Apple A19 Pro with 6-core GPU."
+    },
+    {
+      "skus": [
+        "JUL26-LAP-009"
+      ],
+      "processorId": 1011,
+      "gpuId": 2020,
+      "displaySize": 15.6,
+      "displayResolution": "1920 x 1080",
+      "operatingSystem": "Windows 11",
+      "architecture": "x64",
+      "sourceUrl": "https://www.acer.com/es-es/laptops/aspire/aspire-lite/pdp/NX.D2DEB.001",
+      "notes": "Matched by Aspire Lite AL15-33P and N355 model family. Web-audited on 2026-10-15 for the Can It Run comparison.",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit",
+      "sourceName": "Exact product or manufacturer web source"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-128"
+      ],
+      "processorId": 1031,
+      "gpuId": 2034,
+      "displaySize": 6.78,
+      "displayResolution": "2772 x 1272",
+      "displayRefreshRate": 144,
+      "batteryCapacityWh": 27.44,
+      "weightKg": 0.192,
+      "operatingSystem": "realme UI 7 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/ph/realme-16-pro-5g/specs",
+      "sourceName": "realme Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Dimensity 7300 Max with Mali-G615; official battery rating is 7000mAh."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-140",
+        "JUL26-PHN-141",
+        "JUL26-PHN-142"
+      ],
+      "processorId": 1025,
+      "sourceUrl": "https://www.samsung.com/ae/smartphones/galaxy-a/galaxy-a07-5g-light-violet-128gb-sm-a076elvcmea/",
+      "notes": "Galaxy A07 LTE platform: MediaTek Helio G99 with Mali-G57 MC2; the supplied catalogue provides the 4GB + 64GB variant.",
+      "gpuId": 2032,
+      "operatingSystem": "Android 15 / One UI 7",
+      "architecture": "arm64",
+      "sourceName": "Samsung",
+      "verificationStatus": "VERIFIED",
+      "verifiedBy": "JI Telecom web-source audit"
+    },
+    {
+      "skus": [
+        "JUL26-PHN-179"
+      ],
+      "processorId": 1038,
+      "operatingSystem": "Android 16 / OriginOS 6",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.vivo.com/ph/products/param/v70",
+      "sourceName": "vivo",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "vivo V70 platform: Snapdragon 7 Gen 4 with Adreno 722 graphics.",
+      "gpuId": 2035
+    },
+    {
+      "skus": [
+        "JUL26-PHN-188"
+      ],
+      "processorId": 1039,
+      "gpuId": 2032,
+      "displaySize": 6.77,
+      "displayResolution": "2392 x 1080",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS 2 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Helio G100-Ultra with Mali-G57 MC2; official battery rating is 6000mAh."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-191"
+      ],
+      "processorId": 1040,
+      "gpuId": 2034,
+      "displaySize": 6.83,
+      "displayResolution": "2772 x 1280",
+      "displayRefreshRate": 120,
+      "weightKg": 0.21,
+      "operatingSystem": "Xiaomi HyperOS 2 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/redmi-note-15-pro-5g/specs/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Dimensity 7400-Ultra with Mali-G615; official battery rating is 6580mAh."
+    },
+    {
+      "skus": [
+        "JUL26-TAB-199",
+        "JUL26-TAB-201"
+      ],
+      "processorId": 1039,
+      "gpuId": 2032,
+      "displaySize": 11,
+      "displayResolution": "2560 x 1600",
+      "displayRefreshRate": 90,
+      "weightKg": 0.51,
+      "operatingSystem": "Xiaomi HyperOS (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/global/product/redmi-pad-2/specs/",
+      "sourceName": "Xiaomi official specifications",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Helio G100-Ultra with Mali-G57 MC2."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-099"
+      ],
+      "processorId": 1026,
+      "gpuId": 2031,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.75,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "ColorOS 15",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-a/a6x/specs/",
+      "sourceName": "OPPO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact A6x platform and the listed 4GB storage variants; Snapdragon 685 and Adreno 610 are published by OPPO."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-102"
+      ],
+      "processorId": 1029,
+      "gpuId": 2033,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.75,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 120,
+      "operatingSystem": "ColorOS 15",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.oppo.com/ph/smartphones/series-a/a6c/specs/",
+      "sourceName": "OPPO Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact A6c 4GB + 64GB/128GB variants. OPPO publishes UNISOC T7250 and Mali-G57 graphics."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-118"
+      ],
+      "processorId": 1026,
+      "gpuId": 2031,
+      "ramType": "LPDDR4X",
+      "storageType": "UFS 2.2",
+      "displaySize": 6.8,
+      "displayResolution": "1570 x 720",
+      "displayRefreshRate": 144,
+      "operatingSystem": "Android 15 / realme UI 6",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.realme.com/ph/realme-c85/specs",
+      "sourceName": "realme Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact C85 4G 6GB + 128GB and 8GB + 256GB configurations with Snapdragon 685 and Adreno 610."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-195"
+      ],
+      "processorId": 1052,
+      "gpuId": 2039,
+      "ramType": "LPDDR5X",
+      "storageType": "UFS 4.1",
+      "displaySize": 6.59,
+      "displayResolution": "2756 x 1268",
+      "displayRefreshRate": 120,
+      "operatingSystem": "Xiaomi HyperOS 3 (Android)",
+      "architecture": "arm64",
+      "sourceUrl": "https://www.mi.com/ph/product/xiaomi-17t/specs/",
+      "sourceName": "Xiaomi Philippines",
+      "verifiedBy": "JI Telecom official-source audit",
+      "verificationStatus": "VERIFIED",
+      "notes": "Exact Xiaomi 17T 12GB + 256GB/512GB Philippine configurations with Dimensity 8500-Ultra and Mali-G720 MC8."
+    },
+    {
+      "skus": [
+        "JUL26-PHN-085"
+      ],
+      "displaySize": 6.78,
+      "displayRefreshRate": 120,
+      "operatingSystem": "XOS 16 (Android 16)",
+      "architecture": "arm64",
+      "sourceUrl": "https://infinixmobiles.in/products/smart-20",
+      "sourceName": "Infinix",
+      "verificationStatus": "VERIFIED",
+      "notes": "SMART 20 platform: Helio G81 Ultimate with Mali-G52 MC2; supplied catalogue configuration is 4GB + 64GB.",
+      "processorId": 1120,
+      "gpuId": 2030,
+      "verifiedBy": "JI Telecom web-source audit"
     }
   ]
 }
