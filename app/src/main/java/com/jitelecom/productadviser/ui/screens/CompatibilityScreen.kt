@@ -323,6 +323,7 @@ private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, ap
                 StatusBadge(result.status)
             }
             Text(result.explanation, style = MaterialTheme.typography.bodyLarge)
+            HardwareAssessment(result.hardwareStatus)
             Text(
                 when (result.dataStatus) {
                     VerificationStatus.VERIFIED -> "Evidence confidence: sources are marked verified."
@@ -334,27 +335,63 @@ private fun ResultSummary(result: CompatibilityResult, product: ProductSpec?, ap
                 color = if (result.dataStatus == VerificationStatus.VERIFIED) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
             )
             mainIssue?.let { issue ->
-                val heading=when(issue.status){
-                    ComponentStatus.NOT_AVAILABLE->"Main blocker"
-                    ComponentStatus.BELOW_MINIMUM->"Main blocker"
-                    ComponentStatus.UNKNOWN->"Missing required specification"
-                    ComponentStatus.MEETS_MINIMUM->"Main limitation"
-                    else->"Important detail"
+                val heading=when {
+                    issue.component == "Operating system" -> "Operating system limitation"
+                    issue.status == ComponentStatus.NOT_AVAILABLE || issue.status == ComponentStatus.BELOW_MINIMUM -> "Main hardware blocker"
+                    issue.status == ComponentStatus.UNKNOWN -> "Missing required specification"
+                    issue.status == ComponentStatus.MEETS_MINIMUM -> "Main limitation"
+                    else -> "Important detail"
                 }
                 Surface(shape=RoundedCornerShape(14.dp),color=color.copy(alpha=.08f)){
                     Column(Modifier.fillMaxWidth().padding(12.dp),verticalArrangement=Arrangement.spacedBy(4.dp)){
                         Text("$heading: ${issue.component}",fontWeight=FontWeight.Bold,color=color)
                         Text(issue.explanation,style=MaterialTheme.typography.bodySmall)
-                        Text(when(issue.status){
-                            ComponentStatus.UNKNOWN->"This check needs a compatibility-critical specification that is missing from the product or app requirement record."
-                            ComponentStatus.NOT_AVAILABLE->"Choose a device on a supported operating system, or confirm that the publisher now supports this platform."
-                            ComponentStatus.BELOW_MINIMUM->"Choose a device that meets this minimum requirement. Compatible catalog alternatives are shown below when available."
-                            ComponentStatus.MEETS_MINIMUM->"It should meet the minimum, but a recommended-level device will provide more headroom."
-                            else->"Review the component details below."
+                        Text(when {
+                            issue.component == "Operating system" && issue.status == ComponentStatus.NOT_AVAILABLE ->
+                                "Hardware is assessed separately above. Confirm publisher support or a compatible environment before expecting the app to install or launch."
+                            issue.component == "Operating system" && issue.status == ComponentStatus.BELOW_MINIMUM ->
+                                "The installed OS is below the stored minimum. Update it or confirm the publisher supports your current version."
+                            issue.status == ComponentStatus.UNKNOWN ->
+                                "This check needs a compatibility-critical specification that is missing from the product or app requirement record."
+                            issue.status == ComponentStatus.NOT_AVAILABLE ->
+                                "This product type cannot run software."
+                            issue.status == ComponentStatus.BELOW_MINIMUM ->
+                                "Choose a device that meets this hardware minimum. Compatible catalog alternatives are shown below when available."
+                            issue.status == ComponentStatus.MEETS_MINIMUM ->
+                                "It should meet the minimum, but a recommended-level device will provide more headroom."
+                            else -> "Review the component details below."
                         },style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun HardwareAssessment(status: ComponentStatus) {
+    val color = componentStatusColor(status)
+    val label = when (status) {
+        ComponentStatus.MEETS_RECOMMENDED -> "Meets recommended hardware requirements"
+        ComponentStatus.MEETS_MINIMUM -> "Meets minimum hardware requirements"
+        ComponentStatus.BELOW_MINIMUM -> "Below one or more hardware minimums"
+        ComponentStatus.UNKNOWN -> "Hardware compatibility needs more specifications"
+        ComponentStatus.NOT_APPLICABLE -> "No hardware minimums are stored for this app"
+        ComponentStatus.NOT_AVAILABLE -> "This product type cannot run software"
+    }
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = color.copy(alpha = .09f),
+        contentColor = color
+    ) {
+        Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Text("HARDWARE ASSESSMENT", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+            Text(label, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Text(
+                "CPU, GPU, RAM, storage, architecture, and listed features are evaluated where app requirements are available. OS support is assessed separately.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

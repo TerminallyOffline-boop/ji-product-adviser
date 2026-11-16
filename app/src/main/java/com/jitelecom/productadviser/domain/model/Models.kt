@@ -160,7 +160,9 @@ data class CompatibilityResult(
     val components: List<ComponentCompatibilityResult>,
     val explanation: String,
     val dataStatus: VerificationStatus = VerificationStatus.UNVERIFIED,
-    val disclaimer: String = COMPATIBILITY_DISCLAIMER
+    val disclaimer: String = COMPATIBILITY_DISCLAIMER,
+    /** Hardware-only verdict; interpreted separately from operating-system support. */
+    val hardwareStatus: ComponentStatus = ComponentStatus.UNKNOWN
 )
 
 const val COMPATIBILITY_DISCLAIMER = "Compatibility results are based on stored hardware specifications and published software requirements. Actual performance may vary depending on software version, drivers, operating system, workload, thermal conditions and configuration."

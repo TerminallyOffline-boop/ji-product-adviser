@@ -198,7 +198,8 @@ class CompatibilityEngine @Inject constructor(
                     )
                 ),
                 explanation = "${product.displayName} is a $category product, so it cannot run ${software.name}.",
-                dataStatus = combineEvidenceStatus(product.verificationStatus, software.verificationStatus)
+                dataStatus = combineEvidenceStatus(product.verificationStatus, software.verificationStatus),
+                hardwareStatus = ComponentStatus.NOT_AVAILABLE
             )
         }
         val operatingSystem = product.operatingSystemForCompatibility()
@@ -210,15 +211,6 @@ class CompatibilityEngine @Inject constructor(
             requirementsForPlatform(requirements, operatingSystem)
         }
         val minimum = applicableRequirements.firstOrNull { it.type == RequirementType.MINIMUM }
-        if (minimum == null && !unsupportedPlatform) {
-            val platform = platformLabel(operatingSystem)
-            val reason = if (requirements.any { it.platform.isNotBlank() }) {
-                "Minimum requirements for $platform are not stored."
-            } else {
-                "Minimum requirements are not stored."
-            }
-            return unverified(product.id, software.id, reason, VerificationStatus.UNVERIFIED)
-        }
         val comparisonMinimum = minimum ?: RequirementSet(
             id = 0,
             softwareId = software.id,
@@ -243,7 +235,12 @@ class CompatibilityEngine @Inject constructor(
                 }
             }
         } else evaluatedComponents
-        val hasUnresolvedData = platformCompatibility == PlatformCompatibility.UNKNOWN ||
+        val hardwareStatus = hardwareCompatibilityStatus(components)
+        val osComponent = components.firstOrNull { it.component == "Operating system" }
+        val osBelowMinimum = osComponent?.status == ComponentStatus.BELOW_MINIMUM
+        val hardwareMeetsMinimum = hardwareStatus == ComponentStatus.MEETS_MINIMUM ||
+            hardwareStatus == ComponentStatus.MEETS_RECOMMENDED
+        val hasUnresolvedData = minimum == null || platformCompatibility == PlatformCompatibility.UNKNOWN ||
             components.any { it.status == ComponentStatus.UNKNOWN }
         val evidenceStatuses = buildList {
             add(product.verificationStatus)
@@ -266,10 +263,19 @@ class CompatibilityEngine @Inject constructor(
             softwareId = software.id,
             status = status,
             components = components,
-            explanation = if (unsupportedPlatform) {
-                "${software.name} is not available for ${platformLabel(operatingSystem)}. CPU, GPU, memory, and storage are compared with the app's stored requirements for reference only; hardware results do not override the OS incompatibility."
-            } else explanationBuilder.build(status, components),
-            dataStatus = dataStatus
+            explanation = when {
+                unsupportedPlatform && hardwareMeetsMinimum ->
+                    "The stored CPU, GPU, RAM, storage, and other hardware requirements are met. The app's supported platform list does not include ${platformLabel(operatingSystem)}, so native installation or launch is not confirmed."
+                unsupportedPlatform ->
+                    "${software.name} is not listed for ${platformLabel(operatingSystem)}. Hardware requirements are assessed separately below; meeting them alone does not confirm that the app can install or launch."
+                osBelowMinimum && hardwareMeetsMinimum ->
+                    "The stored hardware requirements are met, but the installed OS is below the app's stored minimum. Update the OS or confirm current publisher support before relying on this result."
+                minimum == null ->
+                    "Device specifications are shown below, but this app has no stored hardware minimums to compare. The result cannot confirm whether it will run."
+                else -> explanationBuilder.build(status, components)
+            },
+            dataStatus = dataStatus,
+            hardwareStatus = hardwareStatus
         )
     }
 
@@ -281,6 +287,19 @@ class CompatibilityEngine @Inject constructor(
         explanation = reason,
         dataStatus = dataStatus
     )
+}
+
+private fun hardwareCompatibilityStatus(components: List<ComponentCompatibilityResult>): ComponentStatus {
+    val hardware = components.filter { it.component != "Operating system" }
+    val applicable = hardware.filter { it.status != ComponentStatus.NOT_APPLICABLE }
+    return when {
+        applicable.any { it.status == ComponentStatus.BELOW_MINIMUM } -> ComponentStatus.BELOW_MINIMUM
+        applicable.any { it.status == ComponentStatus.UNKNOWN } -> ComponentStatus.UNKNOWN
+        applicable.isEmpty() -> ComponentStatus.NOT_APPLICABLE
+        applicable.any { it.status == ComponentStatus.MEETS_MINIMUM } -> ComponentStatus.MEETS_MINIMUM
+        applicable.all { it.status == ComponentStatus.MEETS_RECOMMENDED } -> ComponentStatus.MEETS_RECOMMENDED
+        else -> ComponentStatus.UNKNOWN
+    }
 }
 
 private fun combineEvidenceStatus(vararg statuses: VerificationStatus): VerificationStatus = combineEvidenceStatus(statuses.toList())
