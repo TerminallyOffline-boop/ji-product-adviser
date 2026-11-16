@@ -1,5 +1,5 @@
 {
-  "version": "2026.11.16.4",
+  "version": "2026.11.16.5",
   "verifiedDate": "2026-11-16",
   "processors": [
     {
@@ -1126,7 +1126,7 @@
       "sourceUrl": "https://www.fonearena.com/blog/343352/dizo-star-300-dizo-star-500-price-india-specifications.html"
     },
     {
-      "id": 1132,
+      "id": 1133,
       "manufacturer": "Intel",
       "family": "Core i7",
       "model": "Core i7-1260P",
@@ -5740,7 +5740,7 @@
       "skus": [
         "INV26-LAP-33BA6FCB"
       ],
-      "processorId": 1132,
+      "processorId": 1133,
       "gpuId": 2132,
       "ramGB": 16,
       "storageGB": 512,

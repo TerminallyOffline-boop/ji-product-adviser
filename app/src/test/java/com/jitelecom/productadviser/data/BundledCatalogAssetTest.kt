@@ -30,7 +30,7 @@ class BundledCatalogAssetTest {
     @Test
     fun containsExpectedNonPrinterCatalog() {
         val catalog = catalog()
-        assertThat(catalog.catalogVersion).isEqualTo("2026.11.16.4")
+        assertThat(catalog.catalogVersion).isEqualTo("2026.11.16.5")
         assertThat(catalog.products).hasSize(263)
         assertThat(catalog.products.count { it.category == "LAPTOP" }).isEqualTo(42)
         assertThat(catalog.products.count { it.category == "SMARTPHONE" }).isEqualTo(189)
@@ -57,9 +57,10 @@ class BundledCatalogAssetTest {
         val specifications = specifications()
         val assignedSkus = specifications.assignments.flatMap { it.skus }
         val processorIds = specifications.processors.map { it.id }.toSet()
+        assertThat(specifications.processors.map { it.id }.distinct()).hasSize(specifications.processors.size)
         val gpuIds = specifications.gpus.map { it.id }.toSet()
 
-        assertThat(specifications.version).isEqualTo("2026.11.16.4")
+        assertThat(specifications.version).isEqualTo("2026.11.16.5")
         assertThat(assignedSkus).hasSize(262)
         assertThat(assignedSkus.distinct()).hasSize(assignedSkus.size)
         assertThat(catalogSkus).containsAtLeastElementsIn(assignedSkus)
