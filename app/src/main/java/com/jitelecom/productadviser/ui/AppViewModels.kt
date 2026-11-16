@@ -8,6 +8,8 @@ import com.jitelecom.productadviser.data.importexport.*
 import com.jitelecom.productadviser.data.local.*
 import com.jitelecom.productadviser.data.preferences.*
 import com.jitelecom.productadviser.data.remote.RemoteUpdateWorker
+import com.jitelecom.productadviser.data.seed.CatalogInitializationStatus
+import com.jitelecom.productadviser.data.seed.DemoDataSeeder
 import com.jitelecom.productadviser.data.repository.toDomain
 import com.jitelecom.productadviser.domain.compatibility.CompatibilityEngine
 import com.jitelecom.productadviser.domain.model.*
@@ -31,13 +33,29 @@ class AppViewModel @Inject constructor(preferences: AppPreferences, connectivity
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     products: ProductRepository, catalog: CatalogRepository, metadata: MetadataDao, analytics: AnalyticsDao,
-    preferences: AppPreferences
+    preferences: AppPreferences, private val catalogStatus: CatalogInitializationStatus, private val seeder: DemoDataSeeder
 ) : ViewModel() {
     val products = products.observeProducts().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val software = catalog.observeSoftware().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val databaseVersion = metadata.observe("databaseVersion").stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
     val popular = analytics.observePopular("recommended_product", 5).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val settings = preferences.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
+    val initialization = catalogStatus.state
+
+    fun retryCatalogInitialization() {
+        if (catalogStatus.state.value.loading) return
+        viewModelScope.launch(Dispatchers.IO) {
+            catalogStatus.markLoading()
+            try {
+                seeder.seedIfEmpty()
+                catalogStatus.markReady()
+            } catch (cancelled: kotlinx.coroutines.CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                catalogStatus.markFailed(error)
+            }
+        }
+    }
 }
 
 enum class ProductSort(val label: String) { NAME("Name"), PRICE_LOW("Lowest price"), PRICE_HIGH("Highest price"), PERFORMANCE("Performance") }

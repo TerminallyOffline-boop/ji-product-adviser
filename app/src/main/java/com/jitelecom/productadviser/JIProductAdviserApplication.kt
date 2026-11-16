@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.jitelecom.productadviser.data.seed.DemoDataSeeder
+import com.jitelecom.productadviser.data.seed.CatalogInitializationStatus
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -16,17 +17,21 @@ import javax.inject.Inject
 @HiltAndroidApp
 class JIProductAdviserApplication : Application(), Configuration.Provider {
     @Inject lateinit var seeder: DemoDataSeeder
+    @Inject lateinit var catalogStatus: CatalogInitializationStatus
     @Inject lateinit var workerFactory: HiltWorkerFactory
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     override fun onCreate() {
         super.onCreate()
+        catalogStatus.markLoading()
         applicationScope.launch {
             try {
                 seeder.seedIfEmpty()
+                catalogStatus.markReady()
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (error: Exception) {
-                Log.e(TAG, "Bundled data refresh failed; keeping the app process available.", error)
+                Log.e(TAG, "Bundled data initialization failed.", error)
+                catalogStatus.markFailed(error)
             }
         }
     }

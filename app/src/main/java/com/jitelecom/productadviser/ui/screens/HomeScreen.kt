@@ -43,6 +43,7 @@ fun HomeScreen(
     val version by viewModel.databaseVersion.collectAsState()
     val popular by viewModel.popular.collectAsState()
     val settings by viewModel.settings.collectAsState()
+    val startupState by viewModel.initialization.collectAsState()
     val favorites = remember(products, settings.favoriteProductIds) {
         settings.favoriteProductIds.mapNotNull { id -> products.firstOrNull { it.id == id } }
     }
@@ -68,6 +69,15 @@ fun HomeScreen(
                     OnlineBadge(online)
                 }
                 HomeHero(onNavigate = onNavigate)
+            }
+        }
+        if (products.isEmpty()) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                CatalogInitializationNotice(
+                    loading = startupState.loading,
+                    error = startupState.error,
+                    onRetry = viewModel::retryCatalogInitialization
+                )
             }
         }
         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -115,6 +125,31 @@ fun HomeScreen(
         }
         item(span = { GridItemSpan(maxLineSpan) }) {
             NoticeCard("The catalog and compatibility checks are available offline, so you can assist customers anywhere.")
+        }
+    }
+}
+
+@Composable
+private fun CatalogInitializationNotice(loading: Boolean, error: String?, onRetry: () -> Unit) {
+    ElevatedCard(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = if (error == null) MaterialTheme.colorScheme.secondaryContainer
+            else MaterialTheme.colorScheme.errorContainer
+        )
+    ) {
+        Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                if (loading) "Preparing offline catalog" else if (error != null) "Catalog setup failed" else "Catalog is empty",
+                style = MaterialTheme.typography.titleMedium
+            )
+            if (loading) {
+                Text("The product and software data is being loaded on this device.")
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            } else {
+                Text(error ?: "No catalog records were loaded. Retry setup to try again.", style = MaterialTheme.typography.bodyMedium)
+                Button(onClick = onRetry) { Text("Retry setup") }
+            }
         }
     }
 }
