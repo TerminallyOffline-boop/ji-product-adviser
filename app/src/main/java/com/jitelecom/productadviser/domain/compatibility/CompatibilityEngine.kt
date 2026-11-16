@@ -203,28 +203,14 @@ class CompatibilityEngine @Inject constructor(
         }
         val operatingSystem = product.operatingSystemForCompatibility()
         val platformCompatibility = platformCompatibility(software.platform, operatingSystem)
-        if (platformCompatibility == PlatformCompatibility.NOT_SUPPORTED) {
-            val actualPlatform = platformLabel(operatingSystem)
-            return CompatibilityResult(
-                productId = product.id,
-                softwareId = software.id,
-                status = CompatibilityStatus.NOT_AVAILABLE,
-                components = listOf(
-                    ComponentCompatibilityResult(
-                        component = "Operating system",
-                        actual = operatingSystem ?: "Unknown",
-                        minimum = software.platform,
-                        status = ComponentStatus.NOT_AVAILABLE,
-                        explanation = "${software.name} is not available for $actualPlatform. Stored app platforms: ${software.platform}."
-                    )
-                ),
-                explanation = "${software.name} is not available for $actualPlatform. Choose an app built for this platform or a different device.",
-                dataStatus = combineEvidenceStatus(product.verificationStatus, software.verificationStatus)
-            )
+        val unsupportedPlatform = platformCompatibility == PlatformCompatibility.NOT_SUPPORTED
+        val applicableRequirements = if (unsupportedPlatform) {
+            requirementsForSoftwarePlatform(requirements, software.platform)
+        } else {
+            requirementsForPlatform(requirements, operatingSystem)
         }
-        val applicableRequirements = requirementsForPlatform(requirements, operatingSystem)
         val minimum = applicableRequirements.firstOrNull { it.type == RequirementType.MINIMUM }
-        if (minimum == null) {
+        if (minimum == null && !unsupportedPlatform) {
             val platform = platformLabel(operatingSystem)
             val reason = if (requirements.any { it.platform.isNotBlank() }) {
                 "Minimum requirements for $platform are not stored."
@@ -233,19 +219,42 @@ class CompatibilityEngine @Inject constructor(
             }
             return unverified(product.id, software.id, reason, VerificationStatus.UNVERIFIED)
         }
+        val comparisonMinimum = minimum ?: RequirementSet(
+            id = 0,
+            softwareId = software.id,
+            type = RequirementType.MINIMUM,
+            supportedOperatingSystems = platformFamilies(software.platform).map { it.displayName }.toSet(),
+            verificationStatus = VerificationStatus.UNVERIFIED,
+            platform = software.platform
+        )
         val recommended = applicableRequirements.firstOrNull { it.type == RequirementType.RECOMMENDED }
-        val components = evaluator.evaluate(product, minimum, recommended)
+        val evaluatedComponents = evaluator.evaluate(product, comparisonMinimum, recommended)
+        val components = if (unsupportedPlatform) {
+            evaluatedComponents.map { component ->
+                if (component.component == "Operating system") {
+                    component.copy(
+                        status = ComponentStatus.NOT_AVAILABLE,
+                        explanation = "${software.name} is not available for ${platformLabel(operatingSystem)}. Hardware results are reference-only because the app does not support this operating-system platform."
+                    )
+                } else {
+                    component.copy(
+                        explanation = "Reference only: ${component.explanation} This hardware comparison does not make ${software.name} available on ${platformLabel(operatingSystem)}."
+                    )
+                }
+            }
+        } else evaluatedComponents
         val hasUnresolvedData = platformCompatibility == PlatformCompatibility.UNKNOWN ||
             components.any { it.status == ComponentStatus.UNKNOWN }
         val evidenceStatuses = buildList {
             add(product.verificationStatus)
             add(software.verificationStatus)
-            add(minimum.verificationStatus)
+            add(comparisonMinimum.verificationStatus)
             recommended?.let { add(it.verificationStatus) }
-            if (hasUnresolvedData) add(VerificationStatus.NEEDS_REVIEW)
+            if (minimum == null || hasUnresolvedData) add(VerificationStatus.NEEDS_REVIEW)
         }
         val dataStatus = combineEvidenceStatus(evidenceStatuses)
         val status = when {
+            unsupportedPlatform -> CompatibilityStatus.NOT_AVAILABLE
             components.any { it.status == ComponentStatus.BELOW_MINIMUM } -> CompatibilityStatus.BELOW_MINIMUM
             hasUnresolvedData -> CompatibilityStatus.NOT_VERIFIED
             recommended == null -> CompatibilityStatus.MEETS_MINIMUM
@@ -257,7 +266,9 @@ class CompatibilityEngine @Inject constructor(
             softwareId = software.id,
             status = status,
             components = components,
-            explanation = explanationBuilder.build(status, components),
+            explanation = if (unsupportedPlatform) {
+                "${software.name} is not available for ${platformLabel(operatingSystem)}. CPU, GPU, memory, and storage are compared with the app's stored requirements for reference only; hardware results do not override the OS incompatibility."
+            } else explanationBuilder.build(status, components),
             dataStatus = dataStatus
         )
     }
@@ -302,6 +313,18 @@ private fun requirementsForPlatform(requirements: List<RequirementSet>, operatin
     if (scoped.isEmpty()) return general
     return RequirementType.entries.mapNotNull { type ->
         scoped.firstOrNull { it.type == type } ?: general.firstOrNull { it.type == type }
+    }
+}
+
+private fun requirementsForSoftwarePlatform(requirements: List<RequirementSet>, softwarePlatform: String): List<RequirementSet> {
+    val matching = requirements.filter { requirement ->
+        requirement.platform.isNotBlank() &&
+            platformCompatibility(requirement.platform, softwarePlatform) == PlatformCompatibility.SUPPORTED
+    }
+    val general = requirements.filter { it.platform.isBlank() }
+    val preferred = if (matching.isNotEmpty()) matching else requirements.filter { it.platform.isNotBlank() }
+    return RequirementType.entries.mapNotNull { type ->
+        preferred.firstOrNull { it.type == type } ?: general.firstOrNull { it.type == type }
     }
 }
 
