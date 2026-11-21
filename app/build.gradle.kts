@@ -14,8 +14,8 @@ android {
         applicationId = "com.jitelecom.productadviser"
         minSdk = 28
         targetSdk = 36
-        versionCode = 25
-        versionName = "1.6.5"
+        versionCode = 26
+        versionName = "1.6.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
